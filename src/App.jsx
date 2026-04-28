@@ -154,15 +154,35 @@ function AdminPage() {
     if (imageMode === "url" && !url) { setStatus("URL required"); return; }
     if (imageMode === "file" && !file) { setStatus("File required"); return; }
     setSaving(true);
-    setStatus(imageMode === "url" ? "Saving..." : "Uploading...");
+    setStatus(imageMode === "url" ? "Checking..." : "Uploading...");
     try {
-      let imagePath = imageMode === "url" ? url.trim() : (await supabase.storage.from(BUCKET_NAME).upload(`img_${Date.now()}_${file.name.replace(/\s+/g, '_')}`, file)).data.path;
-      const { error } = await supabase.from("products for Gorosei").insert({ Name: name.trim(), Price: FIXED_PRICE, size, Image_url: imagePath, sold: false });
-      if (error) throw error;
+      let imagePath;
+      if (imageMode === "url") {
+        imagePath = url.trim();
+      } else {
+        const fileName = `img_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+        setStatus("Uploading...");
+        const { data, error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(fileName, file);
+        if (uploadError) throw uploadError;
+        imagePath = data.path;
+      }
+      setStatus("Saving...");
+      const productName = name.trim();
+      const { error: insertError } = await supabase.from("products for Gorosei").insert({ 
+        Name: productName, 
+        Price: FIXED_PRICE, 
+        size, 
+        Image_url: imagePath, 
+        sold: false 
+      });
+      if (insertError) throw insertError;
       setStatus("Done!");
       setName(""); setFile(null); setPreview(null); setUrl("");
       fetchProducts();
-    } catch (err) { setStatus("Error: " + err.message); }
+    } catch (err) { 
+      console.error("Full error:", err);
+      setStatus("Error: " + (err.message || JSON.stringify(err))); 
+    }
     finally { setSaving(false); }
   }
 
