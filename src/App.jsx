@@ -29,22 +29,98 @@ export default function App() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @media (min-width: 768px) {
-          .grid { grid-template-columns: repeat(4, 1fr) !important; }
-          .heroTitle { font-size: 140px !important; }
-          .productMain { flex-direction: row !important; }
-          .productGallery { max-width: 50% !important; flex: 1 !important; }
-          .productInfo { max-width: 50% !important; margin: auto 0 !important; padding: 48px !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+          --bg: #080808;
+          --surface: #0f0f0f;
+          --surface-light: #1a1a1f;
+          --crimson: #CC0000;
+          --crimson-dark: #8B0000;
+          --text: #FFFFFF;
+          --text-dim: #999999;
+          --dot: rgba(255,255,255,0.03);
         }
-        @media (max-width: 767px) {
-          .grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .productMain { flex-direction: column !important; }
-        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; color: #fff; font-family: 'JetBrains Mono', monospace; }
+        
+        body {
+          background: var(--bg);
+          color: var(--text);
+          font-family: 'Space Mono', monospace;
+          overflow-x: hidden;
+        }
+        
         a { color: inherit; text-decoration: none; }
+        
+        .font-display { font-family: 'Bebas Neue', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+        
+        /* Dot grid texture */
+        .dot-grid {
+          background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+          background-size: 20px 20px;
+        }
+        
+        /* Corner brackets */
+        .bracket { position: relative; }
+        .bracket::before, .bracket::after {
+          content: ''; position: absolute; width: 20px; height: 20px; border: 1px solid var(--crimson);
+        }
+        .bracket-tl::before { top: 0; left: 0; border-right: none; border-bottom: none; }
+        .bracket-tr::before { top: 0; right: 0; border-left: none; border-bottom: none; }
+        .bracket-bl::before { bottom: 0; left: 0; border-right: none; border-top: none; }
+        .bracket-br::before { bottom: 0; right: 0; border-left: none; border-top: none; }
+        
+        /* Section counter */
+        .section-num {
+          color: var(--crimson);
+          font-size: 12px;
+          letter-spacing: 0.2em;
+        }
+        
+        /* Buttons */
+        .btn-red {
+          border: 1px solid var(--crimson);
+          background: transparent;
+          color: var(--text);
+          padding: 14px 28px;
+          font-family: 'Space Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .btn-red:hover {
+          background: var(--crimson);
+          color: var(--bg);
+          box-shadow: 0 0 20px rgba(204,0,0,0.4);
+        }
+        
+        /* Product card */
+        .card:hover {
+          border-color: var(--crimson);
+          box-shadow: 0 0 30px rgba(204,0,0,0.2);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeIn 0.6s ease forwards; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        
+        /* Red glow */
+        .glow:hover { box-shadow: 0 0 30px rgba(204,0,0,0.3); }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+          .grid-products { grid-template-columns: repeat(3, 1fr); }
+          .hero-title { font-size: clamp(60px, 15vw, 140px); }
+        }
       `}</style>
       <Router />
     </>
@@ -53,8 +129,8 @@ export default function App() {
 
 function CustomerPage() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => { fetchProducts(); }, []);
 
@@ -67,33 +143,141 @@ function CustomerPage() {
   }
 
   return (
-    <div style={styles.page}>
-      <nav style={styles.nav}>
-        <a href="/" style={styles.logo}>GOROSEI</a>
-        <button style={styles.menuBtn} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? "CLOSE" : "MENU"}</button>
-        {menuOpen && <div style={styles.menu}><a href="#drops" style={styles.menuLink}>DROPS</a><a href="/admin" style={styles.menuLink}>ADMIN</a></div>}
+    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+      {/* NAV */}
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 30px', position: 'fixed', top: 0, left: 0, right: 0, background: 'rgba(8,8,8,0.95)', zIndex: 100, borderBottom: '1px solid #1a1a1f' }}>
+        <span className="font-display" style={{ fontSize: 24, letterSpacing: '0.1em' }}>GOROSEI</span>
+        <div style={{ display: 'flex', gap: 30 }}>
+          <a href="#drops" className="font-mono" style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--text-dim)' }}>DROPS</a>
+          <a href="/admin" className="font-mono" style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--text-dim)' }}>ADMIN</a>
+        </div>
       </nav>
-      <header style={styles.hero}>
-        <p style={styles.heroTag}>[-_-]</p>
-        <h1 className="heroTitle" style={styles.heroTitle}>GOROSEI<br/>KENYA</h1>
-        <p style={styles.heroSub}>STREETWEAR // {FIXED_PRICE} KES</p>
+
+      {/* HERO */}
+      <header style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '120px 30px 80px', position: 'relative' }} className="dot-grid">
+        <span className="font-mono section-num" style={{ marginBottom: 20 }}>[01] DROP 01</span>
+        <h1 className="font-display hero-title" style={{ fontSize: 'clamp(50px, 12vw, 120px)', lineHeight: 0.85, marginBottom: 30 }}>
+          WEAR THE<br /><span style={{ color: 'var(--crimson)' }}>DARK</span>
+        </h1>
+        <p className="font-mono" style={{ color: 'var(--text-dim)', fontSize: 12, letterSpacing: '0.2em' }}>
+          TACTICAL STREETWEAR // KENYA
+        </p>
+        
+        {/* Scroll indicator */}
+        <div style={{ position: 'absolute', bottom: 40, right: 30, writingMode: 'vertical-rl' }} className="font-mono" style={{ position: 'absolute', bottom: 40, right: 30, fontSize: 10, letterSpacing: '0.3em', color: 'var(--text-dim)' }}>
+          SCROLL ↓
+        </div>
       </header>
-      <main style={styles.main}>
-        <div style={styles.sectionHeader}><span>[01]</span><h2>AVAILABLE</h2></div>
-        {loading && <div className="loader" style={styles.loader}></div>}
-        {!loading && products.length === 0 && <div style={styles.empty}><p>NO DROPS</p><p>8PM DAILY</p></div>}
-        <div className="grid" style={styles.grid}>
+
+      {/* ABOUT */}
+      <section style={{ padding: '100px 30px', background: 'var(--surface)', position: 'relative' }} className="dot-grid">
+        <div style={{ maxWidth: 800, margin: '0 auto', position: 'relative', padding: 60 }} className="bracket bracket-tl bracket-br">
+          <span className="font-mono section-num" style={{ marginBottom: 20, display: 'block' }}>• WHO WE ARE</span>
+          <h2 className="font-display" style={{ fontSize: 'clamp(36px, 6vw, 64px)', lineHeight: 0.95, marginBottom: 30 }}>
+            WE BUILD <span style={{ color: 'var(--crimson)' }}>ARMOR,</span><br />NOT FASHION.
+          </h2>
+          <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.8, maxWidth: 500 }}>
+            Tactical fashion for those who move with intent. No hype. No excuses. 
+            Built for the darkness. Designed in Kenya.
+          </p>
+        </div>
+      </section>
+
+      {/* MISSION - Red radial */}
+      <section style={{ 
+        padding: '100px 30px', 
+        background: 'radial-gradient(circle at 30% 50%, #2a0000 0%, #1a0000 40%, #080808 100%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div className="dot-grid" style={{ position: 'absolute', inset: 0, opacity: 0.5 }}></div>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: 60, maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+            {products[0]?.Image_url && (
+              <img 
+                src={getImageUrl(products[0].Image_url)} 
+                alt="Featured" 
+                style={{ 
+                  maxHeight: 500, 
+                  maxWidth: '100%',
+                  objectFit: 'contain',
+                  filter: 'brightness(0.6) contrast(1.2)',
+                  mixBlendMode: 'luminosity'
+                }} 
+              />
+            )}
+          </div>
+          <div style={{ flex: 1 }}>
+            <span className="font-mono section-num" style={{ marginBottom: 20, display: 'block' }}>[02] MISSION</span>
+            <h2 className="font-display" style={{ fontSize: 'clamp(36px, 6vw, 64px)', lineHeight: 0.9, marginBottom: 30 }}>
+              PROTECT<br />YOURSELF
+            </h2>
+            <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-dim)', lineHeight: 1.8, marginBottom: 30 }}>
+              Premium tactical wear. Engineered for the streets.<br />
+              Every piece designed with purpose. Every detail intentional.
+            </p>
+            <button className="btn-red">EXPLORE COLLECTION →</button>
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCTS */}
+      <section id="drops" style={{ padding: '100px 30px' }}>
+        <span className="font-mono section-num" style={{ marginBottom: 40, display: 'block' }}>[03] AVAILABLE</span>
+        
+        {loading && <div style={{ padding: 100, textAlign: 'center', color: 'var(--text-dim)' }} className="font-mono">LOADING...</div>}
+        
+        {!loading && products.length === 0 && (
+          <div style={{ padding: 100, textAlign: 'center' }}>
+            <p className="font-display" style={{ fontSize: 48, color: 'var(--text-dim)' }}>NO DROPS</p>
+            <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 10 }}>8PM DAILY</p>
+          </div>
+        )}
+        
+        <div className="grid-products" style={{ display: 'grid', gap: 1, gridTemplateColumns: 'repeat(1, 1fr)', background: '#1a1a1f' }}>
           {products.map((p) => (
-            <a href={`/product/${p.id}`} key={p.id} style={styles.cardLink}>
-              <div style={styles.card}>
-                <div style={styles.cardImg}>{p.Image_url ? <img src={getImageUrl(p.Image_url)} alt={p.Name} style={styles.cardImgInner} loading="lazy" /> : <div style={styles.noImg}>NO IMG</div>}<span style={styles.cardSize}>{p.size || "OS"}</span></div>
-                <div style={styles.cardBody}><h3 style={styles.cardTitle}>{p.Name}</h3><div style={styles.cardFooter}><span>KSh {FIXED_PRICE}</span></div></div>
+            <a href={`/product/${p.id}`} key={p.id} style={{ background: 'var(--bg)', padding: 0, display: 'block', textDecoration: 'none', color: 'inherit', transition: 'all 0.3s' }} className="card">
+              <div style={{ aspectRatio: '1', background: 'var(--surface)', position: 'relative', overflow: 'hidden' }}>
+                {p.Image_url ? (
+                  <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.7) contrast(1.1)' }} />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)', fontSize: 12 }}>NO IMAGE</div>
+                )}
+                {/* Corner brackets on hover */}
+                <div style={{ position: 'absolute', top: 10, left: 10, width: 20, height: 20, borderLeft: '1px solid var(--crimson)', borderTop: '1px solid var(--crimson)', opacity: 0, transition: 'opacity 0.3s' }} />
+                <div style={{ position: 'absolute', top: 10, right: 10, width: 20, height: 20, borderRight: '1px solid var(--crimson)', borderTop: '1px solid var(--crimson)', opacity: 0, transition: 'opacity 0.3s' }} />
+                <div style={{ position: 'absolute', bottom: 10, left: 10, width: 20, height: 20, borderLeft: '1px solid var(--crimson)', borderBottom: '1px solid var(--crimson)', opacity: 0, transition: 'opacity 0.3s' }} />
+                <div style={{ position: 'absolute', bottom: 10, right: 10, width: 20, height: 20, borderRight: '1px solid var(--crimson)', borderBottom: '1px solid var(--crimson)', opacity: 0, transition: 'opacity 0.3s' }} />
+              </div>
+              <div style={{ padding: 20 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 14, fontWeight: 'bold', textTransform: 'uppercase' }}>{p.Name}</span>
+                  <span style={{ color: 'var(--crimson)', fontSize: 12 }}>KSh {FIXED_PRICE}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
+                  <span className="font-mono" style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: '0.1em' }}>{p.size || 'OS'}</span>
+                  <span className="font-mono" style={{ fontSize: 10, color: 'var(--crimson)', letterSpacing: '0.1em' }}>VIEW →</span>
+                </div>
               </div>
             </a>
           ))}
         </div>
-      </main>
-      <footer style={styles.footer}><p>GOROSEI // KENYA</p><p>WA: {WHATSAPP_NUMBER}</p><p>©2026</p></footer>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{ padding: '60px 30px', borderTop: '1px solid var(--crimson)', background: 'var(--bg)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span className="font-display" style={{ fontSize: 18 }}>GOROSEI</span>
+          <div style={{ display: 'flex', gap: 30 }}>
+            <a href="#" className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-dim)' }}>INSTAGRAM</a>
+            <a href="#" className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-dim)' }}>TWITTER</a>
+          </div>
+        </div>
+        <div style={{ textAlign: 'center', marginTop: 40, color: 'var(--text-dim)', fontSize: 10 }} className="font-mono">
+          © 2025 GOROSEI KENYA — ALL RIGHTS RESERVED
+        </div>
+      </footer>
     </div>
   );
 }
@@ -105,27 +289,51 @@ function ProductPage({ id }) {
   useEffect(() => { fetchProduct(); }, [id]);
 
   async function fetchProduct() {
-    try { const { data } = await supabase.from("products for Gorosei").select("*").eq("id", id).single(); setProduct(data); } 
-    catch (err) { console.error(err); }
+    try {
+      const { data } = await supabase.from("products for Gorosei").select("*").eq("id", id).single();
+      setProduct(data);
+    } catch (err) { console.error(err); }
     setLoading(false);
   }
 
-  if (loading) return <div style={styles.page}><div className="loader" style={styles.loader}></div></div>;
-  if (!product) return <div style={styles.page}><p style={styles.empty}>Product not found</p></div>;
+  if (loading) return <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span className="font-mono" style={{ color: 'var(--text-dim)' }}>LOADING...</span></div>;
+  if (!product) return <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span className="font-mono" style={{ color: 'var(--text-dim)' }}>NOT FOUND</span></div>;
 
   const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi Gorosei, I want: ${product.Name} (${product.size || 'OS'}) - KSh ${FIXED_PRICE}`)}`;
 
   return (
-    <div style={styles.page}>
-      <nav style={styles.nav}><a href="/" style={styles.logo}>GOROSEI</a><a href="/" style={styles.menuBtn}>← BACK</a></nav>
-      <main className="productMain" style={styles.productMain}>
-        <div style={styles.productGallery} className="productGallery">{product.Image_url ? <img src={getImageUrl(product.Image_url)} alt={product.Name} style={styles.productImage} /> : <div style={styles.productNoImg}>NO IMAGE</div>}</div>
-        <div className="productInfo" style={styles.productInfo}>
-          <span style={styles.productSize}>{product.size || "OS"}</span>
-          <h1 style={styles.productName}>{product.Name}</h1>
-          <p style={styles.productPrice}>KSh {FIXED_PRICE}</p>
-          <a href={buyLink} style={styles.buyBtn}>BUY NOW</a>
-          <div style={styles.productDetails}><p>Dark aesthetic // Limited drops</p><p>8PM DAILY // Kenya based</p></div>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+      <nav style={{ display: 'flex', justifyContent: 'space-between', padding: '20px 30px', borderBottom: '1px solid #1a1a1f' }}>
+        <a href="/" className="font-display" style={{ fontSize: 18 }}>← BACK</a>
+        <span className="font-display" style={{ fontSize: 18 }}>GOROSEI</span>
+      </nav>
+
+      <main style={{ padding: '100px 30px', display: 'grid', gridTemplateColumns: '1fr', gap: 60, maxWidth: 1200, margin: '0 auto' }} className="grid-products">
+        <div style={{ aspectRatio: '1', background: 'var(--surface)', position: 'relative' }} className="bracket bracket-tl bracket-br">
+          {product.Image_url ? (
+            <img src={getImageUrl(product.Image_url)} alt={product.Name} style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'brightness(0.8)' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dim)' }}>NO IMAGE</div>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <span className="font-mono section-num" style={{ marginBottom: 20 }}>PRODUCT DETAIL</span>
+          <h1 className="font-display" style={{ fontSize: 'clamp(36px, 6vw, 72px)', lineHeight: 0.9, marginBottom: 10 }}>{product.Name}</h1>
+          <span className="font-mono" style={{ fontSize: 12, color: 'var(--text-dim)', letterSpacing: '0.2em', marginBottom: 40 }}>SIZE: {product.size || 'OS'}</span>
+          
+          <p style={{ fontSize: 32, fontWeight: 'bold', color: 'var(--crimson)', marginBottom: 30 }}>KSh {FIXED_PRICE}</p>
+          
+          <a href={buyLink} className="btn-red" style={{ display: 'inline-block', textAlign: 'center' }}>
+            ADD TO CART →
+          </a>
+
+          <div style={{ marginTop: 60, paddingTop: 30, borderTop: '1px solid #1a1a1f' }}>
+            <p className="font-mono" style={{ fontSize: 11, color: 'var(--text-dim)', lineHeight: 1.8 }}>
+              Premium tactical construction.<br />
+              Limited drop. First come, first served.
+            </p>
+          </div>
         </div>
       </main>
     </div>
@@ -145,7 +353,12 @@ function AdminPage() {
 
   useEffect(() => { fetchProducts(); }, []);
 
-  function handleFileChange(e) { const f = e.target.files?.[0]; setFile(f); setPreview(f ? URL.createObjectURL(f) : null); setUrl(""); }
+  function handleFileChange(e) { 
+    const f = e.target.files?.[0]; 
+    setFile(f); 
+    setPreview(f ? URL.createObjectURL(f) : null); 
+    setUrl(""); 
+  }
   function handleUrlChange(e) { setUrl(e.target.value); setFile(null); setPreview(null); }
   function toggleMode(mode) { setImageMode(mode); setFile(null); setPreview(null); setUrl(""); }
 
@@ -154,133 +367,98 @@ function AdminPage() {
     if (imageMode === "url" && !url) { setStatus("URL required"); return; }
     if (imageMode === "file" && !file) { setStatus("File required"); return; }
     setSaving(true);
-    setStatus(imageMode === "url" ? "Checking..." : "Uploading...");
+    setStatus(imageMode === "url" ? "Saving..." : "Uploading...");
     try {
       let imagePath;
       if (imageMode === "url") {
         imagePath = url.trim();
       } else {
         const fileName = `img_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-        setStatus("Uploading...");
         const { data, error: uploadError } = await supabase.storage.from(BUCKET_NAME).upload(fileName, file);
         if (uploadError) throw uploadError;
         imagePath = data.path;
       }
-      setStatus("Saving...");
-      const productName = name.trim();
-      const { error: insertError } = await supabase.from("products for Gorosei").insert({ 
-        Name: productName, 
-        Price: FIXED_PRICE, 
-        size, 
-        Image_url: imagePath, 
-        sold: false 
-      });
+      const { error: insertError } = await supabase.from("products for Gorosei").insert({ Name: name.trim(), Price: FIXED_PRICE, size, Image_url: imagePath, sold: false });
       if (insertError) throw insertError;
       setStatus("Done!");
       setName(""); setFile(null); setPreview(null); setUrl("");
       fetchProducts();
     } catch (err) { 
-      console.error("Full error:", err);
+      console.error("Error:", err);
       setStatus("Error: " + (err.message || JSON.stringify(err))); 
     }
     finally { setSaving(false); }
   }
 
-  async function fetchProducts() { const { data } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false }); setProducts(data || []); }
+  async function fetchProducts() { 
+    const { data } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false }); 
+    setProducts(data || []); 
+  }
   async function markSold(id) { await supabase.from("products for Gorosei").update({ sold: true }).eq("id", id); fetchProducts(); }
   async function deleteProduct(id) { await supabase.from("products for Gorosei").delete().eq("id", id); fetchProducts(); }
 
   return (
-    <div style={styles.page}>
-      <nav style={styles.nav}><a href="/" style={styles.logo}>GOROSEI</a><a href="/" style={styles.menuBtn}>STORE</a></nav>
-      <main className="adminMain" style={styles.adminMain}>
-        <div style={styles.sectionHeader}><span>[01]</span><h2>ADD DROP</h2></div>
-        <div style={styles.formToggle}>
-          <button style={imageMode === "file" ? styles.formToggleActive : styles.formToggleBtn} onClick={() => toggleMode("file")}>UPLOAD FILE</button>
-          <button style={imageMode === "url" ? styles.formToggleActive : styles.formToggleBtn} onClick={() => toggleMode("url")}>PASTE URL</button>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', padding: '100px 30px 50px' }}>
+      <nav style={{ marginBottom: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span className="font-display" style={{ fontSize: 24 }}>ADMIN</span>
+        <a href="/" className="font-mono" style={{ fontSize: 11, color: 'var(--text-dim)' }}>← STORE</a>
+      </nav>
+
+      {/* ADD */}
+      <div style={{ maxWidth: 500 }}>
+        <span className="font-mono section-num" style={{ marginBottom: 20, display: 'block' }}>[01] ADD DROP</span>
+        
+        <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+          <button onClick={() => toggleMode("file")} style={{ flex: 1, padding: 14, background: imageMode === "file" ? 'var(--crimson)' : 'var(--surface)', border: '1px solid var(--crimson)', color: 'var(--text)', fontFamily: 'inherit', fontSize: 11, cursor: 'pointer' }}>UPLOAD FILE</button>
+          <button onClick={() => toggleMode("url")} style={{ flex: 1, padding: 14, background: imageMode === "url" ? 'var(--crimson)' : 'var(--surface)', border: '1px solid var(--crimson)', color: 'var(--text)', fontFamily: 'inherit', fontSize: 11, cursor: 'pointer' }}>PASTE URL</button>
         </div>
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="PRODUCT NAME" style={styles.input} />
-        <div style={styles.formRow}>
-          <select value={size} onChange={(e) => setSize(e.target.value)} style={styles.select}>
+
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="PRODUCT NAME" style={{ width: '100%', padding: 16, marginBottom: 15, background: 'var(--surface)', border: '1px solid #1a1a1f', color: 'var(--text)', fontSize: 14 }} />
+        
+        <div style={{ display: 'flex', gap: 10, marginBottom: 15 }}>
+          <select value={size} onChange={(e) => setSize(e.target.value)} style={{ padding: 16, background: 'var(--surface)', border: '1px solid #1a1a1f', color: 'var(--text)', fontSize: 14 }}>
             <option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option><option value="OS">OS</option>
           </select>
           {imageMode === "file" ? (
-            <label style={styles.fileLabel}>{file ? file.name : "CHOOSE IMAGE"}<input type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} /></label>
-          ) : <input value={url} onChange={handleUrlChange} placeholder="IMAGE URL" style={styles.inputFlex} />}
+            <label style={{ flex: 1, padding: 16, background: 'var(--surface)', border: '1px solid #1a1a1f', color: 'var(--text-dim)', fontSize: 12, display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+              {file ? file.name : "CHOOSE IMAGE"}
+              <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
+            </label>
+          ) : (
+            <input value={url} onChange={handleUrlChange} placeholder="IMAGE URL" style={{ flex: 1, padding: 16, background: 'var(--surface)', border: '1px solid #1a1a1f', color: 'var(--text)', fontSize: 12 }} />
+          )}
         </div>
-        {preview && <img src={preview} style={styles.preview} />}
-        <button onClick={handleAdd} disabled={saving} style={styles.submitBtn}>{saving ? "..." : `ADD (${FIXED_PRICE} KES)`}</button>
-        {status && <p style={styles.status}>{status}</p>}
-        <div style={styles.sectionHeader}><span>[02]</span><h2>STOCK ({products.length})</h2></div>
-        <div style={styles.productList}>
+
+        {preview && <img src={preview} style={{ width: 100, height: 100, objectFit: 'cover', marginBottom: 15 }} />}
+
+        <button onClick={handleAdd} disabled={saving} style={{ width: '100%', padding: 18, background: 'var(--crimson)', border: 'none', color: 'var(--bg)', fontSize: 12, fontWeight: 'bold', letterSpacing: '0.2em', cursor: 'pointer' }}>
+          {saving ? "..." : `ADD (${FIXED_PRICE} KES)`}
+        </button>
+        
+        {status && <p style={{ marginTop: 15, color: status.includes("Error") ? 'var(--crimson)' : 'var(--text)', fontSize: 12 }}>{status}</p>}
+      </div>
+
+      {/* STOCK */}
+      <div style={{ marginTop: 60, maxWidth: 500 }}>
+        <span className="font-mono section-num" style={{ marginBottom: 20, display: 'block' }}>[02] STOCK ({products.length})</span>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {products.map((p) => (
-            <div key={p.id} style={styles.productItem}>
-              <img src={getImageUrl(p.Image_url)} alt={p.Name} style={styles.productThumb} />
-              <div style={styles.productItemInfo}><p>{p.Name}</p><p>{p.size} // {FIXED_PRICE} KES</p><span style={p.sold ? styles.soldTag : styles.availTag}>{p.sold ? "SOLD" : "AVAIL"}</span></div>
-              <div style={styles.productActions}>{!p.sold && <button onClick={() => markSold(p.id)} style={styles.soldBtn}>SOLD</button>}<button onClick={() => deleteProduct(p.id)} style={styles.deleteBtn}>DEL</button></div>
+            <div key={p.id} style={{ display: 'flex', gap: 15, padding: 15, background: 'var(--surface)', alignItems: 'center' }}>
+              <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: 50, height: 50, objectFit: 'cover', background: '#1a1a1f' }} />
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 13 }}>{p.Name}</p>
+                <p style={{ fontSize: 11, color: 'var(--text-dim)' }}>{p.size} // {FIXED_PRICE} KES</p>
+                <span style={{ fontSize: 10, color: p.sold ? 'var(--crimson)' : '#4ade80' }}>{p.sold ? "SOLD" : "AVAIL"}</span>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {!p.sold && <button onClick={() => markSold(p.id)} style={{ border: '1px solid #4ade80', color: '#4ade80', background: 'none', padding: '8px 12px', fontSize: 10 }}>SOLD</button>}
+                <button onClick={() => deleteProduct(p.id)} style={{ border: '1px solid var(--crimson)', color: 'var(--crimson)', background: 'none', padding: '8px 12px', fontSize: 10 }}>DEL</button>
+              </div>
             </div>
           ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  page: { background: "#000", color: "#fff", fontFamily: "'JetBrains Mono', monospace", minHeight: "100vh" },
-  nav: { display: "flex", justifyContent: "space-between", padding: "16px 24px", position: "fixed", top: 0, left: 0, right: 0, background: "rgba(0,0,0,0.95)", zIndex: 100 },
-  logo: { fontSize: 14, fontWeight: "bold", letterSpacing: "4px", color: "#fff", textDecoration: "none" },
-  menuBtn: { background: "none", border: "1px solid #333", color: "#fff", padding: "8px 16px", fontFamily: "inherit", fontSize: 11, letterSpacing: "2px", cursor: "pointer", textDecoration: "none" },
-  menu: { position: "fixed", inset: 0, background: "#000", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 24, zIndex: 99 },
-  menuLink: { fontSize: 24, fontWeight: "bold", letterSpacing: "4px", color: "#fff", textDecoration: "none" },
-  hero: { minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "120px 24px 80px", borderBottom: "1px solid #333" },
-  heroTag: { fontSize: 12, color: "#666", marginBottom: 16 },
-  heroTitle: { fontSize: "clamp(40px, 15vw, 140px)", fontWeight: "bold", lineHeight: 0.9, marginBottom: 24 },
-  heroSub: { fontSize: 14, color: "#666", letterSpacing: "4px" },
-  main: { padding: "0 0 48px" },
-  sectionHeader: { display: "flex", gap: 16, padding: "48px 24px 24px", borderBottom: "1px solid #333" },
-  grid: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 1, background: "#333" },
-  cardLink: { textDecoration: "none", color: "inherit" },
-  card: { background: "#000" },
-  cardImg: { aspectRatio: "1", background: "#0a0a0a", position: "relative", overflow: "hidden" },
-  cardImgInner: { width: "100%", height: "100%", objectFit: "cover" },
-  noImg: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#666", fontSize: 10 },
-  cardSize: { position: "absolute", top: 12, left: 12, background: "#fff", color: "#000", fontSize: 9, fontWeight: "bold", padding: "4px 8px" },
-  cardBody: { padding: 16 },
-  cardTitle: { fontSize: 14, fontWeight: 500, marginBottom: 12 },
-  cardFooter: { display: "flex", justifyContent: "space-between", alignItems: "center" },
-  loader: { width: 24, height: 24, border: "2px solid #333", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "60px auto" },
-  empty: { textAlign: "center", padding: 60, color: "#666" },
-  footer: { padding: 48, borderTop: "1px solid #333", textAlign: "center", color: "#666", fontSize: 12 },
-  productMain: { paddingTop: 80, display: "flex", flexDirection: "column", minHeight: "100vh" },
-  productGallery: { position: "relative", aspectRatio: "1", background: "#0a0a0a", cursor: "pointer", width: "100%", maxWidth: 600, margin: "0 auto" },
-  productImage: { width: "100%", height: "100%", objectFit: "contain" },
-  productNoImg: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#666", fontSize: 24 },
-  productInfo: { padding: 24, flex: 1, maxWidth: 600, margin: "0 auto", width: "100%" },
-  productSize: { display: "inline-block", background: "#fff", color: "#000", padding: "4px 8px", fontSize: 10, fontWeight: "bold", marginBottom: 16 },
-  productName: { fontSize: 32, fontWeight: "bold", marginBottom: 16 },
-  productPrice: { fontSize: 24, fontWeight: "bold", marginBottom: 24 },
-  buyBtn: { display: "block", background: "#fff", color: "#000", padding: 16, textAlign: "center", fontSize: 14, fontWeight: "bold", textDecoration: "none", marginBottom: 24 },
-  productDetails: { color: "#666", fontSize: 12 },
-  adminMain: { padding: "100px 24px 48px", maxWidth: 500, margin: "0 auto" },
-  formToggle: { display: "flex", gap: 8, marginBottom: 12 },
-  formToggleBtn: { flex: 1, padding: 12, background: "#111", border: "1px solid #333", color: "#666", cursor: "pointer" },
-  formToggleActive: { flex: 1, padding: 12, background: "#fff", border: "1px solid #333", color: "#000", cursor: "pointer" },
-  input: { display: "block", width: "100%", padding: 14, margin: "8px 0", background: "#111", border: "1px solid #333", color: "#fff", fontSize: 12, fontFamily: "inherit" },
-  inputFlex: { flex: 1, padding: 14, background: "#111", border: "1px solid #333", color: "#fff", fontSize: 12, fontFamily: "inherit" },
-  formRow: { display: "flex", gap: 8 },
-  select: { padding: 14, background: "#111", border: "1px solid #333", color: "#fff", fontSize: 12, fontFamily: "inherit" },
-  fileLabel: { flex: 1, padding: 14, background: "#111", border: "1px solid #333", color: "#666", fontSize: 12, cursor: "pointer", display: "flex", alignItems: "center" },
-  preview: { width: 100, height: 100, objectFit: "cover", marginTop: 12 },
-  submitBtn: { width: "100%", padding: 16, marginTop: 12, background: "#fff", color: "#000", border: "none", fontSize: 12, fontWeight: "bold", cursor: "pointer" },
-  status: { color: "#f0f", marginTop: 12, fontSize: 12 },
-  productList: { display: "flex", flexDirection: "column", gap: 8 },
-  productItem: { display: "flex", gap: 12, padding: 12, background: "#111", alignItems: "center" },
-  productThumb: { width: 50, height: 50, objectFit: "cover", background: "#222" },
-  productItemInfo: { flex: 1 },
-  soldTag: { color: "#f00", fontSize: 10 },
-  availTag: { color: "#4ade80", fontSize: 10 },
-  productActions: { display: "flex", gap: 8 },
-  soldBtn: { border: "1px solid #4ade80", color: "#4ade80", background: "none", padding: "6px 10px", fontSize: 10, cursor: "pointer" },
-  deleteBtn: { border: "1px solid #f00", color: "#f00", background: "none", padding: "6px 10px", fontSize: 10, cursor: "pointer" },
-};
