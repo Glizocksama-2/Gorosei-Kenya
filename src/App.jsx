@@ -609,12 +609,23 @@ function CustomerPage() {
 function ProductPage({ id }) {
   const parallax = useParallax(15);
   const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("M");
   const sizes = ["S", "M", "L", "XL"];
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 500);
-  }, []);
+    fetchProduct();
+  }, [id]);
+
+  async function fetchProduct() {
+    try {
+      const { data } = await supabase.from("products for Gorosei").select("*").eq("id", id).single();
+      setProduct(data);
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  }
 
   if (loading) return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -622,8 +633,11 @@ function ProductPage({ id }) {
     </div>
   );
 
-  const name = id.toUpperCase();
-  const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi GOROSEI, I want: ${name} (Size: ${selectedSize}) - KSh ${FIXED_PRICE}`)}`;
+  const name = product?.Name || id.toUpperCase();
+  const size = product?.size || selectedSize;
+  const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${FIXED_PRICE}\n\nIs it available?`
+  )}`;
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
