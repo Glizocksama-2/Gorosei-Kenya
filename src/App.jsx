@@ -108,8 +108,8 @@ export default function App() {
         .size-btn:hover { border-color: var(--crimson); }
         .size-btn.selected { background: var(--crimson); border-color: var(--crimson); color: var(--bg); }
         
-        .hero-product { position: relative; display: flex; justify-content: center; align-items: center; transition: transform 0.1s ease-out; }
-        .hero-product-img { max-height: 80vh; width: auto; max-width: 100%; object-fit: contain; transition: transform 0.3s ease-out; }
+        .hero-product { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+        .hero-product-img { width: 100%; height: auto; max-height: none; object-fit: cover; transition: transform 0.3s ease-out; }
         .hero-product:hover .hero-product-img { transform: scale(1.02); }
         
         @media (min-width: 768px) {
@@ -171,29 +171,22 @@ function CustomerPage() {
       </nav>
 
       {/* HERO */}
-      <header style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', padding: '120px 40px 80px', position: 'relative' }} className="dot-grid">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center', maxWidth: 1600, margin: '0 auto', width: '100%' }}>
-          <div>
+      <header style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'flex-end' }}>
+        <img 
+          src="/hero.png" 
+          alt="GOROSEI Streetwear"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+        <div style={{ position: 'relative', zIndex: 10, padding: '80px 40px', width: '100%', background: 'linear-gradient(transparent, rgba(0,0,0,0.7))' }}>
+          <div style={{ maxWidth: 600 }}>
             <span className="font-mono section-num reveal active" style={{ color: 'var(--crimson)' }}>NEW DROP — 2025</span>
             <h1 className="font-display hero-title reveal active" style={{ fontSize: 'clamp(48px, 10vw, 110px)', lineHeight: 0.95, marginTop: 16 }}>
               STREET<br />WEAR
             </h1>
-            <p className="font-mono" style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.8, marginTop: 24, maxWidth: 380 }}>Kenyan streetwear that makes you feel like your real self.</p>
+            <p className="font-mono" style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.8, marginTop: 24, maxWidth: 380 }}>Kenyan streetwear that makes you feel like your real self.</p>
             <div style={{ display: 'flex', gap: 16, marginTop: 40 }} className="reveal active">
               <a href="#drops" className="btn">SHOP NOW</a>
             </div>
-          </div>
-          
-          {/* HERO IMAGE */}
-          <div 
-            className="hero-product"
-            style={{ transform: `translate(${parallax.current.x}px, ${parallax.current.y}px)` }}
-          >
-            <img 
-              src="/hero.png" 
-              alt="GOROSEI Streetwear"
-              className="hero-product-img"
-            />
           </div>
         </div>
       </header>
