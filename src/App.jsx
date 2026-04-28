@@ -35,7 +35,7 @@ function CustomerPage() {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
 
-async function fetchProducts() {
+  async function fetchProducts() {
     try {
       const { data, error } = await supabase
         .from("products for Gorosei")
@@ -48,14 +48,6 @@ async function fetchProducts() {
         alert("Error: " + error.message);
       }
       console.log("Products from DB:", data);
-      setProducts(data || []);
-    } catch (err) {
-      console.error("Fetch error:", err);
-    } finally {
-      setLoading(false);
-    }
-  }
-      console.log("Products:", data);
       setProducts(data || []);
     } catch (err) {
       console.error("Fetch error:", err);
