@@ -43,10 +43,14 @@ function CustomerPage() {
         .eq("sold", false)
         .order("created_at", { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error("DB Error:", error.message);
+        alert("Error: " + error.message);
+      }
+      console.log("Products:", data);
       setProducts(data || []);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch error:", err);
     } finally {
       setLoading(false);
     }
@@ -215,6 +219,8 @@ function AdminPage() {
         "Image_url": data.publicUrl,
         "sold": false
       });
+
+      console.log("Product added:", name);
 
       setStatus("Done!");
       setName("");
