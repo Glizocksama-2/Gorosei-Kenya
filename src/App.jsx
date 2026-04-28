@@ -47,7 +47,7 @@ function useScrollReveal(threshold = 0.15) {
 }
 
 function AnimatedSection({ children, className = "", delay = 0 }) {
-  const [ref, visible] = useScrollReveal(0.1);
+  const [ref, visible] = useScrollReveal(0.15);
 
   return (
     <div
@@ -55,8 +55,8 @@ function AnimatedSection({ children, className = "", delay = 0 }) {
       className={`fade-section ${className}`}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(50px)',
-        transition: `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+        transform: visible ? 'translateY(0)' : 'translateY(30px)',
+        transition: `all 0.4s ease-out ${delay}s`,
       }}
     >
       {children}
@@ -65,7 +65,7 @@ function AnimatedSection({ children, className = "", delay = 0 }) {
 }
 
 function Section({ id, children, className = "" }) {
-  const [ref, visible] = useScrollReveal(0.1);
+  const [ref, visible] = useScrollReveal(0.15);
 
   return (
     <section
@@ -74,8 +74,8 @@ function Section({ id, children, className = "" }) {
       className={className}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(30px)',
-        transition: 'all 0.6s ease-out',
+        transform: visible ? 'translateY(0)' : 'translateY(20px)',
+        transition: 'all 0.4s ease-out',
       }}
     >
       {children}
@@ -155,12 +155,12 @@ export default function App() {
         .font-display { font-family: 'Bebas Neue', sans-serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
         
-        /* Buttons */
+        /* Buttons - snappy */
         .btn {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 20px 56px;
+          padding: 18px 48px;
           background: var(--crimson);
           color: var(--text);
           font-family: 'Space Mono', monospace;
@@ -168,14 +168,13 @@ export default function App() {
           letter-spacing: 0.3em;
           text-transform: uppercase;
           border: 1px solid var(--crimson);
-          transition: all 0.4s var(--ease);
+          transition: all 0.2s ease-out;
           cursor: pointer;
         }
         .btn:hover {
           background: transparent;
           color: var(--crimson);
-          box-shadow: 0 0 40px rgba(204, 0, 0, 0.4);
-          transform: scale(1.02);
+          box-shadow: 0 0 30px rgba(204, 0, 0, 0.4);
         }
         
         .btn-outline {
@@ -190,9 +189,7 @@ export default function App() {
         }
         
         /* Navigation */
-        .nav-link {
-          position: relative;
-        }
+        .nav-link { position: relative; }
         .nav-link::after {
           content: '';
           position: absolute;
@@ -201,43 +198,30 @@ export default function App() {
           width: 0;
           height: 1px;
           background: var(--crimson);
-          transition: width 0.3s var(--ease);
+          transition: width 0.2s ease-out;
         }
         .nav-link:hover::after { width: 100%; }
         
-        /* Hover Effects */
-        .hover-lift {
-          transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
-        }
-        .hover-lift:hover {
-          transform: translateY(-12px);
-          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-        }
+        /* Hover Effects - snappy */
+        .hover-lift { transition: transform 0.25s ease-out, box-shadow 0.25s ease-out; }
+        .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
         
-        .hover-scale {
-          transition: transform 0.4s var(--ease);
-        }
-        .hover-scale:hover {
-          transform: scale(1.03);
-        }
+        .hover-scale { transition: transform 0.2s ease-out; }
+        .hover-scale:hover { transform: scale(1.03); }
         
-        .hover-glow {
-          transition: box-shadow 0.4s var(--ease);
-        }
-        .hover-glow:hover {
-          box-shadow: 0 0 50px rgba(204, 0, 0, 0.3);
-        }
+        .hover-glow { transition: box-shadow 0.25s ease-out; }
+        .hover-glow:hover { box-shadow: 0 0 30px rgba(204, 0, 0, 0.3); }
         
         /* Product Card */
         .product-card {
           background: var(--surface);
           border: 1px solid var(--surface-light);
-          transition: all 0.5s var(--ease);
+          transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
           overflow: hidden;
         }
         .product-card:hover {
           border-color: var(--crimson);
-          transform: translateY(-8px);
+          transform: translateY(-6px);
         }
         .product-card .image-container {
           aspect-ratio: 3/4;
@@ -248,13 +232,11 @@ export default function App() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.6s var(--ease);
+          transition: transform 0.4s ease-out;
         }
-        .product-card:hover img {
-          transform: scale(1.05);
-        }
+        .product-card:hover img { transform: scale(1.05); }
         
-        /* Cursor */
+        /* Cursor - snappy */
         .cursor-dot {
           width: 8px;
           height: 8px;
@@ -264,62 +246,49 @@ export default function App() {
           pointer-events: none;
           z-index: 9999;
           transform: translate(-50%, -50%);
-          transition: all 0.15s ease;
+          transition: width 0.15s, height 0.15s, background 0.15s;
         }
         .cursor-dot.active {
-          width: 32px;
-          height: 32px;
+          width: 24px;
+          height: 24px;
           background: rgba(204, 0, 0, 0.2);
         }
         
-        /* Hero Animations */
-        .hero-bg {
-          transition: transform 0.3s ease-out;
-        }
+        /* Hero Animations - faster */
+        .hero-bg { transition: transform 0.2s ease-out; }
         
         .hero-title {
-          animation: fadeUp 1s var(--ease) forwards;
-          animation-delay: 0.3s;
+          animation: fadeUp 0.6s ease-out forwards;
+          animation-delay: 0.2s;
           opacity: 0;
         }
         
         .hero-subtitle {
-          animation: fadeUp 1s var(--ease) forwards;
-          animation-delay: 0.6s;
+          animation: fadeUp 0.6s ease-out forwards;
+          animation-delay: 0.4s;
           opacity: 0;
         }
         
         .hero-cta {
-          animation: fadeUp 1s var(--ease) forwards;
-          animation-delay: 0.9s;
+          animation: fadeUp 0.6s ease-out forwards;
+          animation-delay: 0.6s;
           opacity: 0;
         }
         
         @keyframes fadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         
         /* Scroll indicator */
-        .scroll-indicator {
-          animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(10px); }
-        }
+        .scroll-indicator { animation: bounce 1.5s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
         
         /* Section spacing */
-        section {
-          padding: 160px 48px;
-        }
+        section { padding: 140px 48px; }
+        
+        /* Scroll reveal - snappy */
+        .fade-section { transition: opacity 0.4s ease-out, transform 0.4s ease-out; }
         
         @media (min-width: 1024px) {
           .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
@@ -350,6 +319,29 @@ function CustomerPage() {
   const parallax = useParallax(8);
   const { pos, active } = useMouseFollow();
   const scrolled = useNavScroll();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  async function fetchProducts() {
+    try {
+      const { data, error } = await supabase
+        .from("products for Gorosei")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      if (error) {
+        console.error("Fetch error:", error);
+      }
+      setProducts((data || []).filter(p => !p.sold));
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  }
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
@@ -456,31 +448,37 @@ function CustomerPage() {
           </div>
           
           <div className="grid-3" style={{ marginTop: 80, maxWidth: 1400, margin: '80px auto 0' }}>
-            {[
-              { name: "INFERNO", tagline: "Burn Bright" },
-              { name: "SYMBOLIC", tagline: "Sign of the Times" },
-              { name: "MINIMAL", tagline: "Less is More" },
-              { name: "FLAME", tagline: "Eternal Fire" },
-              { name: "ANGEL", tagline: "Heaven Sent" },
-              { name: "SHIELD", tagline: "Built to Last" },
-            ].map((p, i) => (
+            {loading ? (
+              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 100, color: 'var(--text-muted)' }}>LOADING...</div>
+            ) : products.length === 0 ? (
+              <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 100 }}>
+                <p className="font-display" style={{ fontSize: 48 }}>NO PRODUCTS YET</p>
+                <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16 }}>Add products in /admin</p>
+              </div>
+            ) : products.map((p, i) => (
               <a 
-                href={`/product/${p.name.toLowerCase()}`} 
-                key={i}
+                href={p.id ? `/product/${p.id}` : "#drop"} 
+                key={p.id || i}
                 className="product-card hover-lift hover-glow"
                 style={{ display: 'block', cursor: 'pointer' }}
               >
                 <div className="image-container">
-                  <img 
-                    src="/hero.png" 
-                    alt={p.name}
-                    className="hover-scale"
-                  />
+                  {p.Image_url ? (
+                    <img 
+                      src={getImageUrl(p.Image_url)} 
+                      alt={p.Name}
+                      className="hover-scale"
+                    />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', background: 'var(--surface-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className="font-display" style={{ fontSize: 48, color: 'var(--text-muted)' }}>{p.Name?.charAt(0) || '?'}</span>
+                    </div>
+                  )}
                 </div>
                 <div style={{ padding: 24 }}>
-                  <p className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--crimson)' }}>{p.tagline}</p>
+                  <p className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--crimson)' }}>{p.size || 'T-SHIRT'}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, alignItems: 'center' }}>
-                    <span className="font-display" style={{ fontSize: 24 }}>{p.name}</span>
+                    <span className="font-display" style={{ fontSize: 24 }}>{p.Name}</span>
                     <span style={{ color: 'var(--crimson)', fontSize: 14 }}>KSh {FIXED_PRICE}</span>
                   </div>
                 </div>
