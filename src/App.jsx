@@ -97,10 +97,16 @@ export default function App() {
         .reveal { opacity: 0; transform: translateY(20px); transition: all 0.5s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
         
+        .about-card { padding: 40px; border: 1px solid var(--surface-light); transition: all 0.3s ease-out; }
+        .about-card:hover { border-color: var(--crimson); transform: translateY(-4px); }
+        
+        .interactive-img { transition: transform 0.3s ease-out; }
+        .interactive-img:hover { transform: scale(1.02); }
+        
         /* Product Page - Full screen edge to edge */
         .product-page { position: fixed; inset: 0; background: var(--bg); z-index: 300; overflow-y: auto; }
-        .product-hero { width: 100vw; height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .product-hero-img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.1s ease-out; }
+        .product-hero { width: 100vw; height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--surface); }
+        .product-hero-img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: transform 0.1s ease-out; }
         
         .product-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
         
@@ -174,13 +180,13 @@ function CustomerPage() {
       </nav>
 
       {/* HERO */}
-      <header style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'flex-end' }}>
+      <header style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'flex-end', overflow: 'hidden' }}>
         <img 
           src="/hero.png" 
           alt="GOROSEI Streetwear"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', background: 'var(--surface)' }}
         />
-        <div style={{ position: 'relative', zIndex: 10, padding: '80px 40px', width: '100%', background: 'linear-gradient(transparent, rgba(0,0,0,0.7))' }}>
+        <div style={{ position: 'relative', zIndex: 10, padding: '80px 40px', width: '100%', background: 'linear-gradient(transparent 30%, rgba(0,0,0,0.8))' }}>
           <div style={{ maxWidth: 600 }}>
             <span className="font-mono section-num reveal active" style={{ color: 'var(--crimson)' }}>NEW DROP — 2025</span>
             <h1 className="font-display hero-title reveal active" style={{ fontSize: 'clamp(48px, 10vw, 110px)', lineHeight: 0.95, marginTop: 16 }}>
@@ -196,7 +202,7 @@ function CustomerPage() {
 
       {/* ABOUT */}
       <section id="about" style={{ padding: '120px 40px', background: 'var(--surface)' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <span className="font-mono section-num red">ABOUT US</span>
           <h2 className="font-display" style={{ fontSize: 'clamp(36px, 6vw, 72px)', lineHeight: 1, marginTop: 24 }}>
             A KENYAN CLOTHING BRAND FOR THE REAL YOU
@@ -206,6 +212,21 @@ function CustomerPage() {
             We create clothes that let you be yourself — bold, authentic, unapologetic. 
             This is streetwear for those who know who they are.
           </p>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginTop: 60 }}>
+            <div className="about-card" style={{ padding: 32, background: 'var(--bg)' }}>
+              <h3 className="font-display" style={{ fontSize: 24 }}>OUR VISION</h3>
+              <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, lineHeight: 1.8 }}>To be the go-to Kenyan brand for bold self-expression through streetwear.</p>
+            </div>
+            <div className="about-card" style={{ padding: 32, background: 'var(--bg)' }}>
+              <h3 className="font-display" style={{ fontSize: 24 }}>OUR STYLE</h3>
+              <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, lineHeight: 1.8 }}>Premium quality, bold designs, authentic Kenyan streetwear.</p>
+            </div>
+            <div className="about-card" style={{ padding: 32, background: 'var(--bg)' }}>
+              <h3 className="font-display" style={{ fontSize: 24 }}>JOIN US</h3>
+              <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, lineHeight: 1.8 }}>Follow @goroseikenya on Instagram for drops and updates.</p>
+            </div>
+          </div>
         </div>
       </section>
 
