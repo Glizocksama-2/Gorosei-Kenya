@@ -335,6 +335,7 @@ function CustomerPage() {
   }, []);
 
   async function fetchProducts() {
+    console.log("Fetching products...");
     try {
       const { data, error } = await supabase
         .from("products for Gorosei")
@@ -344,9 +345,12 @@ function CustomerPage() {
       if (error) {
         console.error("Fetch error:", error);
       }
-      setProducts((data || []).filter(p => !p.sold));
+      console.log("Products data:", data);
+      const available = (data || []).filter(p => !p.sold);
+      console.log("Available products:", available);
+      setProducts(available);
     } catch (err) {
-      console.error(err);
+      console.error("Catch error:", err);
     }
     setLoading(false);
   }
