@@ -8,6 +8,7 @@ const FIXED_PRICE = 2000;
 const ORIGINAL_PRICE = 2500;
 const BUCKET_NAME = "products-images";
 const ADMIN_PASSWORD = "gorosei2025";
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1498814467864264854/BM_MgL_SsTsYWT_5XwD3hnyUwy2o4yFX9z1yHcGFQahhw2rLYWz1OXj_aGuzwYqs1xZQ";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -52,6 +53,15 @@ function NewsletterForm() {
         console.error("Error:", error);
         setStatus("Error. Try again.");
       } else {
+        // Send Discord notification
+        await fetch(DISCORD_WEBHOOK, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content: "🆕 **NEW BROTHERHOOD MEMBER**\n\n📱: " + email.trim() + "\n⏰: " + new Date().toLocaleString("en-KE", { timeZone: "Africa/Nairobi" })
+          })
+        });
+        
         setSubmitted(true);
         setStatus("You're in!");
       }
