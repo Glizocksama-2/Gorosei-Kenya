@@ -458,7 +458,7 @@ function CustomerPage() {
           <div className="grid-3" style={{ marginTop: 80, maxWidth: 1400, margin: '80px auto 0' }}>
             {loading ? (
               <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 100, color: 'var(--text-muted)' }}>LOADING...</div>
-            ) : products.length === 0 ? (
+            ) : (products.length === 0 ? (
               <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 100 }}>
                 <p className="font-display" style={{ fontSize: 48 }}>NO PRODUCTS YET</p>
                 <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16 }}>Add products in /admin</p>
@@ -466,7 +466,7 @@ function CustomerPage() {
             ) : products.map((p, i) => (
               <a 
                 href={p.id ? `/product/${p.id}` : "#drop"} 
-                key={p.id || i}
+                key={i}
                 className="product-card hover-lift hover-glow"
                 style={{ display: 'block', cursor: 'pointer' }}
               >
