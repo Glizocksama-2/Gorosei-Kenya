@@ -115,23 +115,33 @@ function AdminPage() {
     setUploading(true);
     setStatus("Uploading...");
     try {
+      // 1. Upload file to storage
       const fileName = `${Date.now()}-${file.name}`;
-      console.log("Uploading to:", BUCKET_NAME, fileName);
-      
-      const { data, error } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from(BUCKET_NAME)
         .upload(fileName, file);
       
-      console.log("Upload result:", data, error);
-      if (error) throw error;
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+        throw new Error("Upload failed: " + uploadError.message);
+      }
       
-      await supabase.from("products for Gorosei").insert({
+      setStatus("Saving to database...");
+      
+      // 2. Insert product with the storage path
+      const imagePath = uploadData?.path || fileName;
+      const { error: insertError } = await supabase.from("products for Gorosei").insert({
         Name: name,
         Price: FIXED_PRICE,
         size,
-        Image_url: data.path,
+        Image_url: imagePath,
         sold: false
       });
+      
+      if (insertError) {
+        console.error("Insert error:", insertError);
+        throw new Error("Database failed: " + insertError.message);
+      }
       
       setStatus("Done!");
       setName("");
