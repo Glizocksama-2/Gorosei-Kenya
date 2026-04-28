@@ -1,0 +1,4550 @@
+{
+  "description": "Free Public APIs - No Auth Required",
+  "source": "https://github.com/public-api-lists/public-api-lists",
+  "count": 343,
+  "categories": {
+    "Animals": [
+      {
+        "name": "Amazing Endemic Species",
+        "url": "https://aes.shenlu.me",
+        "description": "Amazing endemic species all over the world",
+        "cors": "Yes"
+      },
+      {
+        "name": "Cat Facts",
+        "url": "https://alexwohlbruck.github.io/cat-facts/",
+        "description": "Daily cat facts",
+        "cors": "No"
+      },
+      {
+        "name": "Cataas",
+        "url": "https://cataas.com/",
+        "description": "Cat as a service (cats pictures and gifs)",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Dog API",
+        "url": "https://dogapi.dog",
+        "description": "Fun facts on dog breeds and groups",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Dogs",
+        "url": "https://dog.ceo/dog-api/",
+        "description": "Based on the Stanford Dogs Dataset",
+        "cors": "Yes"
+      },
+      {
+        "name": "HTTP Dogs",
+        "url": "https://http.dog/",
+        "description": "Dogs for every HTTP status code",
+        "cors": "Unknown"
+      },
+      {
+        "name": "HTTPCat",
+        "url": "https://http.cat/",
+        "description": "Cat for every HTTP Status",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Movebank",
+        "url": "https://github.com/movebank/movebank-api-doc",
+        "description": "Movement and Migration data of animals",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Petfinder",
+        "url": "https://www.petfinder.com/developers/v2/docs/",
+        "description": "Information and images of dog breeds",
+        "cors": "Yes"
+      },
+      {
+        "name": "RandomDog",
+        "url": "https://random.dog/woof.json",
+        "description": "Random pictures of dogs",
+        "cors": "Yes"
+      },
+      {
+        "name": "RandomFox",
+        "url": "https://randomfox.ca/floof/",
+        "description": "Random pictures of foxes",
+        "cors": "No"
+      },
+      {
+        "name": "RescueGroups",
+        "url": "https://userguide.rescuegroups.org/display/APIDG/API+Developers+Guide+Home",
+        "description": "Adoption",
+        "cors": "Unknown"
+      }
+    ],
+    "Anime": [
+      {
+        "name": "AnimeNewsNetwork",
+        "url": "https://www.animenewsnetwork.com/encyclopedia/api.php",
+        "description": "Anime industry news",
+        "cors": "Yes"
+      },
+      {
+        "name": "AOT quotes",
+        "url": "https://attackontitanquotes.vercel.app/",
+        "description": "Attack on Titan Quotes API",
+        "cors": "Yes"
+      },
+      {
+        "name": "Jikan",
+        "url": "https://jikan.moe",
+        "description": "Unofficial MyAnimeList API",
+        "cors": "Yes"
+      },
+      {
+        "name": "Mangadex",
+        "url": "https://api.mangadex.org/docs/",
+        "description": "ad-free manga reader offering high-quality images",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Nekosia API",
+        "url": "https://nekosia.cat",
+        "description": "Anime API with cute random images",
+        "cors": "Unknown"
+      }
+    ],
+    "Art & Design": [
+      {
+        "name": "Metropolitan Museum of Art",
+        "url": "https://metmuseum.github.io/",
+        "description": "Art",
+        "cors": "Unknown"
+      }
+    ],
+    "Books": [
+      {
+        "name": "Harry Potter API",
+        "url": "https://github.com/fedeperin/potterapi",
+        "description": "API to get data from Harry Potter books, movies, characters and spells",
+        "cors": "Yes"
+      },
+      {
+        "name": "Open Library",
+        "url": "https://openlibrary.org/developers/api",
+        "description": "Books, book covers and related data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Penguin Publishing",
+        "url": "http://www.penguinrandomhouse.biz/webservices/rest/",
+        "description": "Books, book covers and related data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Rig Veda",
+        "url": "https://aninditabasu.github.io/indica/",
+        "description": "Gods and poets, their categories, and the verse meters, with the mandal and sukta number",
+        "cors": "Unknown"
+      }
+    ],
+    "Business": [
+      {
+        "name": "Domainsdb.info",
+        "url": "https://domainsdb.info/",
+        "description": "Registered Domain Names Search",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Favicon.im",
+        "url": "https://favicon.im",
+        "description": "Instantly fetch and display the favicon for any website",
+        "cors": "No"
+      },
+      {
+        "name": "Markbase",
+        "url": "https://markbase.co",
+        "description": "Search 14M+ USPTO trademarks with fuzzy search and autocomplete",
+        "cors": "Yes"
+      },
+      {
+        "name": "markerapi",
+        "url": "http://www.markerapi.com/",
+        "description": "Trademark Search",
+        "cors": "Unknown"
+      }
+    ],
+    "Calendar": [
+      {
+        "name": "Byabbe",
+        "url": "https://byabbe.se/on-this-day/#/default/get__month___day__events_json",
+        "description": "Seach histories from wikipedia for a particular day",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Czech Namedays Calendar",
+        "url": "http://svatky.adresa.info/",
+        "description": "Lookup for a name and returns nameday date",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Hebrew Calendar",
+        "url": "https://www.hebcal.com/home/developer-apis",
+        "description": "Convert between Gregorian and Hebrew, fetch Shabbat and Holiday times, etc",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Nager.Date",
+        "url": "https://date.nager.at",
+        "description": "Public holidays for more than 90 countries",
+        "cors": "No"
+      },
+      {
+        "name": "Non-working Days",
+        "url": "https://isdayoff.ru",
+        "description": "Simple API for checking working, non-working or short days for Russia, Ukraine, Belarus and Kazakhstan",
+        "cors": "Yes"
+      },
+      {
+        "name": "Non-Working Days ICS",
+        "url": "https://github.com/gadael/icsdb",
+        "description": "Database of ICS files for non working days",
+        "cors": "Unknown"
+      },
+      {
+        "name": "OpenHolidays API",
+        "url": "https://www.openholidaysapi.org/",
+        "description": "Public and school holidays for many countries via an open REST API",
+        "cors": "Yes"
+      },
+      {
+        "name": "Russian Calendar",
+        "url": "https://github.com/egno/work-calendar",
+        "description": "Check if a date is a Russian holiday or not",
+        "cors": "No"
+      },
+      {
+        "name": "TimeZones iCal Library",
+        "url": "https://tz.add-to-calendar-technology.com/",
+        "description": "Database of official time zones and corresponding iCal VTIMEZONE blocks",
+        "cors": "Unknown"
+      }
+    ],
+    "Cloud Storage & File Sharing": [
+      {
+        "name": "AnonFiles",
+        "url": "https://anonfiles.com/docs/api",
+        "description": "File Sharing and Storage",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Mega.nz",
+        "url": "https://mega.io/developers",
+        "description": "File Sharing And Storage",
+        "cors": "Unknown"
+      }
+    ],
+    "Cryptocurrency": [
+      {
+        "name": "Blockchain",
+        "url": "https://www.blockchain.info/api",
+        "description": "Bitcoin Payment, Wallet & Transaction Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "CoinDesk",
+        "url": "http://www.coindesk.com/api/",
+        "description": "Bitcoin Price Index",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Coinlore",
+        "url": "https://www.coinlore.com/cryptocurrency-data-api",
+        "description": "Cryptocurrencies prices, volume and more",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Coinpaprika",
+        "url": "https://api.coinpaprika.com",
+        "description": "Cryptocurrencies prices, volume and more",
+        "cors": "Yes"
+      },
+      {
+        "name": "CoinRanking",
+        "url": "https://docs.coinranking.com/",
+        "description": "Live Cryptocurrency data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "CryptoCompare",
+        "url": "https://www.cryptocompare.com/api#",
+        "description": "Cryptocurrencies Comparison",
+        "cors": "Unknown"
+      },
+      {
+        "name": "DexPaprika",
+        "url": "https://api.dexpaprika.com",
+        "description": "Free DEX and DeFi data — pools, tokens, OHLCV, and trades across all chains",
+        "cors": "Yes"
+      },
+      {
+        "name": "Gates.io",
+        "url": "https://www.gate.io/api2",
+        "description": "Blockchain Assets Exchange",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Gemini",
+        "url": "https://docs.gemini.com/rest-api/",
+        "description": "Cryptocurrencies Exchange",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Nexchange",
+        "url": "https://nexchange2.docs.apiary.io/",
+        "description": "Automated cryptocurrency exchange service",
+        "cors": "Yes"
+      }
+    ],
+    "Currency Exchange": [
+      {
+        "name": "Czech National Bank",
+        "url": "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.xml",
+        "description": "A collection of exchange rates",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Frankfurter",
+        "url": "https://www.frankfurter.app/docs",
+        "description": "Exchange rates, currency conversion and time series",
+        "cors": "Yes"
+      },
+      {
+        "name": "ratesapi",
+        "url": "https://ratesapi.io",
+        "description": "Free exchange rates and historical rates",
+        "cors": "Unknown"
+      }
+    ],
+    "Data Validation": [
+      {
+        "name": "languagelayer",
+        "url": "https://languagelayer.com",
+        "description": "Language detection",
+        "cors": "Unknown"
+      },
+      {
+        "name": "mailboxlayer",
+        "url": "https://mailboxlayer.com",
+        "description": "Email address validation",
+        "cors": "Unknown"
+      },
+      {
+        "name": "NumValidate",
+        "url": "https://numvalidate.com",
+        "description": "Open Source phone number validation",
+        "cors": "Unknown"
+      },
+      {
+        "name": "numverify",
+        "url": "https://numverify.com",
+        "description": "Phone number validation",
+        "cors": "Unknown"
+      },
+      {
+        "name": "PurgoMalum",
+        "url": "http://www.purgomalum.com",
+        "description": "Content validator against profanity & obscenity",
+        "cors": "Unknown"
+      },
+      {
+        "name": "vatlayer",
+        "url": "https://vatlayer.com",
+        "description": "VAT number validation",
+        "cors": "Unknown"
+      }
+    ],
+    "Development": [
+      {
+        "name": "24 Pull Requests",
+        "url": "https://24pullrequests.com/api",
+        "description": "Project to promote open source collaboration during December",
+        "cors": "No"
+      },
+      {
+        "name": "Abacus",
+        "url": "https://abacus.jasoncameron.dev",
+        "description": "Free and simple counting service. You can use it to track page hits and specific events",
+        "cors": "Yes"
+      },
+      {
+        "name": "addr.zone",
+        "url": "https://addr.zone",
+        "description": "IP Classification and Intelligence API. Detect Proxies, Datacenter, Malicious IPs, ...",
+        "cors": "Yes"
+      },
+      {
+        "name": "Agify.io",
+        "url": "https://agify.io",
+        "description": "Estimates the age from a first name",
+        "cors": "Yes"
+      },
+      {
+        "name": "APIs.guru",
+        "url": "https://apis.guru/api-doc/",
+        "description": "Wikipedia for Web APIs, OpenAPI/Swagger specs for public APIs",
+        "cors": "Unknown"
+      },
+      {
+        "name": "API Status Check",
+        "url": "https://apistatuscheck.com/api/status",
+        "description": "Real-time status monitoring for 270+ APIs and services",
+        "cors": "Yes"
+      },
+      {
+        "name": "ArulJohn.com",
+        "url": "https://api.aruljohn.com/ip/json",
+        "description": "A simple IP Address API in JSON",
+        "cors": "Yes"
+      },
+      {
+        "name": "CDNJS",
+        "url": "https://api.cdnjs.com/libraries/jquery",
+        "description": "Library info on CDNJS",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Corsfix",
+        "url": "https://corsfix.com",
+        "description": "CORS Proxy by Corsfix lets you instantly fetch any resource on the web and bypass CORS errors",
+        "cors": "Yes"
+      },
+      {
+        "name": "DigitalOcean Status",
+        "url": "https://status.digitalocean.com/api/v2",
+        "description": "Status of all DigitalOcean services",
+        "cors": "Unknown"
+      },
+      {
+        "name": "emptychair.dev",
+        "url": "https://emptychair.dev/api",
+        "description": "Free developer utility APIs: text, hash, JSON, random, time, regex",
+        "cors": "Yes"
+      },
+      {
+        "name": "ExtendsClass",
+        "url": "https://extendsclass.com/json-storage.html",
+        "description": "A simple JSON store API",
+        "cors": "Yes"
+      },
+      {
+        "name": "FontDownloader",
+        "url": "https://fontdownloader.org/#API",
+        "description": "A hassle free API for managing web fonts provided by Google Fonts",
+        "cors": "Yes"
+      },
+      {
+        "name": "Form2Channel",
+        "url": "https://form2channel.com/",
+        "description": "Send static html form submissions to Google Sheets, Email, Slack or Telegram",
+        "cors": "Yes"
+      },
+      {
+        "name": "Genderize.io",
+        "url": "https://genderize.io",
+        "description": "Estimates a gender from a first name",
+        "cors": "Yes"
+      },
+      {
+        "name": "GoQR",
+        "url": "http://goqr.me/api/",
+        "description": "Generate and decode / read QR code graphics",
+        "cors": "Unknown"
+      },
+      {
+        "name": "HTTP2.Pro",
+        "url": "https://http2.pro/doc/api",
+        "description": "Test endpoints for client and server HTTP/2 protocol support",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Image to Link",
+        "url": "https://www.contentful.com/developers/docs/references/images-api/",
+        "description": "Generate link from image(Integration developer utility APIs)",
+        "cors": "Yes"
+      },
+      {
+        "name": "Image-Charts",
+        "url": "https://www.image-charts.com/",
+        "description": "Generate charts, QR codes and graph images",
+        "cors": "Yes"
+      },
+      {
+        "name": "ipapi.is",
+        "url": "https://ipapi.is/developers.html",
+        "description": "Public IP Address API with company, ASN and hosting detection support",
+        "cors": "Yes"
+      },
+      {
+        "name": "IPGEO",
+        "url": "https://api.techniknews.net/ipgeo/[IP-Adress/Domain]",
+        "description": "Unlimited free IP Address API with useful information",
+        "cors": "Unknown"
+      },
+      {
+        "name": "IPify",
+        "url": "https://www.ipify.org/",
+        "description": "A simple IP Address API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "IPinfo",
+        "url": "https://ipinfo.io/developers",
+        "description": "Another simple IP Address API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "IPLocate.io",
+        "url": "https://www.iplocate.io/docs",
+        "description": "Fast, free, accurate IP geolocation and threat data (proxy/VPN/hosting detection) API",
+        "cors": "Yes"
+      },
+      {
+        "name": "JMESPath Free API",
+        "url": "https://noteapiconnector.com/jmespath-free-api",
+        "description": "Run JMESPath queries on JSON data for filtering, transforming, and extracting results",
+        "cors": "Yes"
+      },
+      {
+        "name": "jsDelivr",
+        "url": "https://github.com/jsdelivr/data.jsdelivr.com",
+        "description": "Package info and download stats on jsDelivr CDN",
+        "cors": "Yes"
+      },
+      {
+        "name": "JSON 2 JSONP",
+        "url": "https://json2jsonp.com/",
+        "description": "Convert JSON to JSONP (on-the-fly) for easy cross-domain data requests using client-side JavaScript",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Let's Validate",
+        "url": "https://github.com/letsvalidate/api",
+        "description": "Uncovers the technologies used on websites and URL to thumbnail",
+        "cors": "Unknown"
+      },
+      {
+        "name": "License-API",
+        "url": "https://github.com/cmccandless/license-api/blob/master/README.md",
+        "description": "Unofficial REST API for choosealicense.com",
+        "cors": "No"
+      },
+      {
+        "name": "Nationalize.io",
+        "url": "https://nationalize.io",
+        "description": "Estimate the nationality of a first name",
+        "cors": "Yes"
+      },
+      {
+        "name": "OOPSpam",
+        "url": "https://oopspam.com/",
+        "description": "Multiple spam filtering service",
+        "cors": "Yes"
+      },
+      {
+        "name": "PHPhub",
+        "url": "https://phphub.net/linter/",
+        "description": "Validate PHP code",
+        "cors": "Yes"
+      },
+      {
+        "name": "Public APIs",
+        "url": "https://github.com/davemachado/public-api",
+        "description": "A collective list of free JSON APIs for use in web development",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Pythonium",
+        "url": "https://pythonium.net/linter",
+        "description": "Validate Python code",
+        "cors": "Yes"
+      },
+      {
+        "name": "QR Tag",
+        "url": "http://qrtag.net/api/",
+        "description": "Create an easy to read QR code and URL shortener",
+        "cors": "Yes"
+      },
+      {
+        "name": "QuickChart",
+        "url": "https://quickchart.io/",
+        "description": "Generate chart and graph images",
+        "cors": "Yes"
+      },
+      {
+        "name": "ReqRes",
+        "url": "https://reqres.in/",
+        "description": "A hosted REST-API ready to respond to your AJAX requests",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Shadify",
+        "url": "https://github.com/cheatsnake/shadify",
+        "description": "Service for generating data and executing logic to create various games and puzzles",
+        "cors": "Yes"
+      },
+      {
+        "name": "SHOUTCLOUD",
+        "url": "http://shoutcloud.io/",
+        "description": "ALL-CAPS AS A SERVICE",
+        "cors": "Unknown"
+      },
+      {
+        "name": "SQLable",
+        "url": "https://sqlable.com/validator/",
+        "description": "Validate SQL query",
+        "cors": "Yes"
+      },
+      {
+        "name": "v.recipes DNS Accelerator",
+        "url": "https://v.recipes/dns/",
+        "description": "The Accelerator variant can be used to test & accelerate any DoH providers",
+        "cors": "No"
+      },
+      {
+        "name": "v.recipes Get IP",
+        "url": "https://v.recipes/get-ip",
+        "description": "A simple API to get information such as IP, ISP name, Location, etc. based on user request",
+        "cors": "No"
+      },
+      {
+        "name": "XMLable",
+        "url": "https://xmlable.com/validator/",
+        "description": "Validate XML",
+        "cors": "Yes"
+      },
+      {
+        "name": "Yamline",
+        "url": "https://yamline.com/k8s/",
+        "description": "Validate Kubernetes manifests",
+        "cors": "Yes"
+      }
+    ],
+    "Documents & Productivity": [
+      {
+        "name": "File.io",
+        "url": "https://www.file.io",
+        "description": "File Sharing",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Vector Express",
+        "url": "http://vector.express",
+        "description": "Free vector file converting API",
+        "cors": "Yes"
+      },
+      {
+        "name": "WakaTime",
+        "url": "https://wakatime.com/developers",
+        "description": "Automated time tracking leaderboards for programmers",
+        "cors": "Unknown"
+      }
+    ],
+    "Education": [
+      {
+        "name": "NationNode",
+        "url": "https://nationnode.vercel.app",
+        "description": "Used to fetch the specific details about a country",
+        "cors": "Yes"
+      }
+    ],
+    "Environment": [
+      {
+        "name": "UK Carbon Intensity",
+        "url": "https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v1-0-0",
+        "description": "The Official Carbon Intensity API for Great Britain developed by National Grid",
+        "cors": "Unknown"
+      },
+      {
+        "name": "ZipCheckup",
+        "url": "https://api.zipcheckup.com/v1",
+        "description": "U.S. drinking water quality data by ZIP code from EPA and 20+ federal sources",
+        "cors": "Yes"
+      }
+    ],
+    "Finance": [
+      {
+        "name": "Indian Bank Data API",
+        "url": "https://github.com/kaustubhk24/Indian-Banks-Data",
+        "description": "All Banks IFSC Code data,Search by IFSc or other details",
+        "cors": "Unknown"
+      },
+      {
+        "name": "KeepRule",
+        "url": "https://github.com/henu-wang/keeprule-api",
+        "description": "Investment principles and quotes from Buffett, Munger & more",
+        "cors": "Yes"
+      },
+      {
+        "name": "PredScope",
+        "url": "https://predscope.com/api/markets.json",
+        "description": "Free prediction market odds and analytics data from Polymarket",
+        "cors": "Yes"
+      },
+      {
+        "name": "Razorpay IFSC",
+        "url": "https://ifsc.razorpay.com/",
+        "description": "Indian Financial Systems Code (Bank Branch Codes)",
+        "cors": "Unknown"
+      },
+      {
+        "name": "ValueRay",
+        "url": "https://www.valueray.com/api",
+        "description": "Quantitative and sentiment data for stocks and ETFs",
+        "cors": "Yes"
+      }
+    ],
+    "Food & Drink": [
+      {
+        "name": "Open Brewery DB",
+        "url": "https://www.openbrewerydb.org",
+        "description": "Breweries, Cideries and Craft Beer Bottle Shops",
+        "cors": "Yes"
+      },
+      {
+        "name": "Open Food Facts",
+        "url": "https://world.openfoodfacts.org/data",
+        "description": "Food Products Database",
+        "cors": "Unknown"
+      },
+      {
+        "name": "PunkAPI",
+        "url": "https://github.com/alxiw/punkapi",
+        "description": "BrewDog's DIY Dog beer catalogue as an API",
+        "cors": "Yes"
+      },
+      {
+        "name": "TacoFancy",
+        "url": "https://github.com/evz/tacofancy-api",
+        "description": "Community-driven taco database",
+        "cors": "Unknown"
+      },
+      {
+        "name": "The Report of the Week",
+        "url": "https://github.com/andyklimczak/TheReportOfTheWeek-API",
+        "description": "Food & Drink Reviews",
+        "cors": "Unknown"
+      },
+      {
+        "name": "WhiskyHunter",
+        "url": "https://whiskyhunter.net/api/",
+        "description": "Past online whisky auctions statistical data",
+        "cors": "Unknown"
+      }
+    ],
+    "Games & Comics": [
+      {
+        "name": "AmiiboAPI",
+        "url": "http://www.amiiboapi.com/",
+        "description": "Amiibo Information",
+        "cors": "Yes"
+      },
+      {
+        "name": "Blue Archive",
+        "url": "https://github.com/arufars/api-blue-archive",
+        "description": "Blue Archive Game data API Characters",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Chuck Norris Database",
+        "url": "http://www.icndb.com/api/",
+        "description": "Jokes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Comic Vine",
+        "url": "https://comicvine.gamespot.com/api/documentation",
+        "description": "Comics",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Cross Universe",
+        "url": "https://crossuniverse.net/apiDocs",
+        "description": "Cross Universe Card Data",
+        "cors": "Yes"
+      },
+      {
+        "name": "Deck of Cards",
+        "url": "http://deckofcardsapi.com/",
+        "description": "Deck of Cards",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Dota 2",
+        "url": "https://docs.opendota.com/",
+        "description": "Provides information about Player stats , Match stats, Rankings for Dota 2",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Dungeons and Dragons",
+        "url": "http://www.dnd5eapi.co/",
+        "description": "Reference for 5th edition spells, classes, monsters, and more",
+        "cors": "No"
+      },
+      {
+        "name": "Eight Ball API",
+        "url": "https://eightballapi.com/",
+        "description": "Fortune-telling API with random, sentiment-biased, and multi-language responses",
+        "cors": "Yes"
+      },
+      {
+        "name": "Final Fantasy XIV",
+        "url": "https://xivapi.com/",
+        "description": "Final Fantasy XIV Game data API",
+        "cors": "Yes"
+      },
+      {
+        "name": "JokeAPI",
+        "url": "https://sv443.net/jokeapi/v2/",
+        "description": "Programming, Miscellaneous and Dark Jokes",
+        "cors": "Yes"
+      },
+      {
+        "name": "Jokes",
+        "url": "https://github.com/15Dkatz/official_joke_api",
+        "description": "Programming and general jokes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Jservice",
+        "url": "http://jservice.io",
+        "description": "Jeopardy Question Database",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Magic The Gathering",
+        "url": "http://magicthegathering.io/",
+        "description": "Magic The Gathering Game Information",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Trivia",
+        "url": "https://opentdb.com/api_config.php",
+        "description": "Trivia Questions",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Pokéapi",
+        "url": "https://pokeapi.co",
+        "description": "Pokémon Information",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Pokémon TCG",
+        "url": "https://pokemontcg.io",
+        "description": "Pokémon TCG Information",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Pokémon-3D-api",
+        "url": "https://documenter.getpostman.com/view/29725199/2sAYX8KMU8",
+        "description": "3D Pokémon models for ThreeJS",
+        "cors": "Yes"
+      },
+      {
+        "name": "Rick and Morty",
+        "url": "https://rickandmortyapi.com",
+        "description": "All the Rick and Morty information, including images",
+        "cors": "Yes"
+      },
+      {
+        "name": "Scoresaber",
+        "url": "https://scoresaber.com/api/documentation",
+        "description": "Scoresaber Stats",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Scryfall",
+        "url": "https://scryfall.com/docs/api",
+        "description": "Magic: The Gathering database",
+        "cors": "Yes"
+      },
+      {
+        "name": "TCGdex",
+        "url": "https://www.tcgdex.dev/",
+        "description": "A Multilanguage Pokémon TCG Database with Cards Pictures and most of the informations contained on the cards",
+        "cors": "Yes"
+      },
+      {
+        "name": "Traveller Map",
+        "url": "https://travellermap.com/doc/api",
+        "description": "[Traveller TTRPG](https://www.mongoosepublishing.com/collections/traveller-rpgs) map world, sub sector and sector information in json, PDF and other formats",
+        "cors": "No"
+      },
+      {
+        "name": "xkcd",
+        "url": "https://xkcd.com/json.html",
+        "description": "Retrieve xkcd comics as JSON",
+        "cors": "No"
+      }
+    ],
+    "Geocoding": [
+      {
+        "name": "administrative-divisons-db",
+        "url": "https://github.com/kamikazechaser/administrative-divisions-db",
+        "description": "Get all administrative divisions of a country",
+        "cors": "Yes"
+      },
+      {
+        "name": "adresse.data.gouv.fr",
+        "url": "https://adresse.data.gouv.fr",
+        "description": "Address database of France, geocoding and reverse",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Airtel IP",
+        "url": "https://aether.epias.ltd/ip2country/1.1.1.1/?full=true",
+        "description": "IP Geolocation API. Collecting data from multiple sources",
+        "cors": "Unknown"
+      },
+      {
+        "name": "bng2latlong",
+        "url": "https://www.getthedata.com/bng2latlong",
+        "description": "Convert British OSGB36 easting and northing (British National Grid) to WGS84 latitude and longitude",
+        "cors": "Yes"
+      },
+      {
+        "name": "CitySDK",
+        "url": "http://www.citysdk.eu/citysdk-toolkit/",
+        "description": "Open APIs for select European cities",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Country",
+        "url": "http://country.is/",
+        "description": "Get your visitors' country from their IP",
+        "cors": "Yes"
+      },
+      {
+        "name": "FreeGeoIP",
+        "url": "https://freegeoip.app/",
+        "description": "Free geo ip information, no registration required. 15k/hour rate limit",
+        "cors": "Yes"
+      },
+      {
+        "name": "GeoApi",
+        "url": "https://api.gouv.fr/api/geoapi.html",
+        "description": "French geographical data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Geocode.xyz",
+        "url": "https://geocode.xyz/",
+        "description": "Provides worldwide forward/reverse geocoding, batch geocoding and geoparsing",
+        "cors": "Unknown"
+      },
+      {
+        "name": "GeoJS",
+        "url": "https://geojs.io/",
+        "description": "IP geolocation with ChatOps integration",
+        "cors": "Yes"
+      },
+      {
+        "name": "geoPlugin",
+        "url": "https://www.geoplugin.com",
+        "description": "IP geolocation and currency conversion",
+        "cors": "Yes"
+      },
+      {
+        "name": "HelloSalut",
+        "url": "https://www.fourtonfish.com/hellosalut/hello/",
+        "description": "Get hello translation following user language",
+        "cors": "Unknown"
+      },
+      {
+        "name": "IP 2 Country",
+        "url": "https://ip2country.info",
+        "description": "Map an IP to a country",
+        "cors": "Unknown"
+      },
+      {
+        "name": "IP Address Details",
+        "url": "https://ipinfo.io/",
+        "description": "Find geolocation with ip address",
+        "cors": "Unknown"
+      },
+      {
+        "name": "IP Location",
+        "url": "http://ip-api.com/",
+        "description": "Find location with ip address",
+        "cors": "Unknown"
+      },
+      {
+        "name": "IP Vigilante",
+        "url": "https://www.ipvigilante.com/",
+        "description": "Free IP Geolocation API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "ipapi.co IP Location",
+        "url": "https://ipapi.co/",
+        "description": "Find IP address location information",
+        "cors": "Unknown"
+      },
+      {
+        "name": "IPGeolocationAPI.com",
+        "url": "https://ipgeolocationapi.com/",
+        "description": "Locate your visitors by IP with country details",
+        "cors": "Yes"
+      },
+      {
+        "name": "ISO 3166 Updates API",
+        "url": "https://iso3166-updates.vercel.app/api",
+        "description": "Access all of the current and historical ISO 3166 changes data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "ISO 3166-2 API",
+        "url": "https://iso3166-2-api.vercel.app/api",
+        "description": "Access all of the world's subdivision/regional ISO 3166-2 codes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Mexico",
+        "url": "https://github.com/IcaliaLabs/sepomex",
+        "description": "Mexico RESTful zip codes API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "OpenPLZ API",
+        "url": "https://www.openplzapi.org/",
+        "description": "A public street and postal code directory for Austria, Germany, Liechtenstein and Switzerland via an open REST API",
+        "cors": "Yes"
+      },
+      {
+        "name": "PostcodeData.nl",
+        "url": "http://api.postcodedata.nl/v1/postcode/?postcode=1211EP&streetnumber=60&ref=domeinnaam.nl&type=json",
+        "description": "Provide geolocation data based on postcode for Dutch addresses",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Postcodes.io",
+        "url": "https://postcodes.io",
+        "description": "Postcode lookup & Geolocation for the UK",
+        "cors": "Yes"
+      },
+      {
+        "name": "REST Countries",
+        "url": "https://restcountries.com",
+        "description": "Get information about countries via a RESTful API",
+        "cors": "Yes"
+      },
+      {
+        "name": "ViaCep",
+        "url": "https://viacep.com.br",
+        "description": "Brazil RESTful zip codes API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Zippopotam",
+        "url": "http://www.zippopotam.us",
+        "description": "Get information about place such as country, city, state, etc",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Ziptastic",
+        "url": "https://ziptasticapi.com/",
+        "description": "Get the country, state, and city of any US zip-code",
+        "cors": "Unknown"
+      }
+    ],
+    "Government": [
+      {
+        "name": "Autobahn API",
+        "url": "https://autobahn.api.bund.dev",
+        "description": "Information about Germany's federal highways like construction sites and traffic jams",
+        "cors": "Unknown"
+      },
+      {
+        "name": "BCLaws",
+        "url": "http://www.bclaws.ca/civix/template/complete/api/index.html",
+        "description": "Access to the laws of British Columbia",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Census.gov",
+        "url": "https://www.census.gov/data/developers/data-sets.html",
+        "description": "The US Census Bureau provides various APIs and data sets on demographics and businesses",
+        "cors": "Unknown"
+      },
+      {
+        "name": "City, Bologna Opendata",
+        "url": "https://dati.comune.bologna.it",
+        "description": "Bologna(IT) City Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "City, Prague Opendata",
+        "url": "http://opendata.praha.eu/en",
+        "description": "Prague(CZ) City Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Colorado Data Engine",
+        "url": "http://codataengine.org/",
+        "description": "Formatted and geolocated Colorado public data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Colorado Information Marketplace",
+        "url": "https://data.colorado.gov/",
+        "description": "Colorado State Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "District of Columbia Open Data",
+        "url": "http://opendata.dc.gov/pages/using-apis",
+        "description": "Contains D.C. government public datasets, including crime, GIS, financial data, and so on",
+        "cors": "Unknown"
+      },
+      {
+        "name": "EPA",
+        "url": "https://developer.epa.gov/category/apis/",
+        "description": "Web services and data sets from the US Environmental Protection Agency",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Federal Register",
+        "url": "https://www.federalregister.gov/reader-aids/developer-resources",
+        "description": "The Daily Journal of the United States Government",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Food Standards Agency",
+        "url": "http://ratings.food.gov.uk/open-data/en-GB",
+        "description": "UK food hygiene rating data API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, Australia",
+        "url": "https://www.data.gov.au/",
+        "description": "Australian Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, Belgium",
+        "url": "https://data.gov.be/",
+        "description": "Belgium Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, Canada",
+        "url": "http://open.canada.ca/en",
+        "description": "Canadian Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, Italy",
+        "url": "https://www.dati.gov.it/",
+        "description": "Italy Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, New Zealand",
+        "url": "https://www.data.govt.nz/",
+        "description": "New Zealand Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, Poland",
+        "url": "https://dane.gov.pl/en",
+        "description": "Poland Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, Romania",
+        "url": "http://data.gov.ro/",
+        "description": "Romania Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, Taiwan",
+        "url": "https://data.gov.tw/",
+        "description": "Taiwan Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Government, USA",
+        "url": "https://www.data.gov/",
+        "description": "United States Government Open Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Represent by Open North",
+        "url": "https://represent.opennorth.ca/",
+        "description": "Find Canadian Government Representatives",
+        "cors": "Unknown"
+      },
+      {
+        "name": "USAspending.gov",
+        "url": "https://api.usaspending.gov/",
+        "description": "US federal spending data",
+        "cors": "Unknown"
+      }
+    ],
+    "Health": [
+      {
+        "name": "Diabetes",
+        "url": "http://predictbgl.com/api/",
+        "description": "Logging and retrieving diabetes information",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Healthcare.gov",
+        "url": "https://www.healthcare.gov/developers/",
+        "description": "Educational content about the US Health Insurance Marketplace",
+        "cors": "Unknown"
+      },
+      {
+        "name": "ICD-10 Codes",
+        "url": "https://clinicaltables.nlm.nih.gov/apidoc/icd10cm/v3/doc.html",
+        "description": "List of all healthcare diagnosis codes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "NPPES",
+        "url": "https://npiregistry.cms.hhs.gov/registry/help-api",
+        "description": "National Plan & Provider Enumeration System, info on healthcare providers registered in US",
+        "cors": "Unknown"
+      },
+      {
+        "name": "openFDA",
+        "url": "https://open.fda.gov",
+        "description": "Public FDA data about drugs, devices and foods",
+        "cors": "Unknown"
+      }
+    ],
+    "Jobs": [
+      {
+        "name": "DevITjobs",
+        "url": "https://devitjobs.us/api/jobsLight",
+        "description": "Jobs for software developers",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Himalayas",
+        "url": "https://himalayas.app/api",
+        "description": "Remote job board and search engine",
+        "cors": "Yes"
+      },
+      {
+        "name": "Jobicy",
+        "url": "https://jobicy.com/jobs-rss-feed",
+        "description": "The latest remote job listings from a diverse range of industries and companies",
+        "cors": "Yes"
+      },
+      {
+        "name": "Open Skills",
+        "url": "https://github.com/workforce-data-initiative/skills-api/wiki/API-Overview",
+        "description": "Job titles, skills and related jobs data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Search.gov Jobs",
+        "url": "https://search.gov/developer/jobs.html",
+        "description": "Tap into a list of current jobs openings with the United States government",
+        "cors": "Unknown"
+      }
+    ],
+    "Machine Learning": [
+      {
+        "name": "Deepcode",
+        "url": "https://www.deepcode.ai/docs/Overview%252FOverview",
+        "description": "AI for code review",
+        "cors": "Unknown"
+      }
+    ],
+    "Music": [
+      {
+        "name": "Bandsintown",
+        "url": "https://app.swaggerhub.com/apis/Bandsintown/PublicAPI/3.0.1",
+        "description": "Music Events",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Genrenator",
+        "url": "https://binaryjazz.us/genrenator-api/",
+        "description": "Music genre generator",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Lyrics.ovh",
+        "url": "http://docs.lyricsovh.apiary.io/",
+        "description": "Simple API to retrieve the lyrics of a song",
+        "cors": "Unknown"
+      },
+      {
+        "name": "MusicBrainz",
+        "url": "https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2",
+        "description": "Music",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Openwhyd",
+        "url": "https://openwhyd.github.io/openwhyd/API",
+        "description": "Download curated playlists of streaming tracks (YouTube, SoundCloud, etc...)",
+        "cors": "No"
+      },
+      {
+        "name": "SearchLy",
+        "url": "https://www.github.com/AlbertSuarez/searchly",
+        "description": "Similarities search based on song lyrics",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Songsterr",
+        "url": "https://www.songsterr.com/a/wa/api/",
+        "description": "Provides guitar, bass and drums tabs and chords",
+        "cors": "Unknown"
+      }
+    ],
+    "News": [
+      {
+        "name": "Chronicling America",
+        "url": "http://chroniclingamerica.loc.gov/about/api/",
+        "description": "Provides access to millions of pages of historic US newspapers from the Library of Congress",
+        "cors": "Unknown"
+      },
+      {
+        "name": "OkSurf",
+        "url": "https://ok.surf/",
+        "description": "Free Google News with OG Images",
+        "cors": "Yes"
+      }
+    ],
+    "Open Data": [
+      {
+        "name": "18F",
+        "url": "http://18f.github.io/API-All-the-X/",
+        "description": "Unofficial US Federal Government API Development",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Archive.org",
+        "url": "https://archive.readme.io/docs",
+        "description": "The Internet Archive",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Callook.info",
+        "url": "https://callook.info",
+        "description": "United States ham radio callsigns",
+        "cors": "Unknown"
+      },
+      {
+        "name": "fonoApi",
+        "url": "https://fonoapi.freshpixl.com/",
+        "description": "Mobile Device Description",
+        "cors": "Unknown"
+      },
+      {
+        "name": "French Address Search",
+        "url": "https://geo.api.gouv.fr/adresse",
+        "description": "Address search via the French Government",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Fruits",
+        "url": "https://fruits-api.netlify.app/graphql",
+        "description": "Information of fruit trees of the world",
+        "cors": "No"
+      },
+      {
+        "name": "Microlink.io",
+        "url": "https://microlink.io",
+        "description": "Extract structured data from any website",
+        "cors": "Yes"
+      },
+      {
+        "name": "Quandl",
+        "url": "https://www.quandl.com/",
+        "description": "Stock Market Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Teleport",
+        "url": "https://developers.teleport.org/",
+        "description": "Quality of Life Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Universities List",
+        "url": "https://github.com/Hipo/university-domains-list",
+        "description": "University names, countries and domains",
+        "cors": "Unknown"
+      },
+      {
+        "name": "University of Oslo",
+        "url": "https://data.uio.no/",
+        "description": "Courses, lecture videos, detailed information for courses etc. for the University of Oslo (Norway)",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Wikipedia",
+        "url": "https://www.mediawiki.org/wiki/API:Main_page",
+        "description": "Mediawiki Encyclopedia",
+        "cors": "Unknown"
+      }
+    ],
+    "Open Source Projects": [
+      {
+        "name": "Drupal.org",
+        "url": "https://www.drupal.org/drupalorg/docs/api",
+        "description": "Drupal.org",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Evil Insult Generator",
+        "url": "https://evilinsult.com/api",
+        "description": "Evil Insults",
+        "cors": "Yes"
+      },
+      {
+        "name": "The Odin Project",
+        "url": "https://github.com/theodinproject",
+        "description": "theodinproject.com",
+        "cors": "Yes"
+      }
+    ],
+    "Patent": [
+      {
+        "name": "USPTO",
+        "url": "https://www.uspto.gov/learning-and-resources/open-data-and-mobility",
+        "description": "USA patent api services",
+        "cors": "Unknown"
+      }
+    ],
+    "Personality": [
+      {
+        "name": "Advice Slip",
+        "url": "http://api.adviceslip.com/",
+        "description": "Generate random advice slips",
+        "cors": "Unknown"
+      },
+      {
+        "name": "chucknorris.io",
+        "url": "https://api.chucknorris.io",
+        "description": "JSON API for hand curated Chuck Norris jokes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Echoes",
+        "url": "https://echoes.soferity.com",
+        "description": "Quotes From Around The World",
+        "cors": "Yes"
+      },
+      {
+        "name": "Forismatic",
+        "url": "http://forismatic.com/en/api/",
+        "description": "Inspirational Quotes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Hindi Quotes",
+        "url": "https://hindi-quotes.vercel.app/",
+        "description": "Get random Hindi quotes of different categories.",
+        "cors": "Yes"
+      },
+      {
+        "name": "icanhazdadjoke",
+        "url": "https://icanhazdadjoke.com/api",
+        "description": "The largest selection of dad jokes on the internet",
+        "cors": "Unknown"
+      },
+      {
+        "name": "kanye.rest",
+        "url": "https://kanye.rest",
+        "description": "REST API for random Kanye West quotes",
+        "cors": "Yes"
+      },
+      {
+        "name": "Meme",
+        "url": "https://github.com/D3vd/Meme_Api",
+        "description": "JSON API for a random meme scraped from reddit",
+        "cors": "Unknown"
+      },
+      {
+        "name": "NaMoMemes",
+        "url": "https://github.com/theIYD/NaMoMemes",
+        "description": "Memes on Narendra Modi",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Programming Quotes",
+        "url": "https://programming-quotesapi.vercel.app/",
+        "description": "An api which generates quotes from programmers",
+        "cors": "Yes"
+      },
+      {
+        "name": "Quote Garden",
+        "url": "https://pprathameshmore.github.io/QuoteGarden/",
+        "description": "REST API for more than 5000 famous quotes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Quoterism",
+        "url": "https://www.quoterism.com/developer",
+        "description": "Inspirational Quotes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Quotes on Design",
+        "url": "https://quotesondesign.com/api/",
+        "description": "Inspirational Quotes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Riddles API",
+        "url": "https://riddles-api.vercel.app/",
+        "description": "Get random riddles on every API call.",
+        "cors": "Yes"
+      },
+      {
+        "name": "Traitify",
+        "url": "https://app.traitify.com/developer",
+        "description": "Assess, collect and analyze Personality",
+        "cors": "Unknown"
+      },
+      {
+        "name": "tronalddump.io",
+        "url": "https://www.tronalddump.io",
+        "description": "Api & web archive for the things Donald Trump has said",
+        "cors": "Unknown"
+      }
+    ],
+    "Photography": [
+      {
+        "name": "Lorem Picsum",
+        "url": "https://picsum.photos/",
+        "description": "Images from Unsplash",
+        "cors": "Unknown"
+      },
+      {
+        "name": "PlaceKitten",
+        "url": "https://placekitten.com/",
+        "description": "Resizable kitten placeholder images",
+        "cors": "Unknown"
+      },
+      {
+        "name": "ScreenShotLayer",
+        "url": "https://screenshotlayer.com",
+        "description": "URL 2 Image",
+        "cors": "Unknown"
+      }
+    ],
+    "Science & Math": [
+      {
+        "name": "arcsecond.io",
+        "url": "https://api.arcsecond.io/",
+        "description": "Multiple astronomy data sources",
+        "cors": "Unknown"
+      },
+      {
+        "name": "GBIF",
+        "url": "http://api.gbif.org/v1/",
+        "description": "Global Biodiversity Information Facility",
+        "cors": "Yes"
+      },
+      {
+        "name": "iDigBio",
+        "url": "https://github.com/idigbio/idigbio-search-api/wiki",
+        "description": "Access millions of museum specimens from organizations around the world",
+        "cors": "Unknown"
+      },
+      {
+        "name": "ITIS",
+        "url": "https://www.itis.gov/ws_description.html",
+        "description": "Integrated Taxonomic Information System",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Launch Library",
+        "url": "https://launchlibrary.net/docs/1.3/api.html",
+        "description": "Upcoming Space Launches",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Minor Planet Center",
+        "url": "http://www.asterank.com/mpc",
+        "description": "Asterank.com Information",
+        "cors": "Unknown"
+      },
+      {
+        "name": "NASA",
+        "url": "https://api.nasa.gov",
+        "description": "NASA data, including imagery",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Newton",
+        "url": "https://newton.now.sh/",
+        "description": "Symbolic and Arithmetic Math Calculator",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Notify",
+        "url": "http://open-notify.org/Open-Notify-API/",
+        "description": "ISS astronauts, current location, etc",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Science Framework",
+        "url": "https://developer.osf.io",
+        "description": "Repository and archive for study designs, research materials, data, manuscripts, etc",
+        "cors": "Unknown"
+      },
+      {
+        "name": "SHARE",
+        "url": "https://share.osf.io/api/v2/",
+        "description": "A free, open, dataset about research and scholarly activities",
+        "cors": "Unknown"
+      },
+      {
+        "name": "SpaceX",
+        "url": "https://github.com/r-spacex/SpaceX-API",
+        "description": "Company, vehicle, launchpad and launch data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Sunrise and Sunset",
+        "url": "https://sunrise-sunset.org/api",
+        "description": "Sunset and sunrise times for a given latitude and longitude",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Unusual Units Converter",
+        "url": "https://api.unusualunits.com/",
+        "description": "Unit converter for standard and uncommon units",
+        "cors": "Yes"
+      },
+      {
+        "name": "USGS Water Services",
+        "url": "https://waterservices.usgs.gov/",
+        "description": "Water quality and level info for rivers and lakes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "World Bank",
+        "url": "https://datahelpdesk.worldbank.org/knowledgebase/topics/125589",
+        "description": "World Data",
+        "cors": "Unknown"
+      }
+    ],
+    "Security": [
+      {
+        "name": "Blooms",
+        "url": "https://blooms-production.up.railway.app/api",
+        "description": "Distribute keys once for serverless applications",
+        "cors": "No"
+      },
+      {
+        "name": "FishFish",
+        "url": "https://fishfish.gg/",
+        "description": "A volunteer cybersecurity project focused on providing resources and services that improve safety across Discord",
+        "cors": "Unknown"
+      },
+      {
+        "name": "National Vulnerability Database",
+        "url": "https://nvd.nist.gov/vuln/Data-Feeds/JSON-feed-changelog",
+        "description": "U.S. National Vulnerability Database",
+        "cors": "Unknown"
+      },
+      {
+        "name": "UK Police",
+        "url": "https://data.police.uk/docs/",
+        "description": "UK Police data",
+        "cors": "Unknown"
+      }
+    ],
+    "Social": [
+      {
+        "name": "HackerNews",
+        "url": "https://github.com/HackerNews/API",
+        "description": "Social news for CS and entrepreneurship",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open Collective",
+        "url": "https://docs.opencollective.com/help/developers/api",
+        "description": "Get Open Collective data",
+        "cors": "Unknown"
+      }
+    ],
+    "Sports & Fitness": [
+      {
+        "name": "balldontlie",
+        "url": "https://balldontlie.io",
+        "description": "Ballldontlie provides access to stats data from the NBA",
+        "cors": "Yes"
+      },
+      {
+        "name": "Cartola FC",
+        "url": "https://github.com/wgenial/cartrolandofc",
+        "description": "The Cartola FC API serves to check the partial points of your team",
+        "cors": "Unknown"
+      },
+      {
+        "name": "City Bikes",
+        "url": "http://api.citybik.es/v2/",
+        "description": "City Bikes around the world",
+        "cors": "Unknown"
+      },
+      {
+        "name": "F1 API",
+        "url": "https://f1api.dev",
+        "description": "Free F1 data in real time with his own NPM package",
+        "cors": "Unknown"
+      },
+      {
+        "name": "F1 Data API",
+        "url": "https://github.com/Jacobbrewer1/f1-data",
+        "description": "Formula 1 data API that delivers data from the F1 Archive dating back to 1950",
+        "cors": "No"
+      },
+      {
+        "name": "Football (Soccer) Videos",
+        "url": "https://www.scorebat.com/video-api/",
+        "description": "Embed codes for goals and highlights from Premier League, Bundesliga, Serie A and many more",
+        "cors": "Yes"
+      },
+      {
+        "name": "Football-Data.org",
+        "url": "http://api.football-data.org/index",
+        "description": "Football Data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Golf-Data",
+        "url": "https://github.com/Jacobbrewer1/golf-data-docs",
+        "description": "Golf data API with golf course, club and hole information",
+        "cors": "No"
+      },
+      {
+        "name": "NBA Stats",
+        "url": "https://any-api.com/nba_com/nba_com/docs/API_Description",
+        "description": "Current and historical NBA Statistics",
+        "cors": "Unknown"
+      },
+      {
+        "name": "NHL Records and Stats",
+        "url": "https://gitlab.com/dword4/nhlapi",
+        "description": "NHL historical data and statistics",
+        "cors": "Unknown"
+      }
+    ],
+    "Test Data": [
+      {
+        "name": "Bacon Ipsum",
+        "url": "https://baconipsum.com/json-api/",
+        "description": "A Meatier Lorem Ipsum Generator",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Beeceptor's CRUD APIs",
+        "url": "https://beeceptor.com/crud-api/?ref=public-api-lists",
+        "description": "Free stateful CRUD APIs",
+        "cors": "Yes"
+      },
+      {
+        "name": "Dicebear Avatars",
+        "url": "https://avatars.dicebear.com/",
+        "description": "Generate random pixel-art avatars",
+        "cors": "No"
+      },
+      {
+        "name": "JSONing",
+        "url": "https://jsoning.com/api/",
+        "description": "Mock data for prototyping",
+        "cors": "Yes"
+      },
+      {
+        "name": "JSONPlaceholder",
+        "url": "http://jsonplaceholder.typicode.com/",
+        "description": "Fake data for testing and prototyping",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Lorem API",
+        "url": "https://lorem-api.com/",
+        "description": "The Ultimate Lorem Ipsum Generator",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Micro-Jaymock",
+        "url": "https://micro-jaymock.now.sh/",
+        "description": "Tiny API mocking microservice for generating fake JSON data",
+        "cors": "No"
+      },
+      {
+        "name": "Mockae",
+        "url": "https://mockae.com/",
+        "description": "Fake REST API powered by Lua",
+        "cors": "Yes"
+      },
+      {
+        "name": "Mockerito",
+        "url": "https://mockerito.com/?ref=public-api-lists",
+        "description": "Free mock REST APIs across different business domains",
+        "cors": "Yes"
+      },
+      {
+        "name": "RandomUser",
+        "url": "https://randomuser.me",
+        "description": "Generates random user data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "RoboHash",
+        "url": "https://robohash.org/",
+        "description": "Generate random robot/alien avatars",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Short Id",
+        "url": "https://github.com/aguedo/idgen",
+        "description": "Generate unique short Ids",
+        "cors": "Yes"
+      },
+      {
+        "name": "Softwium",
+        "url": "https://softwium.com/fake-api/",
+        "description": "Test data for testing and prototyping",
+        "cors": "Yes"
+      },
+      {
+        "name": "This Person Does not Exist",
+        "url": "https://thispersondoesnotexist.com",
+        "description": "Generates real-life faces of people who do not exist",
+        "cors": "Unknown"
+      },
+      {
+        "name": "UI Names",
+        "url": "https://github.com/thm/uinames",
+        "description": "Generate random fake names",
+        "cors": "Unknown"
+      },
+      {
+        "name": "UUID Generator",
+        "url": "https://www.uuidtools.com/docs",
+        "description": "Generate UUIDs",
+        "cors": "No"
+      },
+      {
+        "name": "Yes No",
+        "url": "https://yesno.wtf/api",
+        "description": "Generate yes or no randomly",
+        "cors": "Unknown"
+      }
+    ],
+    "Text Analysis": [
+      {
+        "name": "Gawrshdarn",
+        "url": "https://api.gawrshdarn.com",
+        "description": "Profanity detection, filtering, and playful word replacement",
+        "cors": "Yes"
+      },
+      {
+        "name": "Yomi",
+        "url": "https://github.com/ookii-tsuki/yomi",
+        "description": "Japanese tokenizer and morphological analysis web API",
+        "cors": "Yes"
+      }
+    ],
+    "Tracking": [
+      {
+        "name": "Let's Count",
+        "url": "https://letscountapi.com",
+        "description": "Create, retrieve, update, increment, and decrement counters",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Postmon",
+        "url": "http://postmon.com.br",
+        "description": "An API to query Brazilian ZIP codes and orders easily, quickly and free",
+        "cors": "Unknown"
+      }
+    ],
+    "Transportation": [
+      {
+        "name": "ADS-B Exchange",
+        "url": "https://www.adsbexchange.com/data/",
+        "description": "Access real-time and historical data of any and all airborne aircraft",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Aero Key, India",
+        "url": "https://aerokey-api.vercel.app/",
+        "description": "Indian Domestic Airport Data",
+        "cors": "No"
+      },
+      {
+        "name": "ArcNautical Vessel Check",
+        "url": "https://github.com/SaltyTaro/vessel-check-api",
+        "description": "Vessel sanctions screening, ownership transparency scoring, and vetting intelligence",
+        "cors": "Yes"
+      },
+      {
+        "name": "Community Transit",
+        "url": "https://github.com/transitland/transitland-datastore/blob/master/README.md#api-endpoints",
+        "description": "Transitland API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Icelandic APIs",
+        "url": "http://docs.apis.is/",
+        "description": "Open APIs that deliver services in or regarding Iceland",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Metro Lisboa",
+        "url": "http://app.metrolisboa.pt/status/getLinhas.php",
+        "description": "Delays in subway lines",
+        "cors": "No"
+      },
+      {
+        "name": "Open Charge Map",
+        "url": "https://openchargemap.org/site/develop/api",
+        "description": "Global public registry of electric vehicle charging locations",
+        "cors": "Unknown"
+      },
+      {
+        "name": "OVAPI Netherlands Transport",
+        "url": "https://github.com/skywave/KV78Turbo-OVAPI/wiki",
+        "description": "OVAPI, country-wide public transport",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Swiss Public Transport",
+        "url": "https://transport.opendata.ch/",
+        "description": "Swiss public transport API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "TransitLand",
+        "url": "https://transit.land/documentation/datastore/api-endpoints.html",
+        "description": "Transit Aggregation",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Atlanta, US",
+        "url": "http://www.itsmarta.com/app-developer-resources.aspx",
+        "description": "Marta",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Boston, US",
+        "url": "https://mbta.com/developers/v3-api",
+        "description": "MBTA API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Budapest, Hungary",
+        "url": "https://bkkfutar.docs.apiary.io",
+        "description": "Budapest public transport API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Chicago, US",
+        "url": "http://www.transitchicago.com/developers/",
+        "description": "CTA",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Czech Republic",
+        "url": "https://www.chaps.cz/eng/products/idos-internet",
+        "description": "Czech transport API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Finland",
+        "url": "https://digitransit.fi/en/developers/",
+        "description": "Finnish transport API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Grenoble, France",
+        "url": "https://data.mobilites-m.fr/donnees",
+        "description": "Grenoble public transport",
+        "cors": "No"
+      },
+      {
+        "name": "Transport for Ottawa, Canada",
+        "url": "http://www.octranspo.com/index.php/developers",
+        "description": "OC Transpo next bus arrival API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Paris, France",
+        "url": "http://data.ratp.fr/api/v1/console/datasets/1.0/search/",
+        "description": "RATP Open Data API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for Philadelphia, US",
+        "url": "http://www3.septa.org/hackathon/",
+        "description": "SEPTA APIs",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Transport for United States",
+        "url": "http://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf",
+        "description": "NextBus API",
+        "cors": "Unknown"
+      }
+    ],
+    "URL Shorteners": [
+      {
+        "name": "urlfy",
+        "url": "https://urlfy.org/api-doc",
+        "description": "A simple and fast URL shortening service",
+        "cors": "Yes"
+      }
+    ],
+    "Vehicle": [
+      {
+        "name": "Brazilian Vehicles and Prices",
+        "url": "https://deividfortuna.github.io/fipe/",
+        "description": "Vehicles information from Fundação Instituto de Pesquisas Econômicas - Fipe",
+        "cors": "Unknown"
+      },
+      {
+        "name": "NHTSA",
+        "url": "https://vpic.nhtsa.dot.gov/api/",
+        "description": "NHTSA Product Information Catalog and Vehicle Listing",
+        "cors": "Unknown"
+      }
+    ],
+    "Video": [
+      {
+        "name": "An API of Ice And Fire",
+        "url": "https://anapioficeandfire.com/",
+        "description": "Game Of Thrones API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Bob's Burgers API",
+        "url": "https://bobsburgersapi.com/",
+        "description": "The Bob's Burgers API contains data for hundreds of characters, episodes, running gags, and images from the show",
+        "cors": "Yes"
+      },
+      {
+        "name": "Breaking Bad Quotes",
+        "url": "https://github.com/shevabam/breaking-bad-quotes",
+        "description": "Some Breaking Bad quotes",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Czech Television",
+        "url": "http://www.ceskatelevize.cz/xml/tv-program/",
+        "description": "TV programme of Czech TV",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Dune",
+        "url": "https://github.com/ywalia01/dune-api",
+        "description": "Dune API",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Owen Wilson Wow",
+        "url": "https://owen-wilson-wow-api.onrender.com/",
+        "description": "API for actor Owen Wilson's \"wow\" exclamations in movies",
+        "cors": "Yes"
+      },
+      {
+        "name": "Potter DB",
+        "url": "https://potterdb.com",
+        "description": "Data from the Harry Potter Universe: Characters, Movies, Books, Spells and Potions",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Ron Swanson Quotes",
+        "url": "https://github.com/jamesseanwright/ron-swanson-quotes#ron-swanson-quotes-api",
+        "description": "Television",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Shoof Aflam",
+        "url": "https://shoofaflam.tv/api-docs/",
+        "description": "Arabic streaming guide — search 14,000+ movies/series, get platform availability across 18 services in the Arab world",
+        "cors": "Yes"
+      },
+      {
+        "name": "Shrek Quotes",
+        "url": "https://shrekofficial.com",
+        "description": "Shrek quotes and more, but mainly quotes",
+        "cors": "Yes"
+      },
+      {
+        "name": "South Park Quotes",
+        "url": "https://github.com/Thatskat/southpark-quotes-api",
+        "description": "A pretty simple API to let you retrieve some of the best quotes from South Park, mmkay!",
+        "cors": "Yes"
+      },
+      {
+        "name": "STAPI",
+        "url": "https://stapi.co",
+        "description": "Information on all things Star Trek",
+        "cors": "Yes"
+      },
+      {
+        "name": "TVMaze",
+        "url": "http://www.tvmaze.com/api",
+        "description": "TV Show Data",
+        "cors": "Unknown"
+      }
+    ],
+    "Weather": [
+      {
+        "name": "7Timer!",
+        "url": "http://www.7timer.info/doc.php?lang=en",
+        "description": "Weather, especially for Astroweather",
+        "cors": "Unknown"
+      },
+      {
+        "name": "DWD API",
+        "url": "https://dwd.api.bund.dev/",
+        "description": "API of the German Weather Service (DWD): weather data, data from specific weather stations, warnings (local, coast, sea, alps)",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Meteorologisk Institutt",
+        "url": "https://api.met.no/weatherapi/documentation",
+        "description": "Weather and climate data",
+        "cors": "Unknown"
+      },
+      {
+        "name": "National Weather Service API",
+        "url": "https://www.weather.gov/documentation/services-web-api",
+        "description": "Weather forecasts and alerts from the US National Weather Service",
+        "cors": "Unknown"
+      },
+      {
+        "name": "ODWeather",
+        "url": "http://api.oceandrivers.com/static/docs.html",
+        "description": "Weather and weather webcams",
+        "cors": "Unknown"
+      },
+      {
+        "name": "Open-Meteo",
+        "url": "https://open-meteo.com/",
+        "description": "Global weather forecast API for non-commercial use",
+        "cors": "Yes"
+      },
+      {
+        "name": "Weather Hacks",
+        "url": "http://weather.livedoor.com/weather_hacks/",
+        "description": "Weather, for Japan",
+        "cors": "No"
+      }
+    ]
+  },
+  "all": [
+    {
+      "name": "Amazing Endemic Species",
+      "url": "https://aes.shenlu.me",
+      "description": "Amazing endemic species all over the world",
+      "category": "Animals",
+      "cors": "Yes"
+    },
+    {
+      "name": "Cat Facts",
+      "url": "https://alexwohlbruck.github.io/cat-facts/",
+      "description": "Daily cat facts",
+      "category": "Animals",
+      "cors": "No"
+    },
+    {
+      "name": "Cataas",
+      "url": "https://cataas.com/",
+      "description": "Cat as a service (cats pictures and gifs)",
+      "category": "Animals",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Dog API",
+      "url": "https://dogapi.dog",
+      "description": "Fun facts on dog breeds and groups",
+      "category": "Animals",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Dogs",
+      "url": "https://dog.ceo/dog-api/",
+      "description": "Based on the Stanford Dogs Dataset",
+      "category": "Animals",
+      "cors": "Yes"
+    },
+    {
+      "name": "HTTP Dogs",
+      "url": "https://http.dog/",
+      "description": "Dogs for every HTTP status code",
+      "category": "Animals",
+      "cors": "Unknown"
+    },
+    {
+      "name": "HTTPCat",
+      "url": "https://http.cat/",
+      "description": "Cat for every HTTP Status",
+      "category": "Animals",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Movebank",
+      "url": "https://github.com/movebank/movebank-api-doc",
+      "description": "Movement and Migration data of animals",
+      "category": "Animals",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Petfinder",
+      "url": "https://www.petfinder.com/developers/v2/docs/",
+      "description": "Information and images of dog breeds",
+      "category": "Animals",
+      "cors": "Yes"
+    },
+    {
+      "name": "RandomDog",
+      "url": "https://random.dog/woof.json",
+      "description": "Random pictures of dogs",
+      "category": "Animals",
+      "cors": "Yes"
+    },
+    {
+      "name": "RandomFox",
+      "url": "https://randomfox.ca/floof/",
+      "description": "Random pictures of foxes",
+      "category": "Animals",
+      "cors": "No"
+    },
+    {
+      "name": "RescueGroups",
+      "url": "https://userguide.rescuegroups.org/display/APIDG/API+Developers+Guide+Home",
+      "description": "Adoption",
+      "category": "Animals",
+      "cors": "Unknown"
+    },
+    {
+      "name": "AnimeNewsNetwork",
+      "url": "https://www.animenewsnetwork.com/encyclopedia/api.php",
+      "description": "Anime industry news",
+      "category": "Anime",
+      "cors": "Yes"
+    },
+    {
+      "name": "AOT quotes",
+      "url": "https://attackontitanquotes.vercel.app/",
+      "description": "Attack on Titan Quotes API",
+      "category": "Anime",
+      "cors": "Yes"
+    },
+    {
+      "name": "Jikan",
+      "url": "https://jikan.moe",
+      "description": "Unofficial MyAnimeList API",
+      "category": "Anime",
+      "cors": "Yes"
+    },
+    {
+      "name": "Mangadex",
+      "url": "https://api.mangadex.org/docs/",
+      "description": "ad-free manga reader offering high-quality images",
+      "category": "Anime",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Nekosia API",
+      "url": "https://nekosia.cat",
+      "description": "Anime API with cute random images",
+      "category": "Anime",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Metropolitan Museum of Art",
+      "url": "https://metmuseum.github.io/",
+      "description": "Art",
+      "category": "Art & Design",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Harry Potter API",
+      "url": "https://github.com/fedeperin/potterapi",
+      "description": "API to get data from Harry Potter books, movies, characters and spells",
+      "category": "Books",
+      "cors": "Yes"
+    },
+    {
+      "name": "Open Library",
+      "url": "https://openlibrary.org/developers/api",
+      "description": "Books, book covers and related data",
+      "category": "Books",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Penguin Publishing",
+      "url": "http://www.penguinrandomhouse.biz/webservices/rest/",
+      "description": "Books, book covers and related data",
+      "category": "Books",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Rig Veda",
+      "url": "https://aninditabasu.github.io/indica/",
+      "description": "Gods and poets, their categories, and the verse meters, with the mandal and sukta number",
+      "category": "Books",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Domainsdb.info",
+      "url": "https://domainsdb.info/",
+      "description": "Registered Domain Names Search",
+      "category": "Business",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Favicon.im",
+      "url": "https://favicon.im",
+      "description": "Instantly fetch and display the favicon for any website",
+      "category": "Business",
+      "cors": "No"
+    },
+    {
+      "name": "Markbase",
+      "url": "https://markbase.co",
+      "description": "Search 14M+ USPTO trademarks with fuzzy search and autocomplete",
+      "category": "Business",
+      "cors": "Yes"
+    },
+    {
+      "name": "markerapi",
+      "url": "http://www.markerapi.com/",
+      "description": "Trademark Search",
+      "category": "Business",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Byabbe",
+      "url": "https://byabbe.se/on-this-day/#/default/get__month___day__events_json",
+      "description": "Seach histories from wikipedia for a particular day",
+      "category": "Calendar",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Czech Namedays Calendar",
+      "url": "http://svatky.adresa.info/",
+      "description": "Lookup for a name and returns nameday date",
+      "category": "Calendar",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Hebrew Calendar",
+      "url": "https://www.hebcal.com/home/developer-apis",
+      "description": "Convert between Gregorian and Hebrew, fetch Shabbat and Holiday times, etc",
+      "category": "Calendar",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Nager.Date",
+      "url": "https://date.nager.at",
+      "description": "Public holidays for more than 90 countries",
+      "category": "Calendar",
+      "cors": "No"
+    },
+    {
+      "name": "Non-working Days",
+      "url": "https://isdayoff.ru",
+      "description": "Simple API for checking working, non-working or short days for Russia, Ukraine, Belarus and Kazakhstan",
+      "category": "Calendar",
+      "cors": "Yes"
+    },
+    {
+      "name": "Non-Working Days ICS",
+      "url": "https://github.com/gadael/icsdb",
+      "description": "Database of ICS files for non working days",
+      "category": "Calendar",
+      "cors": "Unknown"
+    },
+    {
+      "name": "OpenHolidays API",
+      "url": "https://www.openholidaysapi.org/",
+      "description": "Public and school holidays for many countries via an open REST API",
+      "category": "Calendar",
+      "cors": "Yes"
+    },
+    {
+      "name": "Russian Calendar",
+      "url": "https://github.com/egno/work-calendar",
+      "description": "Check if a date is a Russian holiday or not",
+      "category": "Calendar",
+      "cors": "No"
+    },
+    {
+      "name": "TimeZones iCal Library",
+      "url": "https://tz.add-to-calendar-technology.com/",
+      "description": "Database of official time zones and corresponding iCal VTIMEZONE blocks",
+      "category": "Calendar",
+      "cors": "Unknown"
+    },
+    {
+      "name": "AnonFiles",
+      "url": "https://anonfiles.com/docs/api",
+      "description": "File Sharing and Storage",
+      "category": "Cloud Storage & File Sharing",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Mega.nz",
+      "url": "https://mega.io/developers",
+      "description": "File Sharing And Storage",
+      "category": "Cloud Storage & File Sharing",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Blockchain",
+      "url": "https://www.blockchain.info/api",
+      "description": "Bitcoin Payment, Wallet & Transaction Data",
+      "category": "Cryptocurrency",
+      "cors": "Unknown"
+    },
+    {
+      "name": "CoinDesk",
+      "url": "http://www.coindesk.com/api/",
+      "description": "Bitcoin Price Index",
+      "category": "Cryptocurrency",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Coinlore",
+      "url": "https://www.coinlore.com/cryptocurrency-data-api",
+      "description": "Cryptocurrencies prices, volume and more",
+      "category": "Cryptocurrency",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Coinpaprika",
+      "url": "https://api.coinpaprika.com",
+      "description": "Cryptocurrencies prices, volume and more",
+      "category": "Cryptocurrency",
+      "cors": "Yes"
+    },
+    {
+      "name": "CoinRanking",
+      "url": "https://docs.coinranking.com/",
+      "description": "Live Cryptocurrency data",
+      "category": "Cryptocurrency",
+      "cors": "Unknown"
+    },
+    {
+      "name": "CryptoCompare",
+      "url": "https://www.cryptocompare.com/api#",
+      "description": "Cryptocurrencies Comparison",
+      "category": "Cryptocurrency",
+      "cors": "Unknown"
+    },
+    {
+      "name": "DexPaprika",
+      "url": "https://api.dexpaprika.com",
+      "description": "Free DEX and DeFi data — pools, tokens, OHLCV, and trades across all chains",
+      "category": "Cryptocurrency",
+      "cors": "Yes"
+    },
+    {
+      "name": "Gates.io",
+      "url": "https://www.gate.io/api2",
+      "description": "Blockchain Assets Exchange",
+      "category": "Cryptocurrency",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Gemini",
+      "url": "https://docs.gemini.com/rest-api/",
+      "description": "Cryptocurrencies Exchange",
+      "category": "Cryptocurrency",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Nexchange",
+      "url": "https://nexchange2.docs.apiary.io/",
+      "description": "Automated cryptocurrency exchange service",
+      "category": "Cryptocurrency",
+      "cors": "Yes"
+    },
+    {
+      "name": "Czech National Bank",
+      "url": "https://www.cnb.cz/cs/financni_trhy/devizovy_trh/kurzy_devizoveho_trhu/denni_kurz.xml",
+      "description": "A collection of exchange rates",
+      "category": "Currency Exchange",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Frankfurter",
+      "url": "https://www.frankfurter.app/docs",
+      "description": "Exchange rates, currency conversion and time series",
+      "category": "Currency Exchange",
+      "cors": "Yes"
+    },
+    {
+      "name": "ratesapi",
+      "url": "https://ratesapi.io",
+      "description": "Free exchange rates and historical rates",
+      "category": "Currency Exchange",
+      "cors": "Unknown"
+    },
+    {
+      "name": "languagelayer",
+      "url": "https://languagelayer.com",
+      "description": "Language detection",
+      "category": "Data Validation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "mailboxlayer",
+      "url": "https://mailboxlayer.com",
+      "description": "Email address validation",
+      "category": "Data Validation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "NumValidate",
+      "url": "https://numvalidate.com",
+      "description": "Open Source phone number validation",
+      "category": "Data Validation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "numverify",
+      "url": "https://numverify.com",
+      "description": "Phone number validation",
+      "category": "Data Validation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "PurgoMalum",
+      "url": "http://www.purgomalum.com",
+      "description": "Content validator against profanity & obscenity",
+      "category": "Data Validation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "vatlayer",
+      "url": "https://vatlayer.com",
+      "description": "VAT number validation",
+      "category": "Data Validation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "24 Pull Requests",
+      "url": "https://24pullrequests.com/api",
+      "description": "Project to promote open source collaboration during December",
+      "category": "Development",
+      "cors": "No"
+    },
+    {
+      "name": "Abacus",
+      "url": "https://abacus.jasoncameron.dev",
+      "description": "Free and simple counting service. You can use it to track page hits and specific events",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "addr.zone",
+      "url": "https://addr.zone",
+      "description": "IP Classification and Intelligence API. Detect Proxies, Datacenter, Malicious IPs, ...",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "Agify.io",
+      "url": "https://agify.io",
+      "description": "Estimates the age from a first name",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "APIs.guru",
+      "url": "https://apis.guru/api-doc/",
+      "description": "Wikipedia for Web APIs, OpenAPI/Swagger specs for public APIs",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "API Status Check",
+      "url": "https://apistatuscheck.com/api/status",
+      "description": "Real-time status monitoring for 270+ APIs and services",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "ArulJohn.com",
+      "url": "https://api.aruljohn.com/ip/json",
+      "description": "A simple IP Address API in JSON",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "CDNJS",
+      "url": "https://api.cdnjs.com/libraries/jquery",
+      "description": "Library info on CDNJS",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Corsfix",
+      "url": "https://corsfix.com",
+      "description": "CORS Proxy by Corsfix lets you instantly fetch any resource on the web and bypass CORS errors",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "DigitalOcean Status",
+      "url": "https://status.digitalocean.com/api/v2",
+      "description": "Status of all DigitalOcean services",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "emptychair.dev",
+      "url": "https://emptychair.dev/api",
+      "description": "Free developer utility APIs: text, hash, JSON, random, time, regex",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "ExtendsClass",
+      "url": "https://extendsclass.com/json-storage.html",
+      "description": "A simple JSON store API",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "FontDownloader",
+      "url": "https://fontdownloader.org/#API",
+      "description": "A hassle free API for managing web fonts provided by Google Fonts",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "Form2Channel",
+      "url": "https://form2channel.com/",
+      "description": "Send static html form submissions to Google Sheets, Email, Slack or Telegram",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "Genderize.io",
+      "url": "https://genderize.io",
+      "description": "Estimates a gender from a first name",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "GoQR",
+      "url": "http://goqr.me/api/",
+      "description": "Generate and decode / read QR code graphics",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "HTTP2.Pro",
+      "url": "https://http2.pro/doc/api",
+      "description": "Test endpoints for client and server HTTP/2 protocol support",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Image to Link",
+      "url": "https://www.contentful.com/developers/docs/references/images-api/",
+      "description": "Generate link from image(Integration developer utility APIs)",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "Image-Charts",
+      "url": "https://www.image-charts.com/",
+      "description": "Generate charts, QR codes and graph images",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "ipapi.is",
+      "url": "https://ipapi.is/developers.html",
+      "description": "Public IP Address API with company, ASN and hosting detection support",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "IPGEO",
+      "url": "https://api.techniknews.net/ipgeo/[IP-Adress/Domain]",
+      "description": "Unlimited free IP Address API with useful information",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "IPify",
+      "url": "https://www.ipify.org/",
+      "description": "A simple IP Address API",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "IPinfo",
+      "url": "https://ipinfo.io/developers",
+      "description": "Another simple IP Address API",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "IPLocate.io",
+      "url": "https://www.iplocate.io/docs",
+      "description": "Fast, free, accurate IP geolocation and threat data (proxy/VPN/hosting detection) API",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "JMESPath Free API",
+      "url": "https://noteapiconnector.com/jmespath-free-api",
+      "description": "Run JMESPath queries on JSON data for filtering, transforming, and extracting results",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "jsDelivr",
+      "url": "https://github.com/jsdelivr/data.jsdelivr.com",
+      "description": "Package info and download stats on jsDelivr CDN",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "JSON 2 JSONP",
+      "url": "https://json2jsonp.com/",
+      "description": "Convert JSON to JSONP (on-the-fly) for easy cross-domain data requests using client-side JavaScript",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Let's Validate",
+      "url": "https://github.com/letsvalidate/api",
+      "description": "Uncovers the technologies used on websites and URL to thumbnail",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "License-API",
+      "url": "https://github.com/cmccandless/license-api/blob/master/README.md",
+      "description": "Unofficial REST API for choosealicense.com",
+      "category": "Development",
+      "cors": "No"
+    },
+    {
+      "name": "Nationalize.io",
+      "url": "https://nationalize.io",
+      "description": "Estimate the nationality of a first name",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "OOPSpam",
+      "url": "https://oopspam.com/",
+      "description": "Multiple spam filtering service",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "PHPhub",
+      "url": "https://phphub.net/linter/",
+      "description": "Validate PHP code",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "Public APIs",
+      "url": "https://github.com/davemachado/public-api",
+      "description": "A collective list of free JSON APIs for use in web development",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Pythonium",
+      "url": "https://pythonium.net/linter",
+      "description": "Validate Python code",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "QR Tag",
+      "url": "http://qrtag.net/api/",
+      "description": "Create an easy to read QR code and URL shortener",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "QuickChart",
+      "url": "https://quickchart.io/",
+      "description": "Generate chart and graph images",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "ReqRes",
+      "url": "https://reqres.in/",
+      "description": "A hosted REST-API ready to respond to your AJAX requests",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Shadify",
+      "url": "https://github.com/cheatsnake/shadify",
+      "description": "Service for generating data and executing logic to create various games and puzzles",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "SHOUTCLOUD",
+      "url": "http://shoutcloud.io/",
+      "description": "ALL-CAPS AS A SERVICE",
+      "category": "Development",
+      "cors": "Unknown"
+    },
+    {
+      "name": "SQLable",
+      "url": "https://sqlable.com/validator/",
+      "description": "Validate SQL query",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "v.recipes DNS Accelerator",
+      "url": "https://v.recipes/dns/",
+      "description": "The Accelerator variant can be used to test & accelerate any DoH providers",
+      "category": "Development",
+      "cors": "No"
+    },
+    {
+      "name": "v.recipes Get IP",
+      "url": "https://v.recipes/get-ip",
+      "description": "A simple API to get information such as IP, ISP name, Location, etc. based on user request",
+      "category": "Development",
+      "cors": "No"
+    },
+    {
+      "name": "XMLable",
+      "url": "https://xmlable.com/validator/",
+      "description": "Validate XML",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "Yamline",
+      "url": "https://yamline.com/k8s/",
+      "description": "Validate Kubernetes manifests",
+      "category": "Development",
+      "cors": "Yes"
+    },
+    {
+      "name": "File.io",
+      "url": "https://www.file.io",
+      "description": "File Sharing",
+      "category": "Documents & Productivity",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Vector Express",
+      "url": "http://vector.express",
+      "description": "Free vector file converting API",
+      "category": "Documents & Productivity",
+      "cors": "Yes"
+    },
+    {
+      "name": "WakaTime",
+      "url": "https://wakatime.com/developers",
+      "description": "Automated time tracking leaderboards for programmers",
+      "category": "Documents & Productivity",
+      "cors": "Unknown"
+    },
+    {
+      "name": "NationNode",
+      "url": "https://nationnode.vercel.app",
+      "description": "Used to fetch the specific details about a country",
+      "category": "Education",
+      "cors": "Yes"
+    },
+    {
+      "name": "UK Carbon Intensity",
+      "url": "https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v1-0-0",
+      "description": "The Official Carbon Intensity API for Great Britain developed by National Grid",
+      "category": "Environment",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ZipCheckup",
+      "url": "https://api.zipcheckup.com/v1",
+      "description": "U.S. drinking water quality data by ZIP code from EPA and 20+ federal sources",
+      "category": "Environment",
+      "cors": "Yes"
+    },
+    {
+      "name": "Indian Bank Data API",
+      "url": "https://github.com/kaustubhk24/Indian-Banks-Data",
+      "description": "All Banks IFSC Code data,Search by IFSc or other details",
+      "category": "Finance",
+      "cors": "Unknown"
+    },
+    {
+      "name": "KeepRule",
+      "url": "https://github.com/henu-wang/keeprule-api",
+      "description": "Investment principles and quotes from Buffett, Munger & more",
+      "category": "Finance",
+      "cors": "Yes"
+    },
+    {
+      "name": "PredScope",
+      "url": "https://predscope.com/api/markets.json",
+      "description": "Free prediction market odds and analytics data from Polymarket",
+      "category": "Finance",
+      "cors": "Yes"
+    },
+    {
+      "name": "Razorpay IFSC",
+      "url": "https://ifsc.razorpay.com/",
+      "description": "Indian Financial Systems Code (Bank Branch Codes)",
+      "category": "Finance",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ValueRay",
+      "url": "https://www.valueray.com/api",
+      "description": "Quantitative and sentiment data for stocks and ETFs",
+      "category": "Finance",
+      "cors": "Yes"
+    },
+    {
+      "name": "Open Brewery DB",
+      "url": "https://www.openbrewerydb.org",
+      "description": "Breweries, Cideries and Craft Beer Bottle Shops",
+      "category": "Food & Drink",
+      "cors": "Yes"
+    },
+    {
+      "name": "Open Food Facts",
+      "url": "https://world.openfoodfacts.org/data",
+      "description": "Food Products Database",
+      "category": "Food & Drink",
+      "cors": "Unknown"
+    },
+    {
+      "name": "PunkAPI",
+      "url": "https://github.com/alxiw/punkapi",
+      "description": "BrewDog's DIY Dog beer catalogue as an API",
+      "category": "Food & Drink",
+      "cors": "Yes"
+    },
+    {
+      "name": "TacoFancy",
+      "url": "https://github.com/evz/tacofancy-api",
+      "description": "Community-driven taco database",
+      "category": "Food & Drink",
+      "cors": "Unknown"
+    },
+    {
+      "name": "The Report of the Week",
+      "url": "https://github.com/andyklimczak/TheReportOfTheWeek-API",
+      "description": "Food & Drink Reviews",
+      "category": "Food & Drink",
+      "cors": "Unknown"
+    },
+    {
+      "name": "WhiskyHunter",
+      "url": "https://whiskyhunter.net/api/",
+      "description": "Past online whisky auctions statistical data",
+      "category": "Food & Drink",
+      "cors": "Unknown"
+    },
+    {
+      "name": "AmiiboAPI",
+      "url": "http://www.amiiboapi.com/",
+      "description": "Amiibo Information",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "Blue Archive",
+      "url": "https://github.com/arufars/api-blue-archive",
+      "description": "Blue Archive Game data API Characters",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Chuck Norris Database",
+      "url": "http://www.icndb.com/api/",
+      "description": "Jokes",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Comic Vine",
+      "url": "https://comicvine.gamespot.com/api/documentation",
+      "description": "Comics",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Cross Universe",
+      "url": "https://crossuniverse.net/apiDocs",
+      "description": "Cross Universe Card Data",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "Deck of Cards",
+      "url": "http://deckofcardsapi.com/",
+      "description": "Deck of Cards",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Dota 2",
+      "url": "https://docs.opendota.com/",
+      "description": "Provides information about Player stats , Match stats, Rankings for Dota 2",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Dungeons and Dragons",
+      "url": "http://www.dnd5eapi.co/",
+      "description": "Reference for 5th edition spells, classes, monsters, and more",
+      "category": "Games & Comics",
+      "cors": "No"
+    },
+    {
+      "name": "Eight Ball API",
+      "url": "https://eightballapi.com/",
+      "description": "Fortune-telling API with random, sentiment-biased, and multi-language responses",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "Final Fantasy XIV",
+      "url": "https://xivapi.com/",
+      "description": "Final Fantasy XIV Game data API",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "JokeAPI",
+      "url": "https://sv443.net/jokeapi/v2/",
+      "description": "Programming, Miscellaneous and Dark Jokes",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "Jokes",
+      "url": "https://github.com/15Dkatz/official_joke_api",
+      "description": "Programming and general jokes",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Jservice",
+      "url": "http://jservice.io",
+      "description": "Jeopardy Question Database",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Magic The Gathering",
+      "url": "http://magicthegathering.io/",
+      "description": "Magic The Gathering Game Information",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Trivia",
+      "url": "https://opentdb.com/api_config.php",
+      "description": "Trivia Questions",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Pokéapi",
+      "url": "https://pokeapi.co",
+      "description": "Pokémon Information",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Pokémon TCG",
+      "url": "https://pokemontcg.io",
+      "description": "Pokémon TCG Information",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Pokémon-3D-api",
+      "url": "https://documenter.getpostman.com/view/29725199/2sAYX8KMU8",
+      "description": "3D Pokémon models for ThreeJS",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "Rick and Morty",
+      "url": "https://rickandmortyapi.com",
+      "description": "All the Rick and Morty information, including images",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "Scoresaber",
+      "url": "https://scoresaber.com/api/documentation",
+      "description": "Scoresaber Stats",
+      "category": "Games & Comics",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Scryfall",
+      "url": "https://scryfall.com/docs/api",
+      "description": "Magic: The Gathering database",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "TCGdex",
+      "url": "https://www.tcgdex.dev/",
+      "description": "A Multilanguage Pokémon TCG Database with Cards Pictures and most of the informations contained on the cards",
+      "category": "Games & Comics",
+      "cors": "Yes"
+    },
+    {
+      "name": "Traveller Map",
+      "url": "https://travellermap.com/doc/api",
+      "description": "[Traveller TTRPG](https://www.mongoosepublishing.com/collections/traveller-rpgs) map world, sub sector and sector information in json, PDF and other formats",
+      "category": "Games & Comics",
+      "cors": "No"
+    },
+    {
+      "name": "xkcd",
+      "url": "https://xkcd.com/json.html",
+      "description": "Retrieve xkcd comics as JSON",
+      "category": "Games & Comics",
+      "cors": "No"
+    },
+    {
+      "name": "administrative-divisons-db",
+      "url": "https://github.com/kamikazechaser/administrative-divisions-db",
+      "description": "Get all administrative divisions of a country",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "adresse.data.gouv.fr",
+      "url": "https://adresse.data.gouv.fr",
+      "description": "Address database of France, geocoding and reverse",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Airtel IP",
+      "url": "https://aether.epias.ltd/ip2country/1.1.1.1/?full=true",
+      "description": "IP Geolocation API. Collecting data from multiple sources",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "bng2latlong",
+      "url": "https://www.getthedata.com/bng2latlong",
+      "description": "Convert British OSGB36 easting and northing (British National Grid) to WGS84 latitude and longitude",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "CitySDK",
+      "url": "http://www.citysdk.eu/citysdk-toolkit/",
+      "description": "Open APIs for select European cities",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Country",
+      "url": "http://country.is/",
+      "description": "Get your visitors' country from their IP",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "FreeGeoIP",
+      "url": "https://freegeoip.app/",
+      "description": "Free geo ip information, no registration required. 15k/hour rate limit",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "GeoApi",
+      "url": "https://api.gouv.fr/api/geoapi.html",
+      "description": "French geographical data",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Geocode.xyz",
+      "url": "https://geocode.xyz/",
+      "description": "Provides worldwide forward/reverse geocoding, batch geocoding and geoparsing",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "GeoJS",
+      "url": "https://geojs.io/",
+      "description": "IP geolocation with ChatOps integration",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "geoPlugin",
+      "url": "https://www.geoplugin.com",
+      "description": "IP geolocation and currency conversion",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "HelloSalut",
+      "url": "https://www.fourtonfish.com/hellosalut/hello/",
+      "description": "Get hello translation following user language",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "IP 2 Country",
+      "url": "https://ip2country.info",
+      "description": "Map an IP to a country",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "IP Address Details",
+      "url": "https://ipinfo.io/",
+      "description": "Find geolocation with ip address",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "IP Location",
+      "url": "http://ip-api.com/",
+      "description": "Find location with ip address",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "IP Vigilante",
+      "url": "https://www.ipvigilante.com/",
+      "description": "Free IP Geolocation API",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ipapi.co IP Location",
+      "url": "https://ipapi.co/",
+      "description": "Find IP address location information",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "IPGeolocationAPI.com",
+      "url": "https://ipgeolocationapi.com/",
+      "description": "Locate your visitors by IP with country details",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "ISO 3166 Updates API",
+      "url": "https://iso3166-updates.vercel.app/api",
+      "description": "Access all of the current and historical ISO 3166 changes data",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ISO 3166-2 API",
+      "url": "https://iso3166-2-api.vercel.app/api",
+      "description": "Access all of the world's subdivision/regional ISO 3166-2 codes",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Mexico",
+      "url": "https://github.com/IcaliaLabs/sepomex",
+      "description": "Mexico RESTful zip codes API",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "OpenPLZ API",
+      "url": "https://www.openplzapi.org/",
+      "description": "A public street and postal code directory for Austria, Germany, Liechtenstein and Switzerland via an open REST API",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "PostcodeData.nl",
+      "url": "http://api.postcodedata.nl/v1/postcode/?postcode=1211EP&streetnumber=60&ref=domeinnaam.nl&type=json",
+      "description": "Provide geolocation data based on postcode for Dutch addresses",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Postcodes.io",
+      "url": "https://postcodes.io",
+      "description": "Postcode lookup & Geolocation for the UK",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "REST Countries",
+      "url": "https://restcountries.com",
+      "description": "Get information about countries via a RESTful API",
+      "category": "Geocoding",
+      "cors": "Yes"
+    },
+    {
+      "name": "ViaCep",
+      "url": "https://viacep.com.br",
+      "description": "Brazil RESTful zip codes API",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Zippopotam",
+      "url": "http://www.zippopotam.us",
+      "description": "Get information about place such as country, city, state, etc",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Ziptastic",
+      "url": "https://ziptasticapi.com/",
+      "description": "Get the country, state, and city of any US zip-code",
+      "category": "Geocoding",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Autobahn API",
+      "url": "https://autobahn.api.bund.dev",
+      "description": "Information about Germany's federal highways like construction sites and traffic jams",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "BCLaws",
+      "url": "http://www.bclaws.ca/civix/template/complete/api/index.html",
+      "description": "Access to the laws of British Columbia",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Census.gov",
+      "url": "https://www.census.gov/data/developers/data-sets.html",
+      "description": "The US Census Bureau provides various APIs and data sets on demographics and businesses",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "City, Bologna Opendata",
+      "url": "https://dati.comune.bologna.it",
+      "description": "Bologna(IT) City Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "City, Prague Opendata",
+      "url": "http://opendata.praha.eu/en",
+      "description": "Prague(CZ) City Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Colorado Data Engine",
+      "url": "http://codataengine.org/",
+      "description": "Formatted and geolocated Colorado public data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Colorado Information Marketplace",
+      "url": "https://data.colorado.gov/",
+      "description": "Colorado State Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "District of Columbia Open Data",
+      "url": "http://opendata.dc.gov/pages/using-apis",
+      "description": "Contains D.C. government public datasets, including crime, GIS, financial data, and so on",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "EPA",
+      "url": "https://developer.epa.gov/category/apis/",
+      "description": "Web services and data sets from the US Environmental Protection Agency",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Federal Register",
+      "url": "https://www.federalregister.gov/reader-aids/developer-resources",
+      "description": "The Daily Journal of the United States Government",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Food Standards Agency",
+      "url": "http://ratings.food.gov.uk/open-data/en-GB",
+      "description": "UK food hygiene rating data API",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, Australia",
+      "url": "https://www.data.gov.au/",
+      "description": "Australian Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, Belgium",
+      "url": "https://data.gov.be/",
+      "description": "Belgium Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, Canada",
+      "url": "http://open.canada.ca/en",
+      "description": "Canadian Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, Italy",
+      "url": "https://www.dati.gov.it/",
+      "description": "Italy Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, New Zealand",
+      "url": "https://www.data.govt.nz/",
+      "description": "New Zealand Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, Poland",
+      "url": "https://dane.gov.pl/en",
+      "description": "Poland Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, Romania",
+      "url": "http://data.gov.ro/",
+      "description": "Romania Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, Taiwan",
+      "url": "https://data.gov.tw/",
+      "description": "Taiwan Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Government, USA",
+      "url": "https://www.data.gov/",
+      "description": "United States Government Open Data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Represent by Open North",
+      "url": "https://represent.opennorth.ca/",
+      "description": "Find Canadian Government Representatives",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "USAspending.gov",
+      "url": "https://api.usaspending.gov/",
+      "description": "US federal spending data",
+      "category": "Government",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Diabetes",
+      "url": "http://predictbgl.com/api/",
+      "description": "Logging and retrieving diabetes information",
+      "category": "Health",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Healthcare.gov",
+      "url": "https://www.healthcare.gov/developers/",
+      "description": "Educational content about the US Health Insurance Marketplace",
+      "category": "Health",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ICD-10 Codes",
+      "url": "https://clinicaltables.nlm.nih.gov/apidoc/icd10cm/v3/doc.html",
+      "description": "List of all healthcare diagnosis codes",
+      "category": "Health",
+      "cors": "Unknown"
+    },
+    {
+      "name": "NPPES",
+      "url": "https://npiregistry.cms.hhs.gov/registry/help-api",
+      "description": "National Plan & Provider Enumeration System, info on healthcare providers registered in US",
+      "category": "Health",
+      "cors": "Unknown"
+    },
+    {
+      "name": "openFDA",
+      "url": "https://open.fda.gov",
+      "description": "Public FDA data about drugs, devices and foods",
+      "category": "Health",
+      "cors": "Unknown"
+    },
+    {
+      "name": "DevITjobs",
+      "url": "https://devitjobs.us/api/jobsLight",
+      "description": "Jobs for software developers",
+      "category": "Jobs",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Himalayas",
+      "url": "https://himalayas.app/api",
+      "description": "Remote job board and search engine",
+      "category": "Jobs",
+      "cors": "Yes"
+    },
+    {
+      "name": "Jobicy",
+      "url": "https://jobicy.com/jobs-rss-feed",
+      "description": "The latest remote job listings from a diverse range of industries and companies",
+      "category": "Jobs",
+      "cors": "Yes"
+    },
+    {
+      "name": "Open Skills",
+      "url": "https://github.com/workforce-data-initiative/skills-api/wiki/API-Overview",
+      "description": "Job titles, skills and related jobs data",
+      "category": "Jobs",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Search.gov Jobs",
+      "url": "https://search.gov/developer/jobs.html",
+      "description": "Tap into a list of current jobs openings with the United States government",
+      "category": "Jobs",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Deepcode",
+      "url": "https://www.deepcode.ai/docs/Overview%252FOverview",
+      "description": "AI for code review",
+      "category": "Machine Learning",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Bandsintown",
+      "url": "https://app.swaggerhub.com/apis/Bandsintown/PublicAPI/3.0.1",
+      "description": "Music Events",
+      "category": "Music",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Genrenator",
+      "url": "https://binaryjazz.us/genrenator-api/",
+      "description": "Music genre generator",
+      "category": "Music",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Lyrics.ovh",
+      "url": "http://docs.lyricsovh.apiary.io/",
+      "description": "Simple API to retrieve the lyrics of a song",
+      "category": "Music",
+      "cors": "Unknown"
+    },
+    {
+      "name": "MusicBrainz",
+      "url": "https://musicbrainz.org/doc/Development/XML_Web_Service/Version_2",
+      "description": "Music",
+      "category": "Music",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Openwhyd",
+      "url": "https://openwhyd.github.io/openwhyd/API",
+      "description": "Download curated playlists of streaming tracks (YouTube, SoundCloud, etc...)",
+      "category": "Music",
+      "cors": "No"
+    },
+    {
+      "name": "SearchLy",
+      "url": "https://www.github.com/AlbertSuarez/searchly",
+      "description": "Similarities search based on song lyrics",
+      "category": "Music",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Songsterr",
+      "url": "https://www.songsterr.com/a/wa/api/",
+      "description": "Provides guitar, bass and drums tabs and chords",
+      "category": "Music",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Chronicling America",
+      "url": "http://chroniclingamerica.loc.gov/about/api/",
+      "description": "Provides access to millions of pages of historic US newspapers from the Library of Congress",
+      "category": "News",
+      "cors": "Unknown"
+    },
+    {
+      "name": "OkSurf",
+      "url": "https://ok.surf/",
+      "description": "Free Google News with OG Images",
+      "category": "News",
+      "cors": "Yes"
+    },
+    {
+      "name": "18F",
+      "url": "http://18f.github.io/API-All-the-X/",
+      "description": "Unofficial US Federal Government API Development",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Archive.org",
+      "url": "https://archive.readme.io/docs",
+      "description": "The Internet Archive",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Callook.info",
+      "url": "https://callook.info",
+      "description": "United States ham radio callsigns",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "fonoApi",
+      "url": "https://fonoapi.freshpixl.com/",
+      "description": "Mobile Device Description",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "French Address Search",
+      "url": "https://geo.api.gouv.fr/adresse",
+      "description": "Address search via the French Government",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Fruits",
+      "url": "https://fruits-api.netlify.app/graphql",
+      "description": "Information of fruit trees of the world",
+      "category": "Open Data",
+      "cors": "No"
+    },
+    {
+      "name": "Microlink.io",
+      "url": "https://microlink.io",
+      "description": "Extract structured data from any website",
+      "category": "Open Data",
+      "cors": "Yes"
+    },
+    {
+      "name": "Quandl",
+      "url": "https://www.quandl.com/",
+      "description": "Stock Market Data",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Teleport",
+      "url": "https://developers.teleport.org/",
+      "description": "Quality of Life Data",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Universities List",
+      "url": "https://github.com/Hipo/university-domains-list",
+      "description": "University names, countries and domains",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "University of Oslo",
+      "url": "https://data.uio.no/",
+      "description": "Courses, lecture videos, detailed information for courses etc. for the University of Oslo (Norway)",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Wikipedia",
+      "url": "https://www.mediawiki.org/wiki/API:Main_page",
+      "description": "Mediawiki Encyclopedia",
+      "category": "Open Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Drupal.org",
+      "url": "https://www.drupal.org/drupalorg/docs/api",
+      "description": "Drupal.org",
+      "category": "Open Source Projects",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Evil Insult Generator",
+      "url": "https://evilinsult.com/api",
+      "description": "Evil Insults",
+      "category": "Open Source Projects",
+      "cors": "Yes"
+    },
+    {
+      "name": "The Odin Project",
+      "url": "https://github.com/theodinproject",
+      "description": "theodinproject.com",
+      "category": "Open Source Projects",
+      "cors": "Yes"
+    },
+    {
+      "name": "USPTO",
+      "url": "https://www.uspto.gov/learning-and-resources/open-data-and-mobility",
+      "description": "USA patent api services",
+      "category": "Patent",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Advice Slip",
+      "url": "http://api.adviceslip.com/",
+      "description": "Generate random advice slips",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "chucknorris.io",
+      "url": "https://api.chucknorris.io",
+      "description": "JSON API for hand curated Chuck Norris jokes",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Echoes",
+      "url": "https://echoes.soferity.com",
+      "description": "Quotes From Around The World",
+      "category": "Personality",
+      "cors": "Yes"
+    },
+    {
+      "name": "Forismatic",
+      "url": "http://forismatic.com/en/api/",
+      "description": "Inspirational Quotes",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Hindi Quotes",
+      "url": "https://hindi-quotes.vercel.app/",
+      "description": "Get random Hindi quotes of different categories.",
+      "category": "Personality",
+      "cors": "Yes"
+    },
+    {
+      "name": "icanhazdadjoke",
+      "url": "https://icanhazdadjoke.com/api",
+      "description": "The largest selection of dad jokes on the internet",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "kanye.rest",
+      "url": "https://kanye.rest",
+      "description": "REST API for random Kanye West quotes",
+      "category": "Personality",
+      "cors": "Yes"
+    },
+    {
+      "name": "Meme",
+      "url": "https://github.com/D3vd/Meme_Api",
+      "description": "JSON API for a random meme scraped from reddit",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "NaMoMemes",
+      "url": "https://github.com/theIYD/NaMoMemes",
+      "description": "Memes on Narendra Modi",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Programming Quotes",
+      "url": "https://programming-quotesapi.vercel.app/",
+      "description": "An api which generates quotes from programmers",
+      "category": "Personality",
+      "cors": "Yes"
+    },
+    {
+      "name": "Quote Garden",
+      "url": "https://pprathameshmore.github.io/QuoteGarden/",
+      "description": "REST API for more than 5000 famous quotes",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Quoterism",
+      "url": "https://www.quoterism.com/developer",
+      "description": "Inspirational Quotes",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Quotes on Design",
+      "url": "https://quotesondesign.com/api/",
+      "description": "Inspirational Quotes",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Riddles API",
+      "url": "https://riddles-api.vercel.app/",
+      "description": "Get random riddles on every API call.",
+      "category": "Personality",
+      "cors": "Yes"
+    },
+    {
+      "name": "Traitify",
+      "url": "https://app.traitify.com/developer",
+      "description": "Assess, collect and analyze Personality",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "tronalddump.io",
+      "url": "https://www.tronalddump.io",
+      "description": "Api & web archive for the things Donald Trump has said",
+      "category": "Personality",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Lorem Picsum",
+      "url": "https://picsum.photos/",
+      "description": "Images from Unsplash",
+      "category": "Photography",
+      "cors": "Unknown"
+    },
+    {
+      "name": "PlaceKitten",
+      "url": "https://placekitten.com/",
+      "description": "Resizable kitten placeholder images",
+      "category": "Photography",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ScreenShotLayer",
+      "url": "https://screenshotlayer.com",
+      "description": "URL 2 Image",
+      "category": "Photography",
+      "cors": "Unknown"
+    },
+    {
+      "name": "arcsecond.io",
+      "url": "https://api.arcsecond.io/",
+      "description": "Multiple astronomy data sources",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "GBIF",
+      "url": "http://api.gbif.org/v1/",
+      "description": "Global Biodiversity Information Facility",
+      "category": "Science & Math",
+      "cors": "Yes"
+    },
+    {
+      "name": "iDigBio",
+      "url": "https://github.com/idigbio/idigbio-search-api/wiki",
+      "description": "Access millions of museum specimens from organizations around the world",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ITIS",
+      "url": "https://www.itis.gov/ws_description.html",
+      "description": "Integrated Taxonomic Information System",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Launch Library",
+      "url": "https://launchlibrary.net/docs/1.3/api.html",
+      "description": "Upcoming Space Launches",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Minor Planet Center",
+      "url": "http://www.asterank.com/mpc",
+      "description": "Asterank.com Information",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "NASA",
+      "url": "https://api.nasa.gov",
+      "description": "NASA data, including imagery",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Newton",
+      "url": "https://newton.now.sh/",
+      "description": "Symbolic and Arithmetic Math Calculator",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Notify",
+      "url": "http://open-notify.org/Open-Notify-API/",
+      "description": "ISS astronauts, current location, etc",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Science Framework",
+      "url": "https://developer.osf.io",
+      "description": "Repository and archive for study designs, research materials, data, manuscripts, etc",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "SHARE",
+      "url": "https://share.osf.io/api/v2/",
+      "description": "A free, open, dataset about research and scholarly activities",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "SpaceX",
+      "url": "https://github.com/r-spacex/SpaceX-API",
+      "description": "Company, vehicle, launchpad and launch data",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Sunrise and Sunset",
+      "url": "https://sunrise-sunset.org/api",
+      "description": "Sunset and sunrise times for a given latitude and longitude",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Unusual Units Converter",
+      "url": "https://api.unusualunits.com/",
+      "description": "Unit converter for standard and uncommon units",
+      "category": "Science & Math",
+      "cors": "Yes"
+    },
+    {
+      "name": "USGS Water Services",
+      "url": "https://waterservices.usgs.gov/",
+      "description": "Water quality and level info for rivers and lakes",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "World Bank",
+      "url": "https://datahelpdesk.worldbank.org/knowledgebase/topics/125589",
+      "description": "World Data",
+      "category": "Science & Math",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Blooms",
+      "url": "https://blooms-production.up.railway.app/api",
+      "description": "Distribute keys once for serverless applications",
+      "category": "Security",
+      "cors": "No"
+    },
+    {
+      "name": "FishFish",
+      "url": "https://fishfish.gg/",
+      "description": "A volunteer cybersecurity project focused on providing resources and services that improve safety across Discord",
+      "category": "Security",
+      "cors": "Unknown"
+    },
+    {
+      "name": "National Vulnerability Database",
+      "url": "https://nvd.nist.gov/vuln/Data-Feeds/JSON-feed-changelog",
+      "description": "U.S. National Vulnerability Database",
+      "category": "Security",
+      "cors": "Unknown"
+    },
+    {
+      "name": "UK Police",
+      "url": "https://data.police.uk/docs/",
+      "description": "UK Police data",
+      "category": "Security",
+      "cors": "Unknown"
+    },
+    {
+      "name": "HackerNews",
+      "url": "https://github.com/HackerNews/API",
+      "description": "Social news for CS and entrepreneurship",
+      "category": "Social",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open Collective",
+      "url": "https://docs.opencollective.com/help/developers/api",
+      "description": "Get Open Collective data",
+      "category": "Social",
+      "cors": "Unknown"
+    },
+    {
+      "name": "balldontlie",
+      "url": "https://balldontlie.io",
+      "description": "Ballldontlie provides access to stats data from the NBA",
+      "category": "Sports & Fitness",
+      "cors": "Yes"
+    },
+    {
+      "name": "Cartola FC",
+      "url": "https://github.com/wgenial/cartrolandofc",
+      "description": "The Cartola FC API serves to check the partial points of your team",
+      "category": "Sports & Fitness",
+      "cors": "Unknown"
+    },
+    {
+      "name": "City Bikes",
+      "url": "http://api.citybik.es/v2/",
+      "description": "City Bikes around the world",
+      "category": "Sports & Fitness",
+      "cors": "Unknown"
+    },
+    {
+      "name": "F1 API",
+      "url": "https://f1api.dev",
+      "description": "Free F1 data in real time with his own NPM package",
+      "category": "Sports & Fitness",
+      "cors": "Unknown"
+    },
+    {
+      "name": "F1 Data API",
+      "url": "https://github.com/Jacobbrewer1/f1-data",
+      "description": "Formula 1 data API that delivers data from the F1 Archive dating back to 1950",
+      "category": "Sports & Fitness",
+      "cors": "No"
+    },
+    {
+      "name": "Football (Soccer) Videos",
+      "url": "https://www.scorebat.com/video-api/",
+      "description": "Embed codes for goals and highlights from Premier League, Bundesliga, Serie A and many more",
+      "category": "Sports & Fitness",
+      "cors": "Yes"
+    },
+    {
+      "name": "Football-Data.org",
+      "url": "http://api.football-data.org/index",
+      "description": "Football Data",
+      "category": "Sports & Fitness",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Golf-Data",
+      "url": "https://github.com/Jacobbrewer1/golf-data-docs",
+      "description": "Golf data API with golf course, club and hole information",
+      "category": "Sports & Fitness",
+      "cors": "No"
+    },
+    {
+      "name": "NBA Stats",
+      "url": "https://any-api.com/nba_com/nba_com/docs/API_Description",
+      "description": "Current and historical NBA Statistics",
+      "category": "Sports & Fitness",
+      "cors": "Unknown"
+    },
+    {
+      "name": "NHL Records and Stats",
+      "url": "https://gitlab.com/dword4/nhlapi",
+      "description": "NHL historical data and statistics",
+      "category": "Sports & Fitness",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Bacon Ipsum",
+      "url": "https://baconipsum.com/json-api/",
+      "description": "A Meatier Lorem Ipsum Generator",
+      "category": "Test Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Beeceptor's CRUD APIs",
+      "url": "https://beeceptor.com/crud-api/?ref=public-api-lists",
+      "description": "Free stateful CRUD APIs",
+      "category": "Test Data",
+      "cors": "Yes"
+    },
+    {
+      "name": "Dicebear Avatars",
+      "url": "https://avatars.dicebear.com/",
+      "description": "Generate random pixel-art avatars",
+      "category": "Test Data",
+      "cors": "No"
+    },
+    {
+      "name": "JSONing",
+      "url": "https://jsoning.com/api/",
+      "description": "Mock data for prototyping",
+      "category": "Test Data",
+      "cors": "Yes"
+    },
+    {
+      "name": "JSONPlaceholder",
+      "url": "http://jsonplaceholder.typicode.com/",
+      "description": "Fake data for testing and prototyping",
+      "category": "Test Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Lorem API",
+      "url": "https://lorem-api.com/",
+      "description": "The Ultimate Lorem Ipsum Generator",
+      "category": "Test Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Micro-Jaymock",
+      "url": "https://micro-jaymock.now.sh/",
+      "description": "Tiny API mocking microservice for generating fake JSON data",
+      "category": "Test Data",
+      "cors": "No"
+    },
+    {
+      "name": "Mockae",
+      "url": "https://mockae.com/",
+      "description": "Fake REST API powered by Lua",
+      "category": "Test Data",
+      "cors": "Yes"
+    },
+    {
+      "name": "Mockerito",
+      "url": "https://mockerito.com/?ref=public-api-lists",
+      "description": "Free mock REST APIs across different business domains",
+      "category": "Test Data",
+      "cors": "Yes"
+    },
+    {
+      "name": "RandomUser",
+      "url": "https://randomuser.me",
+      "description": "Generates random user data",
+      "category": "Test Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "RoboHash",
+      "url": "https://robohash.org/",
+      "description": "Generate random robot/alien avatars",
+      "category": "Test Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Short Id",
+      "url": "https://github.com/aguedo/idgen",
+      "description": "Generate unique short Ids",
+      "category": "Test Data",
+      "cors": "Yes"
+    },
+    {
+      "name": "Softwium",
+      "url": "https://softwium.com/fake-api/",
+      "description": "Test data for testing and prototyping",
+      "category": "Test Data",
+      "cors": "Yes"
+    },
+    {
+      "name": "This Person Does not Exist",
+      "url": "https://thispersondoesnotexist.com",
+      "description": "Generates real-life faces of people who do not exist",
+      "category": "Test Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "UI Names",
+      "url": "https://github.com/thm/uinames",
+      "description": "Generate random fake names",
+      "category": "Test Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "UUID Generator",
+      "url": "https://www.uuidtools.com/docs",
+      "description": "Generate UUIDs",
+      "category": "Test Data",
+      "cors": "No"
+    },
+    {
+      "name": "Yes No",
+      "url": "https://yesno.wtf/api",
+      "description": "Generate yes or no randomly",
+      "category": "Test Data",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Gawrshdarn",
+      "url": "https://api.gawrshdarn.com",
+      "description": "Profanity detection, filtering, and playful word replacement",
+      "category": "Text Analysis",
+      "cors": "Yes"
+    },
+    {
+      "name": "Yomi",
+      "url": "https://github.com/ookii-tsuki/yomi",
+      "description": "Japanese tokenizer and morphological analysis web API",
+      "category": "Text Analysis",
+      "cors": "Yes"
+    },
+    {
+      "name": "Let's Count",
+      "url": "https://letscountapi.com",
+      "description": "Create, retrieve, update, increment, and decrement counters",
+      "category": "Tracking",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Postmon",
+      "url": "http://postmon.com.br",
+      "description": "An API to query Brazilian ZIP codes and orders easily, quickly and free",
+      "category": "Tracking",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ADS-B Exchange",
+      "url": "https://www.adsbexchange.com/data/",
+      "description": "Access real-time and historical data of any and all airborne aircraft",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Aero Key, India",
+      "url": "https://aerokey-api.vercel.app/",
+      "description": "Indian Domestic Airport Data",
+      "category": "Transportation",
+      "cors": "No"
+    },
+    {
+      "name": "ArcNautical Vessel Check",
+      "url": "https://github.com/SaltyTaro/vessel-check-api",
+      "description": "Vessel sanctions screening, ownership transparency scoring, and vetting intelligence",
+      "category": "Transportation",
+      "cors": "Yes"
+    },
+    {
+      "name": "Community Transit",
+      "url": "https://github.com/transitland/transitland-datastore/blob/master/README.md#api-endpoints",
+      "description": "Transitland API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Icelandic APIs",
+      "url": "http://docs.apis.is/",
+      "description": "Open APIs that deliver services in or regarding Iceland",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Metro Lisboa",
+      "url": "http://app.metrolisboa.pt/status/getLinhas.php",
+      "description": "Delays in subway lines",
+      "category": "Transportation",
+      "cors": "No"
+    },
+    {
+      "name": "Open Charge Map",
+      "url": "https://openchargemap.org/site/develop/api",
+      "description": "Global public registry of electric vehicle charging locations",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "OVAPI Netherlands Transport",
+      "url": "https://github.com/skywave/KV78Turbo-OVAPI/wiki",
+      "description": "OVAPI, country-wide public transport",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Swiss Public Transport",
+      "url": "https://transport.opendata.ch/",
+      "description": "Swiss public transport API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "TransitLand",
+      "url": "https://transit.land/documentation/datastore/api-endpoints.html",
+      "description": "Transit Aggregation",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Atlanta, US",
+      "url": "http://www.itsmarta.com/app-developer-resources.aspx",
+      "description": "Marta",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Boston, US",
+      "url": "https://mbta.com/developers/v3-api",
+      "description": "MBTA API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Budapest, Hungary",
+      "url": "https://bkkfutar.docs.apiary.io",
+      "description": "Budapest public transport API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Chicago, US",
+      "url": "http://www.transitchicago.com/developers/",
+      "description": "CTA",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Czech Republic",
+      "url": "https://www.chaps.cz/eng/products/idos-internet",
+      "description": "Czech transport API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Finland",
+      "url": "https://digitransit.fi/en/developers/",
+      "description": "Finnish transport API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Grenoble, France",
+      "url": "https://data.mobilites-m.fr/donnees",
+      "description": "Grenoble public transport",
+      "category": "Transportation",
+      "cors": "No"
+    },
+    {
+      "name": "Transport for Ottawa, Canada",
+      "url": "http://www.octranspo.com/index.php/developers",
+      "description": "OC Transpo next bus arrival API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Paris, France",
+      "url": "http://data.ratp.fr/api/v1/console/datasets/1.0/search/",
+      "description": "RATP Open Data API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for Philadelphia, US",
+      "url": "http://www3.septa.org/hackathon/",
+      "description": "SEPTA APIs",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Transport for United States",
+      "url": "http://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf",
+      "description": "NextBus API",
+      "category": "Transportation",
+      "cors": "Unknown"
+    },
+    {
+      "name": "urlfy",
+      "url": "https://urlfy.org/api-doc",
+      "description": "A simple and fast URL shortening service",
+      "category": "URL Shorteners",
+      "cors": "Yes"
+    },
+    {
+      "name": "Brazilian Vehicles and Prices",
+      "url": "https://deividfortuna.github.io/fipe/",
+      "description": "Vehicles information from Fundação Instituto de Pesquisas Econômicas - Fipe",
+      "category": "Vehicle",
+      "cors": "Unknown"
+    },
+    {
+      "name": "NHTSA",
+      "url": "https://vpic.nhtsa.dot.gov/api/",
+      "description": "NHTSA Product Information Catalog and Vehicle Listing",
+      "category": "Vehicle",
+      "cors": "Unknown"
+    },
+    {
+      "name": "An API of Ice And Fire",
+      "url": "https://anapioficeandfire.com/",
+      "description": "Game Of Thrones API",
+      "category": "Video",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Bob's Burgers API",
+      "url": "https://bobsburgersapi.com/",
+      "description": "The Bob's Burgers API contains data for hundreds of characters, episodes, running gags, and images from the show",
+      "category": "Video",
+      "cors": "Yes"
+    },
+    {
+      "name": "Breaking Bad Quotes",
+      "url": "https://github.com/shevabam/breaking-bad-quotes",
+      "description": "Some Breaking Bad quotes",
+      "category": "Video",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Czech Television",
+      "url": "http://www.ceskatelevize.cz/xml/tv-program/",
+      "description": "TV programme of Czech TV",
+      "category": "Video",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Dune",
+      "url": "https://github.com/ywalia01/dune-api",
+      "description": "Dune API",
+      "category": "Video",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Owen Wilson Wow",
+      "url": "https://owen-wilson-wow-api.onrender.com/",
+      "description": "API for actor Owen Wilson's \"wow\" exclamations in movies",
+      "category": "Video",
+      "cors": "Yes"
+    },
+    {
+      "name": "Potter DB",
+      "url": "https://potterdb.com",
+      "description": "Data from the Harry Potter Universe: Characters, Movies, Books, Spells and Potions",
+      "category": "Video",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Ron Swanson Quotes",
+      "url": "https://github.com/jamesseanwright/ron-swanson-quotes#ron-swanson-quotes-api",
+      "description": "Television",
+      "category": "Video",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Shoof Aflam",
+      "url": "https://shoofaflam.tv/api-docs/",
+      "description": "Arabic streaming guide — search 14,000+ movies/series, get platform availability across 18 services in the Arab world",
+      "category": "Video",
+      "cors": "Yes"
+    },
+    {
+      "name": "Shrek Quotes",
+      "url": "https://shrekofficial.com",
+      "description": "Shrek quotes and more, but mainly quotes",
+      "category": "Video",
+      "cors": "Yes"
+    },
+    {
+      "name": "South Park Quotes",
+      "url": "https://github.com/Thatskat/southpark-quotes-api",
+      "description": "A pretty simple API to let you retrieve some of the best quotes from South Park, mmkay!",
+      "category": "Video",
+      "cors": "Yes"
+    },
+    {
+      "name": "STAPI",
+      "url": "https://stapi.co",
+      "description": "Information on all things Star Trek",
+      "category": "Video",
+      "cors": "Yes"
+    },
+    {
+      "name": "TVMaze",
+      "url": "http://www.tvmaze.com/api",
+      "description": "TV Show Data",
+      "category": "Video",
+      "cors": "Unknown"
+    },
+    {
+      "name": "7Timer!",
+      "url": "http://www.7timer.info/doc.php?lang=en",
+      "description": "Weather, especially for Astroweather",
+      "category": "Weather",
+      "cors": "Unknown"
+    },
+    {
+      "name": "DWD API",
+      "url": "https://dwd.api.bund.dev/",
+      "description": "API of the German Weather Service (DWD): weather data, data from specific weather stations, warnings (local, coast, sea, alps)",
+      "category": "Weather",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Meteorologisk Institutt",
+      "url": "https://api.met.no/weatherapi/documentation",
+      "description": "Weather and climate data",
+      "category": "Weather",
+      "cors": "Unknown"
+    },
+    {
+      "name": "National Weather Service API",
+      "url": "https://www.weather.gov/documentation/services-web-api",
+      "description": "Weather forecasts and alerts from the US National Weather Service",
+      "category": "Weather",
+      "cors": "Unknown"
+    },
+    {
+      "name": "ODWeather",
+      "url": "http://api.oceandrivers.com/static/docs.html",
+      "description": "Weather and weather webcams",
+      "category": "Weather",
+      "cors": "Unknown"
+    },
+    {
+      "name": "Open-Meteo",
+      "url": "https://open-meteo.com/",
+      "description": "Global weather forecast API for non-commercial use",
+      "category": "Weather",
+      "cors": "Yes"
+    },
+    {
+      "name": "Weather Hacks",
+      "url": "http://weather.livedoor.com/weather_hacks/",
+      "description": "Weather, for Japan",
+      "category": "Weather",
+      "cors": "No"
+    }
+  ]
+}
