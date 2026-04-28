@@ -5,7 +5,7 @@ const SUPABASE_URL = "https://bmasldizsbbgvrrdsfek.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtYXNsZGl6c2JiZ3ZycmRzZmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxODA1MTksImV4cCI6MjA5Mjc1NjUxOX0.kvUbduSCcfqixg8zUqU27O3cWdw63jOlePxIe26cUVw";
 const WHATSAPP_NUMBER = "254734944512";
 const FIXED_PRICE = 1500;
-const PLACEHOLDER_IMG = "https://placehold.co/400x400/111/666?text=NO+IMAGE";
+const BUCKET_NAME = "products-images";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -33,6 +33,12 @@ function CustomerPage() {
     }
   }
 
+  function getImageUrl(path) {
+    if (!path) return null;
+    if (path.startsWith("http")) return path;
+    return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${path}`;
+  }
+
   function createWhatsAppLink(product) {
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi Gorosei, I want: " + product.Name)}`;
   }
@@ -55,11 +61,11 @@ function CustomerPage() {
           {products.map((p) => (
             <div key={p.id} style={{ background: "#000", padding: 0 }}>
               <div style={{ aspectRatio: "1", background: "#111", position: "relative" }}>
-                <img 
-                  src={p.Image_url || PLACEHOLDER_IMG} 
-                  alt={p.Name} 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                />
+                {p.Image_url ? (
+                  <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#666" }}>NO IMG</div>
+                )}
                 <span style={{ position: "absolute", top: 12, left: 12, background: "#fff", color: "#000", padding: "4px 8px", fontSize: 10, fontWeight: "bold" }}>{p.size || "OS"}</span>
               </div>
               <div style={{ padding: 16 }}>
@@ -86,27 +92,54 @@ function CustomerPage() {
 function AdminPage() {
   const [name, setName] = useState("");
   const [size, setSize] = useState("M");
-  const [imageUrl, setImageUrl] = useState("");
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState("");
-  const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
+  function handleFileChange(e) {
+    const f = e.target.files[0];
+    if (f) {
+      setFile(f);
+      setPreview(URL.createObjectURL(f));
+    }
+  }
+
   async function handleAdd() {
-    if (!name || !imageUrl) { setStatus("Fill name + URL"); return; }
-    setLoading(true);
-    setStatus("Saving...");
+    if (!name || !file) { setStatus("Fill name + select image"); return; }
+    setUploading(true);
+    setStatus("Uploading...");
     try {
-      await supabase.from("products for Gorosei").insert({ Name: name, Price: FIXED_PRICE, size, Image_url: imageUrl, sold: false });
+      const fileName = `${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from(BUCKET_NAME)
+        .upload(fileName, file);
+      
+      if (error) throw error;
+      
+      await supabase.from("products for Gorosei").insert({
+        Name: name,
+        Price: FIXED_PRICE,
+        size,
+        Image_url: data.path,
+        sold: false
+      });
+      
       setStatus("Done!");
       setName("");
-      setImageUrl("");
+      setFile(null);
+      setPreview("");
       fetchProducts();
-    } catch (err) { setStatus("Error: " + err.message); }
-    finally { setLoading(false); }
+    } catch (err) {
+      setStatus("Error: " + err.message);
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function fetchProducts() {
@@ -131,6 +164,7 @@ function AdminPage() {
       <div style={{ marginBottom: 32 }}>
         <h2 style={{ fontSize: 16, marginBottom: 12 }}>ADD DROP</h2>
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder="PRODUCT NAME" style={{ display: "block", width: "100%", padding: 14, margin: "8px 0", background: "#111", border: "1px solid #333", color: "#fff", fontSize: 12, fontFamily: "inherit" }} />
+        
         <div style={{ display: "flex", gap: 8 }}>
           <select value={size} onChange={(e) => setSize(e.target.value)} style={{ padding: 14, background: "#111", border: "1px solid #333", color: "#fff", fontSize: 12, fontFamily: "inherit" }}>
             <option value="S">S</option>
@@ -139,10 +173,18 @@ function AdminPage() {
             <option value="XL">XL</option>
             <option value="OS">OS</option>
           </select>
-          <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="IMAGE URL" style={{ flex: 1, padding: 14, background: "#111", border: "1px solid #333", color: "#fff", fontSize: 12, fontFamily: "inherit" }} />
+          <label style={{ flex: 1, padding: 14, background: "#111", border: "1px solid #333", color: "#666", fontSize: 12, cursor: "pointer", display: "flex", alignItems: "center" }}>
+            {file ? file.name : "CHOOSE IMAGE"}
+            <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
+          </label>
         </div>
-        <button onClick={handleAdd} disabled={loading} style={{ width: "100%", padding: 16, marginTop: 12, background: "#fff", color: "#000", border: "none", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>
-          {loading ? "..." : `ADD (${FIXED_PRICE} KES)`}
+        
+        {preview && (
+          <img src={preview} alt="Preview" style={{ width: 100, height: 100, marginTop: 12, objectFit: "cover" }} />
+        )}
+        
+        <button onClick={handleAdd} disabled={uploading} style={{ width: "100%", padding: 16, marginTop: 12, background: "#fff", color: "#000", border: "none", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>
+          {uploading ? "UPLOADING..." : `ADD (${FIXED_PRICE} KES)`}
         </button>
         {status && <p style={{ marginTop: 12, color: "#f0f" }}>{status}</p>}
       </div>
@@ -151,7 +193,7 @@ function AdminPage() {
         <h2 style={{ fontSize: 16, marginBottom: 12 }}>STOCK ({products.length})</h2>
         {products.map((p) => (
           <div key={p.id} style={{ display: "flex", gap: 12, padding: 12, background: "#111", marginBottom: 8 }}>
-            <img src={p.Image_url || PLACEHOLDER_IMG} alt={p.Name} style={{ width: 50, height: 50, objectFit: "cover" }} />
+            <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: 50, height: 50, objectFit: "cover", background: "#222" }} />
             <div style={{ flex: 1 }}>
               <p style={{ margin: "0 0 4px", fontSize: 13 }}>{p.Name}</p>
               <p style={{ margin: 0, fontSize: 11, color: "#666" }}>{p.size} // {FIXED_PRICE} KES</p>
