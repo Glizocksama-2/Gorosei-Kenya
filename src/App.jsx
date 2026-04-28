@@ -29,26 +29,32 @@ function useParallax(intensity = 10) {
   return offset;
 }
 
-function useScrollReveal(threshold = 0.15) {
+function useScrollReveal(threshold = 0.3) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    const el = ref.current;
+    if (!el || visible) return;
+    
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
       },
       { threshold }
     );
-    if (ref.current) observer.observe(ref.current);
+    observer.observe(el);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, visible]);
 
   return [ref, visible];
 }
 
 function AnimatedSection({ children, className = "", delay = 0 }) {
-  const [ref, visible] = useScrollReveal(0.15);
+  const [ref, visible] = useScrollReveal(0.25);
 
   return (
     <div
@@ -56,8 +62,8 @@ function AnimatedSection({ children, className = "", delay = 0 }) {
       className={`fade-section ${className}`}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(30px)',
-        transition: `all 0.4s ease-out ${delay}s`,
+        transform: visible ? 'translateY(0)' : 'translateY(20px)',
+        transition: `all 0.3s ease-out ${delay}s`,
       }}
     >
       {children}
@@ -66,7 +72,7 @@ function AnimatedSection({ children, className = "", delay = 0 }) {
 }
 
 function Section({ id, children, className = "" }) {
-  const [ref, visible] = useScrollReveal(0.15);
+  const [ref, visible] = useScrollReveal(0.25);
 
   return (
     <section
@@ -75,8 +81,8 @@ function Section({ id, children, className = "" }) {
       className={className}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(20px)',
-        transition: 'all 0.4s ease-out',
+        transform: visible ? 'translateY(0)' : 'translateY(15px)',
+        transition: 'all 0.3s ease-out',
       }}
     >
       {children}
@@ -255,24 +261,24 @@ export default function App() {
           background: rgba(204, 0, 0, 0.2);
         }
         
-        /* Hero Animations - faster */
-        .hero-bg { transition: transform 0.2s ease-out; }
+        /* Hero Animations - instant */
+        .hero-bg { transition: transform 0.15s ease-out; }
         
         .hero-title {
-          animation: fadeUp 0.6s ease-out forwards;
-          animation-delay: 0.2s;
+          animation: fadeUp 0.4s ease-out forwards;
+          animation-delay: 0.1s;
           opacity: 0;
         }
         
         .hero-subtitle {
-          animation: fadeUp 0.6s ease-out forwards;
-          animation-delay: 0.4s;
+          animation: fadeUp 0.4s ease-out forwards;
+          animation-delay: 0.2s;
           opacity: 0;
         }
         
         .hero-cta {
-          animation: fadeUp 0.6s ease-out forwards;
-          animation-delay: 0.6s;
+          animation: fadeUp 0.4s ease-out forwards;
+          animation-delay: 0.3s;
           opacity: 0;
         }
         
@@ -282,14 +288,14 @@ export default function App() {
         }
         
         /* Scroll indicator */
-        .scroll-indicator { animation: bounce 1.5s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+        .scroll-indicator { animation: bounce 1.2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
         
         /* Section spacing */
-        section { padding: 140px 48px; }
+        section { padding: 120px 48px; }
         
-        /* Scroll reveal - snappy */
-        .fade-section { transition: opacity 0.4s ease-out, transform 0.4s ease-out; }
+        /* Scroll reveal - minimal */
+        .fade-section { will-change: opacity, transform; }
         
         @media (min-width: 1024px) {
           .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
