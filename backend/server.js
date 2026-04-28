@@ -8,6 +8,10 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
 
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "Gorosei backend is running" });
+});
+
 app.post("/generate-mockup", async (req, res) => {
   const { imageUrl, productName } = req.body;
   
