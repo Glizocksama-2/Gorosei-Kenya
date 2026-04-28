@@ -184,27 +184,16 @@ function CustomerPage() {
             </div>
           </div>
           
-          {/* HERO PRODUCT */}
+          {/* HERO IMAGE */}
           <div 
             className="hero-product"
             style={{ transform: `translate(${parallax.current.x}px, ${parallax.current.y}px)` }}
           >
-            {loading ? (
-              <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>LOADING...</div>
-            ) : products[0]?.Image_url ? (
-              <a href={`/product/${products[0].id}`} style={{ display: 'block' }}>
-                <img 
-                  src={getImageUrl(products[0].Image_url)} 
-                  alt={products[0].Name}
-                  className="hero-product-img"
-                />
-                <div style={{ textAlign: 'center', marginTop: 20, fontSize: 12, color: 'var(--crimson)', letterSpacing: '0.3em', textTransform: 'uppercase' }}>Tap to view →</div>
-              </a>
-            ) : (
-              <div style={{ width: 500, height: 500, background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                ADD PRODUCTS IN ADMIN
-              </div>
-            )}
+            <img 
+              src="/hero.png" 
+              alt="GOROSEI Streetwear"
+              className="hero-product-img"
+            />
           </div>
         </div>
       </header>
