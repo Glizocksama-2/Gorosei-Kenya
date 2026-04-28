@@ -382,6 +382,53 @@ function CustomerPage() {
         </AnimatedSection>
       </Section>
 
+      {/* INSTAGRAM FEED */}
+      <Section>
+        <AnimatedSection>
+          <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>03 — FOLLOW US</span>
+            <h2 className="font-display" style={{ fontSize: 'clamp(48px, 10vw, 96px)', marginTop: 16 }}>@GOROSEIKENYA</h2>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 48, maxWidth: 800, margin: '48px auto' }}>
+            {[
+              { type: "POST", label: "NEW DROP", color: "var(--crimson)" },
+              { type: "POST", label: "STREETWEAR", color: "var(--text)" },
+              { type: "POST", label: "BROTHERHOOD", color: "var(--crimson)" }
+            ].map((post, i) => (
+              <a 
+                key={i}
+                href="https://instagram.com/goroseikenya" 
+                target="_blank"
+                className="hover-scale"
+                style={{ 
+                  aspectRatio: '1', 
+                  background: 'var(--surface)', 
+                  border: '1px solid var(--surface-light)',
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                  cursor: 'pointer',
+                }}
+              >
+                <span className="font-display" style={{ fontSize: 32, color: post.color }}>{post.type}</span>
+                <span className="font-mono" style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 8, letterSpacing: '0.2em' }}>VIEW ON →</span>
+              </a>
+            ))}
+          </div>
+          
+          <a 
+            href="https://instagram.com/goroseikenya" 
+            target="_blank"
+            className="btn btn-outline"
+            style={{ marginTop: 24 }}
+          >
+            FOLLOW ON INSTAGRAM
+          </a>
+        </AnimatedSection>
+      </Section>
+
       {/* 7. FINAL CTA */}
       <section id="contact" style={{ padding: '200px 48px', textAlign: 'center' }}>
         <AnimatedSection>
