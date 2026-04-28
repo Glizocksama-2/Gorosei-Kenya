@@ -9,6 +9,12 @@ const BUCKET_NAME = "products-images";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+function getImageUrl(path) {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${path}`;
+}
+
 export default function App() {
   const path = window.location.pathname.toLowerCase();
   if (path === "/admin" || path === "/admin.html") return <AdminPage />;
@@ -31,12 +37,6 @@ function CustomerPage() {
     } catch (err) {
       setDebug("Error: " + err.message);
     }
-  }
-
-  function getImageUrl(path) {
-    if (!path) return null;
-    if (path.startsWith("http")) return path;
-    return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${path}`;
   }
 
   function createWhatsAppLink(product) {
@@ -93,7 +93,7 @@ function AdminPage() {
   const [name, setName] = useState("");
   const [size, setSize] = useState("M");
   const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState("");
+  const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [status, setStatus] = useState("");
   const [products, setProducts] = useState([]);
@@ -103,7 +103,7 @@ function AdminPage() {
   }, []);
 
   function handleFileChange(e) {
-    const f = e.target.files[0];
+    const f = e.target.files?.[0];
     if (f) {
       setFile(f);
       setPreview(URL.createObjectURL(f));
@@ -133,7 +133,7 @@ function AdminPage() {
       setStatus("Done!");
       setName("");
       setFile(null);
-      setPreview("");
+      setPreview(null);
       fetchProducts();
     } catch (err) {
       setStatus("Error: " + err.message);
@@ -158,7 +158,7 @@ function AdminPage() {
   }
 
   return (
-    <div style={{ padding: 20, background: "#000", color: "#fff", fontFamily: "monospace" }}>
+    <div style={{ padding: 20, background: "#000", color: "#fff", fontFamily: "monospace", minHeight: "100vh" }}>
       <h1 style={{ marginBottom: 24 }}>ADMIN</h1>
       
       <div style={{ marginBottom: 32 }}>
