@@ -29,9 +29,9 @@ function CustomerPage() {
         setDebug("ERROR: " + error.message);
         return;
       }
-      const available = (data || []).filter(p => p.sold !== true);
+      const available = (data || []); // Show ALL products
       setProducts(available);
-      setDebug(available.length > 0 ? "OK: " + available.length + " products" : "No products found (all sold)");
+      setDebug(data && data.length > 0 ? "OK: " + data.length + " products (showing all)" : "No products at all");
     } catch (err) {
       setDebug("EXCEPTION: " + err.message);
     }
