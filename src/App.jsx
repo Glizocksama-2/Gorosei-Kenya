@@ -539,21 +539,27 @@ function CustomerPage() {
           <div className="grid-2" style={{ marginTop: 80, maxWidth: 1200, margin: '80px auto 0' }}>
             {/* Featured 1 */}
             <div className="hover-scale" style={{ position: 'relative', overflow: 'hidden' }}>
-              <img 
-                src="/hero.png" 
-                alt="Featured"
-                style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', filter: 'brightness(0.8)' }}
-              />
+              {products[0]?.Image_url ? (
+                <img 
+                  src={getImageUrl(products[0].Image_url)}
+                  alt={products[0].Name}
+                  style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }}
+                />
+              ) : (
+                <div style={{ width: '100%', aspectRatio: '3/4', background: 'var(--surface-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span className="font-display" style={{ fontSize: 64, color: 'var(--text-muted)' }}>{products[0]?.Name?.charAt(0) || '?'}</span>
+                </div>
+              )}
             </div>
             <div>
               <p className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>FEATURED</p>
-              <h3 className="font-display" style={{ fontSize: 48, marginTop: 16 }}>INFERNO</h3>
+              <h3 className="font-display" style={{ fontSize: 48, marginTop: 16 }}>{products[0]?.Name || "INFERNO"}</h3>
               <p className="font-mono" style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 24, lineHeight: 1.8 }}>
                 Built for presence. Worn with intent.<br />
                 Premium heavyweight cotton.<br />
                 Limited release.
               </p>
-              <a href="#" className="btn btn-outline" style={{ marginTop: 40 }}>VIEW PRODUCT</a>
+              <a href={products[0]?.id ? `/product/${products[0].id}` : "#drop"} className="btn btn-outline" style={{ marginTop: 40 }}>VIEW PRODUCT</a>
             </div>
           </div>
         </AnimatedSection>
@@ -650,72 +656,75 @@ function ProductPage({ id }) {
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       <a href="/" style={{
         position: 'fixed',
-        top: 24,
-        left: 48,
+        top: 16,
+        left: 24,
         zIndex: 1000,
-        padding: '12px 24px',
-        background: 'rgba(0,0,0,0.8)',
+        padding: '10px 20px',
+        background: 'rgba(0,0,0,0.9)',
         backdropFilter: 'blur(10px)',
+        fontSize: 11,
       }}>
-        <span className="font-mono" style={{ fontSize: 11, letterSpacing: '0.2em' }}>← BACK</span>
+        <span className="font-mono" style={{ letterSpacing: '0.2em' }}>← BACK</span>
       </a>
 
-      {/* Full screen product */}
+      {/* Full screen product - image takes priority */}
       <div style={{
         width: '100vw',
         height: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingTop: 80,
+        paddingBottom: 200,
       }}>
         {product?.Image_url ? (
           <img 
             src={getImageUrl(product.Image_url)}
             alt={name}
             style={{
-              maxWidth: '70%',
-              maxHeight: '70%',
+              maxWidth: '90%',
+              maxHeight: '85%',
               objectFit: 'contain',
               transform: `translate(${parallax.current.x}px, ${parallax.current.y}px)`,
               transition: 'transform 0.2s ease-out',
             }}
           />
         ) : (
-          <div style={{ fontSize: 120, color: 'var(--surface-light)' }}>{name}</div>
+          <div style={{ fontSize: 80, color: 'var(--surface-light)' }}>{name}</div>
         )}
       </div>
 
-      {/* Product info */}
+      {/* Product info - sticky bottom, smaller on mobile */}
       <div style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
-        padding: '48px',
-        background: 'linear-gradient(transparent, var(--bg))',
+        padding: '24px',
+        background: 'rgba(5,5,5,0.95)',
+        backdropFilter: 'blur(10px)',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 32 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16 }}>
           <div>
-            <p className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>NOW VIEWING</p>
-            <h1 className="font-display" style={{ fontSize: 48, marginTop: 8 }}>{name}</h1>
+            <p className="font-mono" style={{ fontSize: 9, letterSpacing: '0.3em', color: 'var(--crimson)' }}>NOW VIEWING</p>
+            <h1 className="font-display" style={{ fontSize: 32, marginTop: 4 }}>{name}</h1>
             
-            <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
               {sizes.map((s) => (
                 <button
                   key={s}
                   onClick={() => setSelectedSize(s)}
                   style={{
-                    width: 48,
-                    height: 48,
+                    width: 40,
+                    height: 40,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     border: `1px solid ${selectedSize === s ? 'var(--crimson)' : 'var(--surface-light)'}`,
                     background: selectedSize === s ? 'var(--crimson)' : 'transparent',
                     color: 'var(--text)',
-                    fontSize: 13,
+                    fontSize: 12,
                     cursor: 'pointer',
-                    transition: 'all 0.3s ease',
                   }}
                 >
                   {s}
@@ -725,8 +734,8 @@ function ProductPage({ id }) {
           </div>
 
           <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: 42, fontWeight: 'bold' }}>KSh {FIXED_PRICE}</p>
-            <a href={buyLink} className="btn" style={{ marginTop: 24 }}>ORDER NOW →</a>
+            <p style={{ fontSize: 28, fontWeight: 'bold' }}>KSh {FIXED_PRICE}</p>
+            <a href={buyLink} className="btn" style={{ marginTop: 12, padding: '12px 24px', fontSize: 10 }}>ORDER NOW</a>
           </div>
         </div>
       </div>
