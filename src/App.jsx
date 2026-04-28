@@ -129,14 +129,31 @@ function AdminPage() {
         imagePath = data.path;
       }
       
+      // Trim the name to avoid issues
+      const productName = name.trim();
+      
       const { error: err2 } = await supabase.from("products for Gorosei").insert({
-        Name: name,
+        Name: productName,
         Price: FIXED_PRICE,
         size,
         Image_url: imagePath,
         sold: false
       });
-      if (err2) throw err2;
+      if (err2) {
+        if (err2.code === "23505") {
+          // Duplicate name - add timestamp suffix
+          const { error: err3 } = await supabase.from("products for Gorosei").insert({
+            Name: `${productName}_${Date.now()}`,
+            Price: FIXED_PRICE,
+            size,
+            Image_url: imagePath,
+            sold: false
+          });
+          if (err3) throw err3;
+        } else {
+          throw err2;
+        }
+      }
       
       setStatus("Done!");
       setName("");
