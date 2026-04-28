@@ -28,22 +28,122 @@ function useParallax() {
   return offset;
 }
 
-function useScrollReveal() {
+function useScrollReveal(threshold = 0.1) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
+        if (entry.isIntersecting) {
+          setVisible(true);
+        }
       },
-      { threshold: 0.1 }
+      { threshold }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, []);
+  }, [threshold]);
 
   return [ref, visible];
+}
+
+function useMouseFollow() {
+  const pos = useRef({ x: 0, y: 0 });
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const handleMove = (e) => {
+      pos.current.x = e.clientX;
+      pos.current.y = e.clientY;
+    };
+    const handleDown = () => setActive(true);
+    const handleUp = () => setActive(false);
+
+    document.addEventListener("mousemove", handleMove);
+    document.addEventListener("mousedown", handleDown);
+    document.addEventListener("mouseup", handleUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMove);
+      document.removeEventListener("mousedown", handleDown);
+      document.removeEventListener("mouseup", handleUp);
+    };
+  }, []);
+
+  return { pos, active };
+}
+
+function useAmbientSound() {
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+
+  const toggle = () => {
+    if (!audioRef.current) {
+      audioRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    
+    if (playing) {
+      setPlaying(false);
+      return;
+    }
+
+    // Create subtle ambient drone
+    const ctx = audioRef.current;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(80, ctx.currentTime);
+    gain.gain.setValueAtTime(0.02, ctx.currentTime);
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    
+    setPlaying(true);
+  };
+
+  return [toggle, playing];
+}
+
+function AnimatedSection({ children, delay = 0 }) {
+  const [ref, visible] = useScrollReveal(0.15);
+  
+  return (
+    <div 
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(60px)',
+        transition: `all 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function HoverCard({ children, className = "" }) {
+  const [ref, visible] = useScrollReveal(0.2);
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      ref={ref}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className={className}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.98)',
+        transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+        transformStyle: 'preserve-3d',
+      }}
+    >
+      {children}
+    </div>
+  );
 }
 
 function Router() {
@@ -138,6 +238,82 @@ export default function App() {
           text-shadow: 0 0 60px rgba(209, 31, 31, 0.5);
         }
         
+        /* Hover effects */
+        .hover-scale { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .hover-scale:hover { transform: scale(1.03); }
+        
+        .hover-glow { transition: box-shadow 0.4s ease, transform 0.4s ease; }
+        .hover-glow:hover { box-shadow: 0 0 40px rgba(209, 31, 31, 0.4); transform: translateY(-4px); }
+        
+        .hover-brightness { transition: filter 0.3s ease; }
+        .hover-brightness:hover { filter: brightness(1.2); }
+        
+        /* Cursor follower */
+        .cursor-dot {
+          width: 8px;
+          height: 8px;
+          background: var(--crimson);
+          border-radius: 50%;
+          position: fixed;
+          pointer-events: none;
+          z-index: 9999;
+          transform: translate(-50%, -50%);
+          transition: width 0.2s, height 0.2s, background 0.2s;
+        }
+        .cursor-dot.active {
+          width: 40px;
+          height: 40px;
+          background: rgba(209, 31, 31, 0.2);
+          backdrop-filter: blur(2px);
+        }
+        
+        /* Magnetic button */
+        .magnetic {
+          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* Smooth scroll */
+        html { scroll-behavior: smooth; }
+        
+        /* Product card 3D */
+        .product-card {
+          perspective: 1000px;
+        }
+        .product-card-inner {
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          transform-style: preserve-3d;
+        }
+        .product-card:hover .product-card-inner {
+          transform: rotateX(2deg) rotateY(-2deg) translateZ(10px);
+        }
+        
+        /* Nav hover */
+        .nav-link { position: relative; }
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          left: 0;
+          width: 0;
+          height: 1px;
+          background: var(--crimson);
+          transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+        
+        /* Reveal animations */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        
+        /* Feature icons hover */
+        .feature-icon {
+          transition: transform 0.4s ease, color 0.3s ease;
+        }
+        .feature-icon:hover { transform: scale(1.2); color: var(--crimson); }
+        
         @media (min-width: 768px) {
           .grid-products { grid-template-columns: repeat(3, 1fr); }
         }
@@ -149,7 +325,10 @@ export default function App() {
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--surface-light); }
         ::-webkit-scrollbar-thumb:hover { background: var(--crimson); }
-      `}</style>
+        
+        @media (pointer: coarse) {
+          .cursor-dot { display: none; }
+        }</style>
       
       <Router />
     </>
@@ -158,10 +337,11 @@ export default function App() {
 
 function CustomerPage() {
   const parallax = useParallax();
+  const { pos, active } = useMouseFollow();
+  const [toggleSound, soundPlaying] = useAmbientSound();
   const [scrolled, setScrolled] = useState(false);
   const [products, setProducts] = useState([]);
-  const heroRef = useParallax();
-
+  
   useEffect(() => {
     fetchProducts();
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -191,6 +371,42 @@ function CustomerPage() {
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+      {/* CURSOR FOLLOWER */}
+      <div 
+        className={`cursor-dot ${active ? 'active' : ''}`}
+        style={{
+          left: pos.current.x,
+          top: pos.current.y,
+        }}
+      />
+      
+      {/* SOUND TOGGLE */}
+      <button
+        onClick={toggleSound}
+        title="Toggle ambient sound"
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          right: 48,
+          zIndex: 1000,
+          width: 48,
+          height: 48,
+          borderRadius: '50%',
+          border: '1px solid var(--surface-light)',
+          background: 'rgba(5,5,5,0.8)',
+          backdropFilter: 'blur(10px)',
+          color: soundPlaying ? 'var(--crimson)' : 'var(--text-muted)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 18,
+          transition: 'all 0.3s ease',
+        }}
+      >
+        {soundPlaying ? '♫' : '♪'}
+      </button>
+
       {/* STICKY NAV */}
       <nav style={{
         position: 'fixed',
@@ -210,9 +426,9 @@ function CustomerPage() {
           <img src="/logo.png" alt="GOROSEI" style={{ height: 36 }} />
         </a>
         <div style={{ display: 'flex', gap: 48 }}>
-          <a href="#shop" className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>SHOP</a>
-          <a href="#story" className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>STORY</a>
-          <a href="/admin" className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>ADMIN</a>
+          <a href="#shop" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>SHOP</a>
+          <a href="#story" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>STORY</a>
+          <a href="/admin" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>ADMIN</a>
         </div>
       </nav>
 
@@ -283,30 +499,33 @@ function CustomerPage() {
       </section>
 
       {/* FEATURES */}
-      <section style={{ padding: '120px 48px', borderTop: '1px solid var(--surface-light)' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: 64,
-          maxWidth: 1200,
-          margin: '0 auto',
-        }}>
-          {[
-            { title: "Premium Heavyweight Cotton", desc: "280GSM quality" },
-            { title: "Limited Drop", desc: "Once they're gone" },
-            { title: "Worldwide Shipping", desc: "Wherever you are" },
-          ].map((feat, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <h3 className="font-display" style={{ fontSize: 28, color: 'var(--crimson)' }}>0{i + 1}</h3>
-              <p className="font-mono" style={{ fontSize: 11, letterSpacing: '0.2em', marginTop: 16 }}>{feat.title.toUpperCase()}</p>
-              <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>{feat.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <AnimatedSection>
+        <section style={{ padding: '120px 48px', borderTop: '1px solid var(--surface-light)' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: 64,
+            maxWidth: 1200,
+            margin: '0 auto',
+          }}>
+            {[
+              { title: "Premium Heavyweight Cotton", desc: "280GSM quality" },
+              { title: "Limited Drop", desc: "Once they're gone" },
+              { title: "Worldwide Shipping", desc: "Wherever you are" },
+            ].map((feat, i) => (
+              <div key={i} className="feature-icon" style={{ textAlign: 'center', padding: 32, border: '1px solid var(--surface-light)', transition: 'all 0.3s ease' }}>
+                <h3 className="font-display" style={{ fontSize: 28, color: 'var(--crimson)' }}>0{i + 1}</h3>
+                <p className="font-mono" style={{ fontSize: 11, letterSpacing: '0.2em', marginTop: 16 }}>{feat.title.toUpperCase()}</p>
+                <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>{feat.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </AnimatedSection>
 
       {/* SHOP SECTION */}
-      <section id="shop" style={{ padding: '160px 48px' }}>
+      <AnimatedSection>
+        <section id="shop" style={{ padding: '160px 48px' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ marginBottom: 80 }}>
             <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>01 — THE DROP</span>
@@ -315,19 +534,27 @@ function CustomerPage() {
           
           <div className="grid-products" style={{ display: 'grid', gap: 48 }}>
             {products.slice(0, 6).map((p, i) => (
-              <a href={p.Image_url ? `/product/${p.id}` : "#shop"} key={i} className="hover-lift" style={{ display: 'block' }}>
-                <div style={{
-                  aspectRatio: '3/4',
-                  background: 'var(--surface)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  border: '1px solid var(--surface-light)',
-                }}>
+              <a 
+                href={p.Image_url ? `/product/${p.id}` : "#shop"} 
+                key={i} 
+                className="hover-lift hover-glow product-card"
+                style={{ display: 'block' }}
+              >
+                <div 
+                  className="product-card-inner"
+                  style={{
+                    aspectRatio: '3/4',
+                    background: 'var(--surface)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    border: '1px solid var(--surface-light)',
+                  }}>
                   {p.Image_url ? (
                     <img 
                       src={getImageUrl(p.Image_url)} 
                       alt={p.Name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
+                      className="hover-brightness"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
                     <div style={{
