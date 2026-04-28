@@ -162,8 +162,8 @@ function CustomerPage() {
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       {/* NAV */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 40px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(8,8,8,0.9)', backdropFilter: 'blur(10px)' }}>
-        <span className="font-display" style={{ fontSize: 32, letterSpacing: '0.15em' }}>GOROSEI</span>
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 40px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(8,8,8,0.9)', backdropFilter: 'blur(10px)' }}>
+        <a href="/"><img src="/logo.png" alt="GOROSEI" style={{ height: 40, objectFit: 'contain' }} /></a>
         <div style={{ display: 'flex', gap: 40 }}>
           <a href="#about" className="nav-link font-mono" style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>ABOUT</a>
           <a href="#drops" className="nav-link font-mono" style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>SHOP</a>
@@ -264,7 +264,7 @@ function CustomerPage() {
 
       <footer style={{ padding: '60px 40px', borderTop: '1px solid var(--surface-light)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span className="font-display" style={{ fontSize: 28 }}>GOROSEI</span>
+          <img src="/logo.png" alt="GOROSEI" style={{ height: 40, objectFit: 'contain' }} />
           <a href="/admin" className="font-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>ADMIN</a>
         </div>
         <div style={{ textAlign: 'center', marginTop: 40, color: 'var(--text-muted)', fontSize: 11 }}>© 2025 GOROSEI KENYA</div>
