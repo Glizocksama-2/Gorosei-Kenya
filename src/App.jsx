@@ -25,8 +25,9 @@ function CustomerPage() {
   async function fetchProducts() {
     try {
       const { data, error } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false });
+      console.log("Raw:", data, "Error:", error);
       if (error) {
-        setDebug("ERROR: " + error.message);
+        setDebug("ERROR: " + error.message + " | " + JSON.stringify(error));
         return;
       }
       const available = (data || []); // Show ALL products
@@ -59,7 +60,14 @@ function CustomerPage() {
           {products.map((p) => (
             <div key={p.id} style={{ background: "#000", padding: 0 }}>
               <div style={{ aspectRatio: "1", background: "#111", position: "relative" }}>
-                {p.Image_url && <img src={p.Image_url} alt={p.Name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                {p.Image_url ? 
+                  <img 
+                    src={p.Image_url} 
+                    alt={p.Name} 
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                    onError={(e) => { e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23333' width='100' height='100'/%3E%3Ctext fill='%23666' x='50' y='50' text-anchor='middle' dy='.3em' font-size='10'%3ENO IMG%3C/text%3E%3C/svg%3E" }}
+                  /> : 
+                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#666", fontSize: 10 }}>NO IMG</div>}
                 <span style={{ position: "absolute", top: 12, left: 12, background: "#fff", color: "#000", padding: "4px 8px", fontSize: 10, fontWeight: "bold" }}>{p.size || "OS"}</span>
               </div>
               <div style={{ padding: 16 }}>
