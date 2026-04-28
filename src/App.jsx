@@ -37,18 +37,29 @@ function CustomerPage() {
 
   async function fetchProducts() {
     try {
-      const { data, error } = await supabase
-        .from("products for Gorosei")
-        .select("*")
-        .eq("sold", false)
-        .order("created_at", { ascending: false });
+      console.log("Fetching from table: products for Gorosei");
       
-      if (error) {
-        console.error("DB Error:", error.message);
-        alert("Error: " + error.message);
+      // First, try without sold filter to see all
+      const { data: allData, error: allError } = await supabase
+        .from("products for Gorosei")
+        .select("*");
+      
+      console.log("All products (any status):", allData);
+      
+      if (allError) {
+        console.error("DB Error:", allError.message);
+        // Try with different table name
+        const { data: altData } = await supabase
+          .from("products_for_Gorosei")
+          .select("*");
+        console.log("Try alt table:", altData);
+        setProducts(altData || []);
+      } else {
+        // Filter for unsold
+        const unsold = (allData || []).filter(p => p.sold !== true);
+        console.log("Unsold products:", unsold);
+        setProducts(unsold);
       }
-      console.log("Products from DB:", data);
-      setProducts(data || []);
     } catch (err) {
       console.error("Fetch error:", err);
     } finally {
