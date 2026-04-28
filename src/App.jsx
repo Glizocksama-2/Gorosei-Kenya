@@ -668,17 +668,21 @@ function ProductPage({ id }) {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-        <img 
-          src="/hero.png"
-          alt={name}
-          style={{
-            maxWidth: '70%',
-            maxHeight: '70%',
-            objectFit: 'contain',
-            transform: `translate(${parallax.current.x}px, ${parallax.current.y}px)`,
-            transition: 'transform 0.2s ease-out',
-          }}
-        />
+        {product?.Image_url ? (
+          <img 
+            src={getImageUrl(product.Image_url)}
+            alt={name}
+            style={{
+              maxWidth: '70%',
+              maxHeight: '70%',
+              objectFit: 'contain',
+              transform: `translate(${parallax.current.x}px, ${parallax.current.y}px)`,
+              transition: 'transform 0.2s ease-out',
+            }}
+          />
+        ) : (
+          <div style={{ fontSize: 120, color: 'var(--surface-light)' }}>{name}</div>
+        )}
       </div>
 
       {/* Product info */}
