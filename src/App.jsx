@@ -5,6 +5,7 @@ const SUPABASE_URL = "https://bmasldizsbbgvrrdsfek.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtYXNsZGl6c2JiZ3ZycmRzZmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxODA1MTksImV4cCI6MjA5Mjc1NjUxOX0.kvUbduSCcfqixg8zUqU27O3cWdw63jOlePxIe26cUVw";
 const WHATSAPP_NUMBER = "254734944512";
 const FIXED_PRICE = 1500;
+const PLACEHOLDER_IMG = "https://placehold.co/400x400/111/666?text=NO+IMAGE";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -25,16 +26,10 @@ function CustomerPage() {
   async function fetchProducts() {
     try {
       const { data, error } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false });
-      console.log("Raw:", data, "Error:", error);
-      if (error) {
-        setDebug("ERROR: " + error.message + " | " + JSON.stringify(error));
-        return;
-      }
-      const available = (data || []); // Show ALL products
-      setProducts(available);
-      setDebug(data && data.length > 0 ? "OK: " + data.length + " products (showing all)" : "No products at all");
+      setProducts(data || []);
+      setDebug(data && data.length > 0 ? "OK: " + data.length + " products" : "No products");
     } catch (err) {
-      setDebug("EXCEPTION: " + err.message);
+      setDebug("Error: " + err.message);
     }
   }
 
@@ -60,14 +55,11 @@ function CustomerPage() {
           {products.map((p) => (
             <div key={p.id} style={{ background: "#000", padding: 0 }}>
               <div style={{ aspectRatio: "1", background: "#111", position: "relative" }}>
-                {p.Image_url ? 
-                  <img 
-                    src={p.Image_url} 
-                    alt={p.Name} 
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                    onError={(e) => { e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%23333' width='100' height='100'/%3E%3Ctext fill='%23666' x='50' y='50' text-anchor='middle' dy='.3em' font-size='10'%3ENO IMG%3C/text%3E%3C/svg%3E" }}
-                  /> : 
-                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#666", fontSize: 10 }}>NO IMG</div>}
+                <img 
+                  src={p.Image_url || PLACEHOLDER_IMG} 
+                  alt={p.Name} 
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                />
                 <span style={{ position: "absolute", top: 12, left: 12, background: "#fff", color: "#000", padding: "4px 8px", fontSize: 10, fontWeight: "bold" }}>{p.size || "OS"}</span>
               </div>
               <div style={{ padding: 16 }}>
@@ -108,7 +100,7 @@ function AdminPage() {
     setLoading(true);
     setStatus("Saving...");
     try {
-      await supabase.from("products for Gorosei").insert({ Name: name, Price: FIXED_PRICE, size: size, Image_url: imageUrl, sold: false });
+      await supabase.from("products for Gorosei").insert({ Name: name, Price: FIXED_PRICE, size, Image_url: imageUrl, sold: false });
       setStatus("Done!");
       setName("");
       setImageUrl("");
@@ -159,7 +151,7 @@ function AdminPage() {
         <h2 style={{ fontSize: 16, marginBottom: 12 }}>STOCK ({products.length})</h2>
         {products.map((p) => (
           <div key={p.id} style={{ display: "flex", gap: 12, padding: 12, background: "#111", marginBottom: 8 }}>
-            <img src={p.Image_url} alt={p.Name} style={{ width: 50, height: 50, objectFit: "cover" }} />
+            <img src={p.Image_url || PLACEHOLDER_IMG} alt={p.Name} style={{ width: 50, height: 50, objectFit: "cover" }} />
             <div style={{ flex: 1 }}>
               <p style={{ margin: "0 0 4px", fontSize: 13 }}>{p.Name}</p>
               <p style={{ margin: 0, fontSize: 11, color: "#666" }}>{p.size} // {FIXED_PRICE} KES</p>
