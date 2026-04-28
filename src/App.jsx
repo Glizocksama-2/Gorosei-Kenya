@@ -6,6 +6,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const WHATSAPP_NUMBER = "254734944512";
 const FIXED_PRICE = 1500;
 const BUCKET_NAME = "products-images";
+const ADMIN_PASSWORD = "gorosei2025";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -724,6 +725,40 @@ function ProductPage({ id }) {
 }
 
 function AdminPage() {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  function handleLogin() {
+    if (password === ADMIN_PASSWORD) {
+      setAuthenticated(true);
+      setError("");
+    } else {
+      setError("Incorrect password");
+    }
+  }
+
+  if (!authenticated) {
+    return (
+      <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ maxWidth: 400, padding: 48 }}>
+          <h1 className="font-display" style={{ fontSize: 48, textAlign: 'center' }}>ADMIN</h1>
+          <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 24, textAlign: 'center' }}>Enter password to access</p>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+            placeholder="Password"
+            style={{ width: '100%', padding: 16, marginTop: 24, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)', fontSize: 14, textAlign: 'center' }}
+          />
+          {error && <p style={{ color: 'var(--crimson)', marginTop: 16, textAlign: 'center', fontSize: 12 }}>{error}</p>}
+          <button onClick={handleLogin} className="btn" style={{ width: '100%', marginTop: 24 }}>ENTER</button>
+        </div>
+      </div>
+    );
+  }
+
   const [name, setName] = useState("");
   const [size, setSize] = useState("M");
   const [url, setUrl] = useState("");
