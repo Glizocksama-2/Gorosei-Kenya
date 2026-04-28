@@ -31,295 +31,71 @@ function useParallax(intensity = 10) {
 }
 
 function useScrollReveal(threshold = 0.3) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || visible) return;
+function NewsletterForm() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!email) return;
     
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold, visible]);
-
-  return [ref, visible];
-}
-
-function AnimatedSection({ children, className = "", delay = 0 }) {
-  const [ref, visible] = useScrollReveal(0.25);
-
-  return (
-    <div
-      ref={ref}
-      className={`fade-section ${className}`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(20px)',
-        transition: `all 0.3s ease-out ${delay}s`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function Section({ id, children, className = "" }) {
-  const [ref, visible] = useScrollReveal(0.25);
-
-  return (
-    <section
-      id={id}
-      ref={ref}
-      className={className}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(15px)',
-        transition: 'all 0.3s ease-out',
-      }}
-    >
-      {children}
-    </section>
-  );
-}
-
-function useMouseFollow() {
-  const pos = useRef({ x: 0, y: 0 });
-  const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    const handleMove = (e) => {
-      pos.current.x = e.clientX;
-      pos.current.y = e.clientY;
-    };
-    const handleDown = () => setActive(true);
-    const handleUp = () => setActive(false);
-
-    document.addEventListener("mousemove", handleMove);
-    document.addEventListener("mousedown", handleDown);
-    document.addEventListener("mouseup", handleUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMove);
-      document.removeEventListener("mousedown", handleDown);
-      document.removeEventListener("mouseup", handleUp);
-    };
-  }, []);
-
-  return { pos, active };
-}
-
-function useNavScroll() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handle = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handle);
-    return () => window.removeEventListener("scroll", handle);
-  }, []);
-
-  return scrolled;
-}
-
-function Router() {
-  const path = window.location.pathname.toLowerCase();
-  if (path === "/admin" || path === "/admin.html") return <AdminPage />;
-  if (path.startsWith("/product/")) {
-    const id = path.replace("/product/", "").replace("/", "");
-    return <ProductPage id={id} />;
-  }
-  return <CustomerPage />;
-}
-
-export default function App() {
-  return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
-        
-        :root {
-          --bg: #030303;
-          --surface: #080808;
-          --surface-light: #111111;
-          --crimson: #CC0000;
-          --text: #FAFAFA;
-          --text-muted: #666666;
-          --ease: cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { background: var(--bg); color: var(--text); font-family: 'Space Mono', monospace; overflow-x: hidden; }
-        a { color: inherit; text-decoration: none; }
-        
-        .font-display { font-family: 'Bebas Neue', sans-serif; }
-        .font-mono { font-family: 'Space Mono', monospace; }
-        
-        /* Buttons - snappy */
-        .btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 18px 48px;
-          background: var(--crimson);
-          color: var(--text);
-          font-family: 'Space Mono', monospace;
-          font-size: 11px;
-          letter-spacing: 0.3em;
-          text-transform: uppercase;
-          border: 1px solid var(--crimson);
-          transition: all 0.2s ease-out;
-          cursor: pointer;
-        }
-        .btn:hover {
-          background: transparent;
-          color: var(--crimson);
-          box-shadow: 0 0 30px rgba(204, 0, 0, 0.4);
-        }
-        
-        .btn-outline {
-          background: transparent;
-          color: var(--text);
-          border: 1px solid var(--text-muted);
-        }
-        .btn-outline:hover {
-          border-color: var(--text);
-          color: var(--bg);
-          background: var(--text);
-        }
-        
-        /* Navigation */
-        .nav-link { position: relative; }
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: -6px;
-          left: 0;
-          width: 0;
-          height: 1px;
-          background: var(--crimson);
-          transition: width 0.2s ease-out;
-        }
-        .nav-link:hover::after { width: 100%; }
-        
-        /* Hover Effects - snappy */
-        .hover-lift { transition: transform 0.25s ease-out, box-shadow 0.25s ease-out; }
-        .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
-        
-        .hover-scale { transition: transform 0.2s ease-out; }
-        .hover-scale:hover { transform: scale(1.03); }
-        
-        .hover-glow { transition: box-shadow 0.25s ease-out; }
-        .hover-glow:hover { box-shadow: 0 0 30px rgba(204, 0, 0, 0.3); }
-        
-        /* Product Card */
-        .product-card {
-          background: var(--surface);
-          border: 1px solid var(--surface-light);
-          transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
-          overflow: hidden;
-        }
-        .product-card:hover {
-          border-color: var(--crimson);
-          transform: translateY(-6px);
-        }
-        .product-card .image-container {
-          aspect-ratio: 3/4;
-          overflow: hidden;
-          position: relative;
-        }
-        .product-card img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.4s ease-out;
-        }
-        .product-card:hover img { transform: scale(1.05); }
-        
-        /* Cursor - snappy */
-        .cursor-dot {
-          width: 8px;
-          height: 8px;
-          background: var(--crimson);
-          border-radius: 50%;
-          position: fixed;
-          pointer-events: none;
-          z-index: 9999;
-          transform: translate(-50%, -50%);
-          transition: width 0.15s, height 0.15s, background 0.15s;
-        }
-        .cursor-dot.active {
-          width: 24px;
-          height: 24px;
-          background: rgba(204, 0, 0, 0.2);
-        }
-        
-        /* Hero Animations - instant */
-        .hero-bg { transition: transform 0.15s ease-out; }
-        
-        .hero-title {
-          animation: fadeUp 0.4s ease-out forwards;
-          animation-delay: 0.1s;
-          opacity: 0;
-        }
-        
-        .hero-subtitle {
-          animation: fadeUp 0.4s ease-out forwards;
-          animation-delay: 0.2s;
-          opacity: 0;
-        }
-        
-        .hero-cta {
-          animation: fadeUp 0.4s ease-out forwards;
-          animation-delay: 0.3s;
-          opacity: 0;
-        }
-        
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Scroll indicator */
-        .scroll-indicator { animation: bounce 1.2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
-        
-        /* Section spacing */
-        section { padding: 120px 48px; }
-        
-        /* Scroll reveal - minimal */
-        .fade-section { will-change: opacity, transform; }
-        
-        @media (min-width: 1024px) {
-          .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
-          .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 64px; align-items: center; }
-        }
-        
-        @media (max-width: 1023px) {
-          .grid-3 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
-          .grid-2 { display: grid; gap: 48px; }
-          section { padding: 100px 24px; }
-        }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--surface-light); }
-        
-        @media (pointer: coarse) {
-          .cursor-dot { display: none; }
-        }
-      `}</style>
+    setStatus("...");
+    
+    try {
+      const { error } = await supabase
+        .from("newsletter")
+        .insert({ email: email.trim(), created_at: new Date().toISOString() });
       
-      <Router />
-    </>
+      if (error) {
+        console.error("Error:", error);
+        setStatus("Error. Try again.");
+      } else {
+        setSubmitted(true);
+        setStatus("You're in!");
+      }
+    } catch (err) {
+      setStatus("Error. Try again.");
+    }
+  }
+
+  if (submitted) {
+    return (
+      <div style={{ marginTop: 48, padding: 32, border: '1px solid var(--crimson)', display: 'inline-block' }}>
+        <p className="font-display" style={{ fontSize: 24 }}>WELCOME TO THE BROTHERHOOD</p>
+        <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>Check your WhatsApp for confirmation.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} style={{ marginTop: 48 }}>
+      <div style={{ display: 'flex', gap: 0, maxWidth: 400, margin: '0 auto', border: '1px solid var(--surface-light)' }}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your WhatsApp number"
+          required
+          style={{
+            flex: 1,
+            padding: '16px 20px',
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--text)',
+            fontSize: 12,
+            outline: 'none',
+          }}
+        />
+        <button type="submit" className="btn" style={{ border: 'none', borderRadius: 0 }}>
+          JOIN
+        </button>
+      </div>
+      {status && (
+        <p className="font-mono" style={{ fontSize: 11, color: 'var(--crimson)', marginTop: 16 }}>{status}</p>
+      )}
+    </form>
   );
 }
 
@@ -605,7 +381,9 @@ function CustomerPage() {
           <p className="font-mono" style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 32, maxWidth: 400, margin: '32px auto' }}>
             Be first to know about drops. Exclusive access. Real ones only.
           </p>
-          <a href="#drop" className="btn" style={{ marginTop: 48 }}>GET EARLY ACCESS</a>
+          
+          {/* Newsletter Form */}
+          <NewsletterForm />
         </AnimatedSection>
       </section>
 
