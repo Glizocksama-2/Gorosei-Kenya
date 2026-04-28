@@ -34,15 +34,17 @@ VITE_BACKEND_URL=https://YOUR_BACKEND_URL`}</pre>
 function CustomerPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedImg, setSelectedImg] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   async function fetchProducts() {
     try {
-      const { data } = await supabase
+      const { data, error: fetchError } = await supabase
         .from("products for Gorosei")
         .select("*")
         .eq("sold", false)
         .order("created_at", { ascending: false });
+      
+      if (fetchError) throw fetchError;
       setProducts(data || []);
     } catch (err) {
       console.error(err);
@@ -55,10 +57,13 @@ function CustomerPage() {
     fetchProducts();
   }, []);
 
+  function getImageUrl(product) {
+    return product.mockup_url || product.Image_url || null;
+  }
+
   function createWhatsAppLink(product) {
-    const image = product.mockup_url || product.Image_url;
     const message = encodeURIComponent(
-      `Hi Gorosei Kenya, I want this:\n\nName: ${product.Name}\nPrice: KSh ${product.Price}\nSize: ${product.size || 'M'}\nDelivery Location: `
+      `Hi Gorosei, I want this:\n\n${product.Name}\nKSh ${product.Price}\nSize: ${product.size || 'M'}`
     );
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
   }
@@ -66,310 +71,309 @@ function CustomerPage() {
   return (
     <>
       <nav className="nav">
-        <div className="nav-brand">
-          <span className="brand-name">GOROSEI</span>
-          <span className="brand-tagline">Streetwear</span>
-        </div>
-        <a href="#drops" className="nav-link">DROPS</a>
+        <a href="/" className="logo">
+          <span className="logo-text">GOROSEI</span>
+        </a>
+        <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
+          {menuOpen ? "CLOSE" : "MENU"}
+        </button>
+        {menuOpen && (
+          <div className="menu-overlay">
+            <a href="#drops" onClick={() => setMenuOpen(false)}>DROPS</a>
+            <a href="/admin" onClick={() => setMenuOpen(false)}>ADMIN</a>
+          </div>
+        )}
       </nav>
 
       <header className="hero">
         <div className="hero-content">
+          <p className="hero-tag">[-_-]</p>
           <h1 className="hero-title">
-            GOROSEI<span className="accent">.</span>KENYA
+            GOROSEI<br />KENYA
           </h1>
-          <p className="hero-subtitle">Premium streetwear. Curated. Limited.</p>
-        </div>
-        <div className="hero-decoration">
-          <div className="line"></div>
-          <div className="line"></div>
-          <div className="line"></div>
+          <p className="hero-sub">STREETWEAR // DROPS</p>
         </div>
       </header>
 
-      <main className="main" id="drops">
-        <div className="section-header">
-          <h2 className="section-title">DROPS</h2>
-          <span className="section-count">{products.length} items</span>
-        </div>
-
-        {loading && (
-          <div className="loading">
-            <div className="spinner"></div>
+      <main id="drops">
+        <section className="section">
+          <div className="section-header">
+            <span className="section-num">[01]</span>
+            <h2 className="section-title">AVAILABLE</h2>
           </div>
-        )}
 
-        {!loading && products.length === 0 && (
-          <div className="empty">
-            <p>No drops available.</p>
-            <p className="empty-sub">New drops daily at 8PM.</p>
+          {loading && (
+            <div className="loading">
+              <div className="loader"></div>
+            </div>
+          )}
+
+          {!loading && products.length === 0 && (
+            <div className="empty">
+              <p>NO DROPS</p>
+              <p className="empty-sub">CHECK BACK AT 8PM</p>
+            </div>
+          )}
+
+          <div className="grid">
+            {products.map((product) => {
+              const imgUrl = getImageUrl(product);
+              return (
+                <article key={product.id} className="product-card">
+                  <div className="product-image">
+                    {imgUrl ? (
+                      <img src={imgUrl} alt={product.Name} loading="lazy" />
+                    ) : (
+                      <div className="no-img">NO IMG</div>
+                    )}
+                    <div className="product-badge">{product.size || 'OS'}</div>
+                  </div>
+                  <div className="product-info">
+                    <h3 className="product-name">{product.Name}</h3>
+                    <div className="product-row">
+                      <span className="product-price">KSh {product.Price}</span>
+                      <a href={createWhatsAppLink(product)} className="product-btn" target="_blank">
+                        BUY
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
-        )}
-
-        <div className="grid">
-          {products.map((product) => (
-            <article key={product.id} className="card">
-              <div className="card-image" onClick={() => setSelectedImg(product)}>
-                <img
-                  src={product.mockup_url || product.Image_url}
-                  alt={product.Name}
-                  loading="lazy"
-                />
-                <div className="card-badge">1 OF 1</div>
-              </div>
-              <div className="card-info">
-                <h3 className="card-name">{product.Name}</h3>
-                <div className="card-footer">
-                  <span className="card-price">KSh {product.Price}</span>
-                  <a
-                    href={createWhatsAppLink(product)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="card-btn"
-                  >
-                    ORDER
-                  </a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+        </section>
       </main>
 
       <footer className="footer">
-        <p>GOROSEI KENYA © 2026</p>
-        <p className="footer-sub">WhatsApp: {WHATSAPP_NUMBER}</p>
+        <div className="footer-content">
+          <p className="footer-logo">GOROSEI // KENYA</p>
+          <p className="footer-contact">WHATSAPP: {WHATSAPP_NUMBER}</p>
+          <p className="footer-copy">©2026</p>
+        </div>
       </footer>
 
-      {selectedImg && (
-        <div className="modal" onClick={() => setSelectedImg(null)}>
-          <img src={selectedImg.mockup_url || selectedImg.Image_url} alt={selectedImg.Name} />
-        </div>
-      )}
-
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-        *, *::before, *::after {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+          --bg: #000000;
+          --bg2: #0a0a0a;
+          --text: #ffffff;
+          --text2: #666666;
+          --accent: #ffffff;
+          --accent2: #333333;
         }
 
         body {
-          background: #050505;
-          color: white;
-          font-family: 'Space Grotesk', system-ui, sans-serif;
+          background: var(--bg);
+          color: var(--text);
+          font-family: 'JetBrains Mono', monospace;
           min-height: 100vh;
           -webkit-font-smoothing: antialiased;
         }
+
+        a { color: inherit; text-decoration: none; }
 
         .nav {
           display: flex;
           justify-content: space-between;
           align-items: center;
           padding: 24px 32px;
-          position: sticky;
+          position: fixed;
           top: 0;
-          background: rgba(5, 5, 5, 0.9);
-          backdrop-filter: blur(10px);
+          left: 0;
+          right: 0;
           z-index: 100;
+          background: rgba(0,0,0,0.9);
         }
 
-        .nav-brand {
-          display: flex;
-          align-items: baseline;
-          gap: 12px;
-        }
-
-        .brand-name {
-          font-size: 18px;
+        .logo-text {
+          font-size: 14px;
           font-weight: 700;
           letter-spacing: 4px;
         }
 
-        .brand-tagline {
+        .menu-btn {
+          background: none;
+          border: 1px solid var(--accent2);
+          color: var(--text);
+          padding: 8px 16px;
+          font-family: inherit;
           font-size: 11px;
-          color: #666;
           letter-spacing: 2px;
-          text-transform: uppercase;
+          cursor: pointer;
         }
 
-        .nav-link {
-          font-size: 12px;
-          letter-spacing: 2px;
-          color: #888;
-          text-decoration: none;
-          transition: color 0.2s;
+        .menu-overlay {
+          position: fixed;
+          inset: 0;
+          background: var(--bg);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 32px;
+          z-index: 99;
         }
 
-        .nav-link:hover {
-          color: white;
+        .menu-overlay a {
+          font-size: 32px;
+          font-weight: 700;
+          letter-spacing: 8px;
         }
 
         .hero {
-          padding: 80px 32px 60px;
+          min-height: 100vh;
           display: flex;
-          justify-content: space-between;
           align-items: center;
-          border-bottom: 1px solid #111;
+          padding: 120px 32px 80px;
+          border-bottom: 1px solid var(--accent2);
+        }
+
+        .hero-tag {
+          font-size: 12px;
+          color: var(--text2);
+          letter-spacing: 4px;
+          margin-bottom: 16px;
         }
 
         .hero-title {
-          font-size: clamp(32px, 8vw, 72px);
+          font-size: clamp(48px, 15vw, 160px);
           font-weight: 700;
-          letter-spacing: -2px;
-          line-height: 1;
+          line-height: 0.9;
+          letter-spacing: -4px;
+          margin-bottom: 24px;
         }
 
-        .accent {
-          color: #FFD700;
-        }
-
-        .hero-subtitle {
+        .hero-sub {
           font-size: 14px;
-          color: #666;
-          margin-top: 16px;
-          letter-spacing: 1px;
+          color: var(--text2);
+          letter-spacing: 4px;
         }
 
-        .hero-decoration {
-          display: flex;
-          gap: 8px;
-        }
-
-        .hero-decoration .line {
-          width: 2px;
-          height: 60px;
-          background: #222;
-        }
-
-        .hero-decoration .line:nth-child(2) {
-          height: 40px;
-        }
-
-        .main {
-          padding: 32px;
+        .section {
+          padding: 80px 32px;
         }
 
         .section-header {
           display: flex;
-          justify-content: space-between;
           align-items: baseline;
-          margin-bottom: 32px;
-          padding-bottom: 16px;
-          border-bottom: 1px solid #111;
+          gap: 16px;
+          margin-bottom: 48px;
+          padding-bottom: 24px;
+          border-bottom: 1px solid var(--accent2);
+        }
+
+        .section-num {
+          font-size: 12px;
+          color: var(--text2);
         }
 
         .section-title {
-          font-size: 12px;
-          font-weight: 600;
-          letter-spacing: 3px;
-          color: #666;
-        }
-
-        .section-count {
-          font-size: 12px;
-          color: #444;
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: 4px;
         }
 
         .grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 16px;
+          gap: 1px;
+          background: var(--accent2);
         }
 
         @media (min-width: 768px) {
           .grid {
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
           }
         }
 
-        .card {
-          background: #0a0a0a;
-          overflow: hidden;
+        .product-card {
+          background: var(--bg);
         }
 
-        .card-image {
+        .product-image {
           position: relative;
           aspect-ratio: 1;
+          background: var(--bg2);
           overflow: hidden;
-          cursor: pointer;
         }
 
-        .card-image img {
+        .product-image img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.4s ease;
         }
 
-        .card-image:hover img {
-          transform: scale(1.05);
+        .no-img {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text2);
+          font-size: 10px;
+          letter-spacing: 2px;
         }
 
-        .card-badge {
+        .product-badge {
           position: absolute;
           top: 12px;
           left: 12px;
-          background: #FFD700;
-          color: #000;
+          background: var(--text);
+          color: var(--bg);
           font-size: 9px;
           font-weight: 700;
           padding: 4px 8px;
-          letter-spacing: 1px;
         }
 
-        .card-info {
+        .product-info {
           padding: 16px;
         }
 
-        .card-name {
+        .product-name {
           font-size: 14px;
-          font-weight: 600;
+          font-weight: 500;
           margin-bottom: 12px;
         }
 
-        .card-footer {
+        .product-row {
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
 
-        .card-price {
-          font-size: 16px;
+        .product-price {
+          font-size: 14px;
           font-weight: 700;
-          color: #FFD700;
         }
 
-        .card-btn {
-          background: #1a1a1a;
-          color: white;
+        .product-btn {
+          background: var(--text);
+          color: var(--bg);
           font-size: 11px;
-          font-weight: 600;
-          padding: 10px 16px;
+          font-weight: 700;
+          padding: 8px 16px;
           letter-spacing: 1px;
-          text-decoration: none;
-          transition: background 0.2s;
         }
 
-        .card-btn:hover {
-          background: #FFD700;
-          color: #000;
+        .product-btn:hover {
+          background: var(--text2);
         }
 
         .loading {
+          padding: 80px 0;
           display: flex;
           justify-content: center;
-          padding: 80px 0;
         }
 
-        .spinner {
+        .loader {
           width: 24px;
           height: 24px;
-          border: 2px solid #222;
-          border-top-color: #FFD700;
+          border: 2px solid var(--accent2);
+          border-top-color: var(--text);
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -381,74 +385,73 @@ function CustomerPage() {
         .empty {
           text-align: center;
           padding: 80px 0;
-          color: #444;
+          color: var(--text2);
+        }
+
+        .empty p:first-child {
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: 4px;
+          margin-bottom: 8px;
         }
 
         .empty-sub {
           font-size: 12px;
-          margin-top: 8px;
-          color: #333;
-        }
-
-        .footer {
-          text-align: center;
-          padding: 48px 32px;
-          border-top: 1px solid #111;
-          margin-top: 48px;
-        }
-
-        .footer p {
-          font-size: 12px;
           letter-spacing: 2px;
         }
 
-        .footer-sub {
-          font-size: 11px;
-          color: #444;
-          margin-top: 8px;
+        .footer {
+          padding: 48px 32px;
+          border-top: 1px solid var(--accent2);
         }
 
-        .modal {
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.95);
+        .footer-content {
           display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-          cursor: pointer;
-          padding: 32px;
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
         }
 
-        .modal img {
-          max-width: 90%;
-          max-height: 90%;
-          object-fit: contain;
+        .footer-logo {
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 4px;
+        }
+
+        .footer-contact {
+          font-size: 11px;
+          color: var(--text2);
+          letter-spacing: 2px;
+        }
+
+        .footer-copy {
+          font-size: 10px;
+          color: var(--text2);
         }
 
         .error-page {
-          background: #050505;
-          color: white;
+          background: var(--bg);
+          color: var(--text);
           min-height: 100vh;
           padding: 40px;
-          font-family: system-ui;
         }
 
         .error-page h1 {
-          font-size: 24px;
+          font-size: 18px;
           margin-bottom: 16px;
         }
 
         .error-page p {
-          color: #666;
+          color: var(--text2);
           margin-bottom: 16px;
         }
 
         .error-page pre {
-          background: #0a0a0a;
+          background: var(--bg2);
           padding: 16px;
-          font-size: 12px;
+          font-size: 11px;
           overflow: auto;
+          white-space: pre-wrap;
         }
       `}</style>
     </>
@@ -473,7 +476,7 @@ function AdminPage() {
 
     try {
       setLoading(true);
-      setStatus("Uploading image...");
+      setStatus("Uploading...");
 
       const fileName = `${Date.now()}-${file.name}`;
       const { error: uploadError } = await supabase.storage
@@ -485,16 +488,16 @@ function AdminPage() {
       const { data } = supabase.storage.from("products for Gorosei").getPublicUrl(fileName);
       const imageUrl = data.publicUrl;
 
-      setStatus("Generating AI mockup...");
+      setStatus("Generating mockup...");
       let mockupUrl = imageUrl;
       try {
         const res = await fetch(`${BACKEND_URL}/generate-mockup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ imageUrl })
+          body: JSON.stringify({ imageUrl, productName: name })
         });
         const result = await res.json();
-        if (res.ok && result.image) {
+        if (result.image) {
           mockupUrl = result.image;
         }
       } catch (mockupErr) {
@@ -548,25 +551,28 @@ function AdminPage() {
   return (
     <>
       <nav className="nav">
-        <div className="nav-brand">
-          <span className="brand-name">GOROSEI</span>
-          <span className="brand-tagline">Admin</span>
-        </div>
-        <a href="/" className="nav-link">View Store</a>
+        <a href="/" className="logo">
+          <span className="logo-text">GOROSEI</span>
+        </a>
+        <a href="/" className="menu-btn">STORE</a>
       </nav>
 
-      <main className="admin-main">
-        <section className="admin-section">
-          <h2 className="admin-title">ADD NEW DROP</h2>
-          <form onSubmit={handleUpload} className="admin-form">
+      <main className="admin">
+        <section className="section">
+          <div className="section-header">
+            <span className="section-num">[01]</span>
+            <h2 className="section-title">ADD DROP</h2>
+          </div>
+
+          <form onSubmit={handleUpload} className="form">
             <div className="form-row">
               <input
-                placeholder="Product Name"
+                placeholder="NAME"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
               <input
-                placeholder="Price"
+                placeholder="PRICE"
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
@@ -576,38 +582,42 @@ function AdminPage() {
                 <option value="M">M</option>
                 <option value="L">L</option>
                 <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
+                <option value="OS">OS</option>
               </select>
             </div>
             <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} />
             <button type="submit" disabled={loading} className="submit-btn">
-              {loading ? "Processing..." : "ADD DROP"}
+              {loading ? "PROCESSING..." : "ADD DROP"}
             </button>
             {status && <p className="status">{status}</p>}
           </form>
         </section>
 
-        <section className="admin-section">
-          <h2 className="admin-title">EXISTING ({products.length})</h2>
+        <section className="section">
+          <div className="section-header">
+            <span className="section-num">[02]</span>
+            <h2 className="section-title">INVENTORY ({products.length})</h2>
+          </div>
+
           <div className="product-list">
             {products.map((p) => (
               <div key={p.id} className="product-item">
                 <img src={p.mockup_url || p.Image_url} alt={p.Name} />
-                <div className="product-details">
-                  <p className="product-name">{p.Name}</p>
-                  <p className="product-meta">KSh {p.Price} • {p.size}</p>
+                <div className="item-info">
+                  <p className="item-name">{p.Name}</p>
+                  <p className="item-meta">KSh {p.Price} // {p.size}</p>
                   <span className={p.sold ? "sold-tag" : "avail-tag"}>
                     {p.sold ? "SOLD" : "AVAIL"}
                   </span>
                 </div>
-                <div className="product-actions">
+                <div className="item-actions">
                   {!p.sold && (
                     <button onClick={() => markSold(p.id)} className="action-btn sold">
-                      Sold
+                      SOLD
                     </button>
                   )}
                   <button onClick={() => deleteProduct(p.id)} className="action-btn delete">
-                    Delete
+                    DEL
                   </button>
                 </div>
               </div>
@@ -617,50 +627,198 @@ function AdminPage() {
       </main>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #050505; color: white; font-family: 'Space Grotesk', system-ui; min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .nav { display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; border-bottom: 1px solid #111; }
-        .nav-brand { display: flex; align-items: baseline; gap: 12px; }
-        .brand-name { font-size: 18px; font-weight: 700; letter-spacing: 4px; }
-        .brand-tagline { font-size: 11px; color: #666; letter-spacing: 2px; text-transform: uppercase; }
-        .nav-link { font-size: 12px; letter-spacing: 2px; color: #FFD700; text-decoration: none; }
+        :root {
+          --bg: #000000;
+          --bg2: #0a0a0a;
+          --text: #ffffff;
+          --text2: #666666;
+          --accent: #ffffff;
+          --accent2: #333333;
+        }
 
-        .admin-main { padding: 32px; max-width: 800px; }
-        .admin-section { margin-bottom: 48px; }
-        .admin-title { font-size: 12px; font-weight: 600; letter-spacing: 2px; color: #666; margin-bottom: 20px; }
+        body {
+          background: var(--bg);
+          color: var(--text);
+          font-family: 'JetBrains Mono', monospace;
+          min-height: 100vh;
+        }
 
-        .admin-form { display: flex; flex-direction: column; gap: 12px; }
-        .form-row { display: grid; grid-template-columns: 1fr 100px 80px; gap: 8px; }
-        
+        .nav {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 24px 32px;
+          border-bottom: 1px solid var(--accent2);
+        }
+
+        .logo-text {
+          font-size: 14px;
+          font-weight: 700;
+          letter-spacing: 4px;
+        }
+
+        .menu-btn {
+          background: none;
+          border: 1px solid var(--accent2);
+          color: var(--text);
+          padding: 8px 16px;
+          font-family: inherit;
+          font-size: 11px;
+          letter-spacing: 2px;
+        }
+
+        .admin {
+          padding: 80px 32px;
+          max-width: 600px;
+        }
+
+        .section {
+          margin-bottom: 48px;
+        }
+
+        .section-header {
+          display: flex;
+          align-items: baseline;
+          gap: 16px;
+          margin-bottom: 24px;
+        }
+
+        .section-num {
+          font-size: 12px;
+          color: var(--text2);
+        }
+
+        .section-title {
+          font-size: 18px;
+          font-weight: 700;
+          letter-spacing: 2px;
+        }
+
+        .form {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .form-row {
+          display: grid;
+          grid-template-columns: 2fr 1fr 60px;
+          gap: 8px;
+        }
+
         input, select {
-          background: #0a0a0a; border: 1px solid #222; color: white; padding: 14px; font-size: 14px; font-family: inherit;
+          background: var(--bg2);
+          border: 1px solid var(--accent2);
+          color: var(--text);
+          padding: 14px;
+          font-family: inherit;
+          font-size: 12px;
+          letter-spacing: 1px;
         }
-        input::placeholder { color: #444; }
-        
-        .submit-btn {
-          background: #FFD700; color: #000; font-weight: 600; padding: 16px; font-size: 14px; border: none; cursor: pointer; letter-spacing: 1px;
-        }
-        .submit-btn:hover { opacity: 0.9; }
-        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .status { color: #FFD700; font-size: 13px; margin-top: 8px; }
 
-        .product-list { display: flex; flex-direction: column; gap: 8px; }
-        .product-item { display: flex; gap: 12px; background: #0a0a0a; padding: 12px; align-items: center; }
-        .product-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
-        .product-details { flex: 1; }
-        .product-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-        .product-meta { font-size: 12px; color: #666; }
-        .avail-tag { font-size: 10px; color: #22c55e; letter-spacing: 1px; }
-        .sold-tag { font-size: 10px; color: #ef4444; letter-spacing: 1px; }
-        
-        .product-actions { display: flex; gap: 8px; }
-        .action-btn { background: #1a1a1a; color: white; border: none; padding: 8px 12px; font-size: 11px; cursor: pointer; }
-        .action-btn.sold { color: #22c55e; }
-        .action-btn.delete { color: #ef4444; }
+        input::placeholder {
+          color: var(--text2);
+          letter-spacing: 2px;
+        }
+
+        .submit-btn {
+          background: var(--text);
+          color: var(--bg);
+          border: none;
+          padding: 16px;
+          font-family: inherit;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 2px;
+          cursor: pointer;
+        }
+
+        .submit-btn:disabled {
+          opacity: 0.5;
+        }
+
+        .status {
+          color: var(--text);
+          font-size: 12px;
+        }
+
+        .product-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .product-item {
+          display: flex;
+          gap: 12px;
+          background: var(--bg2);
+          padding: 12px;
+          align-items: center;
+        }
+
+        .product-item img {
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+        }
+
+        .item-info {
+          flex: 1;
+        }
+
+        .item-name {
+          font-size: 13px;
+          font-weight: 500;
+          margin-bottom: 4px;
+        }
+
+        .item-meta {
+          font-size: 11px;
+          color: var(--text2);
+          margin-bottom: 4px;
+        }
+
+        .avail-tag {
+          font-size: 10px;
+          color: #22c55e;
+          letter-spacing: 1px;
+        }
+
+        .sold-tag {
+          font-size: 10px;
+          color: #ef4444;
+          letter-spacing: 1px;
+        }
+
+        .item-actions {
+          display: flex;
+          gap: 8px;
+        }
+
+        .action-btn {
+          background: none;
+          border: 1px solid var(--accent2);
+          color: var(--text2);
+          padding: 6px 10px;
+          font-family: inherit;
+          font-size: 10px;
+          cursor: pointer;
+          letter-spacing: 1px;
+        }
+
+        .action-btn.sold {
+          border-color: #22c55e;
+          color: #22c55e;
+        }
+
+        .action-btn.delete {
+          border-color: #ef4444;
+          color: #ef4444;
+        }
       `}</style>
     </>
   );
