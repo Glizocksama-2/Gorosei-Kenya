@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_URL = "https://bmasldizsbbgvrrdsfek.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtYXNsZGl6c2JiZ3ZycmRzZmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxODA1MTksImV4cCI6MjA5Mjc1NjUxOX0.kvUbduSCcfqixg8zUqU27O3cWdw63jOlePxIe26cUVw";
 const WHATSAPP_NUMBER = "254734944512";
 const FIXED_PRICE = 1500;
 
-let supabase = null;
-if (SUPABASE_URL && SUPABASE_KEY) {
-  supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-}
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 export default function App() {
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    return <div className="error-page"><h1>Missing Environment Variables</h1></div>;
-  }
   const path = window.location.pathname.toLowerCase();
   if (path === "/admin" || path === "/admin.html") return <AdminPage />;
   return <CustomerPage />;
@@ -37,14 +31,7 @@ function CustomerPage() {
 
   async function fetchProducts() {
     console.log("Fetching products...");
-    console.log("Supabase:", supabase ? "initialized" : "NULL");
     console.log("URL:", SUPABASE_URL);
-    
-    if (!supabase) {
-      setDebug("ERROR: Supabase not initialized");
-      setLoading(false);
-      return;
-    }
     
     try {
       const { data, error } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false });
