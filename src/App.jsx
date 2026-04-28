@@ -15,30 +15,35 @@ function getImageUrl(path) {
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${path}`;
 }
 
-function useMouseTrack() {
-  const pos = useRef({ x: 50, y: 50 });
-  useEffect(() => {
-    const handleMove = (e) => {
-      pos.current.x = (e.clientX / window.innerWidth) * 100;
-      pos.current.y = (e.clientY / window.innerHeight) * 100;
-    };
-    document.addEventListener("mousemove", handleMove);
-    return () => document.removeEventListener("mousemove", handleMove);
-  }, []);
-  return pos;
-}
-
 function useParallax() {
   const offset = useRef({ x: 0, y: 0 });
   useEffect(() => {
     const handleMove = (e) => {
-      offset.current.x = (e.clientX / window.innerWidth - 0.5) * 20;
-      offset.current.y = (e.clientY / window.innerHeight - 0.5) * 20;
+      offset.current.x = (e.clientX / window.innerWidth - 0.5) * 15;
+      offset.current.y = (e.clientY / window.innerHeight - 0.5) * 15;
     };
     document.addEventListener("mousemove", handleMove);
     return () => document.removeEventListener("mousemove", handleMove);
   }, []);
   return offset;
+}
+
+function useScrollReveal() {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setVisible(true);
+      },
+      { threshold: 0.1 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, visible];
 }
 
 function Router() {
@@ -51,6 +56,15 @@ function Router() {
   return <CustomerPage />;
 }
 
+const products = [
+  { id: "demo-1", Name: "INFERNO", tagline: "Burn Bright", size: "M" },
+  { id: "demo-2", Name: "SYMBOLIC", tagline: "Sign of the Times", size: "M" },
+  { id: "demo-3", Name: "MINIMAL", tagline: "Less is More", size: "M" },
+  { id: "demo-4", Name: "FLAME", tagline: "Eternal Fire", size: "M" },
+  { id: "demo-5", Name: "ANGEL", tagline: "Heaven Sent", size: "M" },
+  { id: "demo-6", Name: "SHIELD", tagline: "Built to Last", size: "M" },
+];
+
 export default function App() {
   return (
     <>
@@ -58,84 +72,83 @@ export default function App() {
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
         
         :root {
-          --bg: #080808;
-          --surface: #0f0f0f;
-          --surface-light: #1a1a1f;
-          --crimson: #CC0000;
-          --text: #FFFFFF;
-          --text-muted: #888888;
+          --bg: #050505;
+          --surface: #0a0a0a;
+          --surface-light: #141414;
+          --crimson: #D11F1F;
+          --text: #F5F5F5;
+          --text-muted: #666666;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body { background: var(--bg); color: var(--text); font-family: 'Space Mono', monospace; overflow-x: hidden; }
+        html { scroll-behavior: smooth; }
+        
+        body { 
+          background: var(--bg); 
+          color: var(--text); 
+          font-family: 'Space Mono', monospace; 
+          overflow-x: hidden;
+        }
+        
         a { color: inherit; text-decoration: none; }
         
         .font-display { font-family: 'Bebas Neue', sans-serif; }
         .font-mono { font-family: 'Space Mono', monospace; }
         
-        .dot-grid { background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; }
+        .fade-in { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
         
-        .section-num { color: var(--text-muted); font-size: 11px; letter-spacing: 0.3em; }
-        .section-num.red { color: var(--crimson); }
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 18px 48px;
+          background: var(--crimson);
+          color: var(--text);
+          font-family: 'Space Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.3em;
+          text-transform: uppercase;
+          border: 1px solid var(--crimson);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          cursor: pointer;
+        }
+        .btn:hover {
+          background: transparent;
+          color: var(--crimson);
+          box-shadow: 0 0 30px rgba(209, 31, 31, 0.3);
+        }
         
-        .btn { border: 1px solid var(--crimson); background: var(--crimson); color: var(--text); padding: 14px 32px; font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; transition: all 0.15s ease-out; display: inline-block; }
-        .btn:hover { background: transparent; color: var(--crimson); }
-        .btn-ghost { border: 1px solid var(--text-muted); background: transparent; color: var(--text); }
-        .btn-ghost:hover { border-color: var(--text); }
+        .btn-outline {
+          background: transparent;
+          color: var(--text);
+          border: 1px solid var(--text-muted);
+        }
+        .btn-outline:hover {
+          border-color: var(--text);
+          color: var(--bg);
+          background: var(--text);
+        }
         
-        .nav-link { position: relative; }
-        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 50%; width: 0; height: 1px; background: var(--crimson); transition: width 0.2s ease-out; transform: translateX(-50%); }
-        .nav-link:hover::after { width: 100%; }
+        .hover-lift { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .hover-lift:hover { transform: translateY(-8px); }
         
-        .product-card { background: var(--surface); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; overflow: hidden; cursor: pointer; }
-        .product-card:hover { transform: scale(1.02); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-        .product-card:hover .product-img { transform: scale(1.08); }
+        .glow-text {
+          text-shadow: 0 0 60px rgba(209, 31, 31, 0.5);
+        }
         
-        .product-img { transition: transform 0.3s ease-out; width: 100%; height: 100%; object-fit: cover; }
-        
-        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.5s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        
-        .about-card { padding: 40px; border: 1px solid var(--surface-light); transition: all 0.3s ease-out; }
-        .about-card:hover { border-color: var(--crimson); transform: translateY(-4px); }
-        
-        .interactive-img { transition: transform 0.3s ease-out; }
-        .interactive-img:hover { transform: scale(1.02); }
-        
-        /* Product Page - Full screen edge to edge */
-        .product-page { position: fixed; inset: 0; background: var(--bg); z-index: 300; overflow-y: auto; }
-        .product-hero { width: 100vw; height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--surface); }
-        .product-hero-img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: transform 0.1s ease-out; }
-        
-        .product-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
-        
-        .size-btn { min-width: 50px; height: 50px; padding: 0 16px; display: flex; alignItems: center; justify-content: center; border: 1px solid var(--surface-light); background: transparent; color: var(--text); font-size: 13px; transition: all 0.15s ease-out; }
-        .size-btn:hover { border-color: var(--crimson); }
-        .size-btn.selected { background: var(--crimson); border-color: var(--crimson); color: var(--bg); }
-        
-        .hero-product { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
-        .hero-product-img { width: 100%; height: auto; max-height: none; object-fit: cover; transition: transform 0.3s ease-out; }
-        .hero-product:hover .hero-product-img { transform: scale(1.02); }
-        
-@media (min-width: 768px) {
-          .grid-products { grid-template-columns: repeat(3, 1fr); gap: 32px; }
-          .hero-title { font-size: clamp(64px, 12vw, 120px); }
+        @media (min-width: 768px) {
+          .grid-products { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 767px) {
-          .grid-products { grid-template-columns: 1fr; gap: 24px; }
-          .hero-title { fontSize: clamp(48px, 10vw, 72px); }
-          .product-overlay { padding: 24px; }
-        }
-        @media (max-width: 767px) {
-          .grid-products { grid-template-columns: 1fr; }
-          .hero-title { font-size: clamp(48px, 10vw, 72px); }
-          .product-overlay { padding: 24px; }
+          .grid-products { grid-template-columns: repeat(2, 1fr); }
         }
         
-        @media (prefers-reduced-motion: reduce) {
-          *, *::before, *::after { animation: none !important; transition: none !important; }
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-light); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--crimson); }
       `}</style>
       
       <Router />
@@ -144,144 +157,268 @@ export default function App() {
 }
 
 function CustomerPage() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const parallax = useParallax();
-  const mousePos = useMouseTrack();
+  const [scrolled, setScrolled] = useState(false);
+  const [products, setProducts] = useState([]);
+  const heroRef = useParallax();
 
-  useEffect(() => { fetchProducts(); }, []);
+  useEffect(() => {
+    fetchProducts();
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   async function fetchProducts() {
     try {
-      const { data, error } = await supabase
-        .from("products for Gorosei")
-        .select("*")
-        .order("created_at", { ascending: false });
-      
-      if (error) {
-        console.error("Fetch error:", error);
-      }
-      setProducts((data || []).filter(p => !p.sold));
-    } catch (err) { 
-      console.error(err); 
+      const { data } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false });
+      const dbProducts = (data || []).filter(p => !p.sold);
+      // Merge demo products with DB products
+      const allProducts = [...products, ...dbProducts].slice(0, 6);
+      setProducts(allProducts.length > 0 ? allProducts : [
+        { id: "demo-1", Name: "INFERNO", tagline: "Burn Bright", size: "M" },
+        { id: "demo-2", Name: "SYMBOLIC", tagline: "Sign of the Times", size: "M" },
+        { id: "demo-3", Name: "MINIMAL", tagline: "Less is More", size: "M" },
+      ]);
+    } catch (err) {
+      setProducts([
+        { id: "demo-1", Name: "INFERNO", tagline: "Burn Bright", size: "M" },
+        { id: "demo-2", Name: "SYMBOLIC", tagline: "Sign of the Times", size: "M" },
+        { id: "demo-3", Name: "MINIMAL", tagline: "Less is More", size: "M" },
+      ]);
     }
-    setLoading(false);
   }
-
-  console.log("Products:", products);
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
-      {/* NAV */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 48px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(8,8,8,0.95)', backdropFilter: 'blur(10px)' }}>
+      {/* STICKY NAV */}
+      <nav style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        padding: '24px 48px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        background: scrolled ? 'rgba(5,5,5,0.98)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        transition: 'all 0.5s ease',
+      }}>
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <img src="/logo.png" alt="GOROSEI" style={{ height: 50, objectFit: 'contain' }} />
-          <span className="font-display" style={{ fontSize: 28, letterSpacing: '0.15em', color: 'var(--text)' }}>GOROSEI</span>
+          <img src="/logo.png" alt="GOROSEI" style={{ height: 36 }} />
         </a>
-        <div style={{ display: 'flex', gap: 40 }}>
-          <a href="#about" className="nav-link font-mono" style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>ABOUT</a>
-          <a href="#drops" className="nav-link font-mono" style={{ fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>SHOP</a>
+        <div style={{ display: 'flex', gap: 48 }}>
+          <a href="#shop" className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>SHOP</a>
+          <a href="#story" className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>STORY</a>
+          <a href="/admin" className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)', transition: 'color 0.3s' }}>ADMIN</a>
         </div>
       </nav>
 
-      {/* HERO */}
-      <header style={{ minHeight: '100vh', position: 'relative', display: 'flex', alignItems: 'flex-end', overflow: 'hidden' }}>
-        <img 
-          src="/hero.png" 
-          alt="GOROSEI Streetwear"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', background: 'var(--surface)' }}
-        />
-        <div style={{ position: 'relative', zIndex: 10, padding: '100px 48px', width: '100%', background: 'linear-gradient(transparent 30%, rgba(0,0,0,0.8))' }}>
-          <div style={{ maxWidth: 600 }}>
-            <span className="font-mono section-num reveal active" style={{ color: 'var(--crimson)' }}>NEW DROP — 2025</span>
-            <h1 className="font-display hero-title reveal active" style={{ fontSize: 'clamp(48px, 10vw, 110px)', lineHeight: 0.95, marginTop: 16 }}>
-              STREET<br />WEAR
-            </h1>
-            <p className="font-mono" style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.8, marginTop: 24, maxWidth: 380 }}>Kenyan streetwear that makes you feel like your real self.</p>
-            <div style={{ display: 'flex', gap: 16, marginTop: 40 }} className="reveal active">
-              <a href="#drops" className="btn">SHOP NOW</a>
-            </div>
+      {/* HERO SECTION */}
+      <section style={{
+        minHeight: '100vh',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      }}>
+        {/* Background with glow */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(209,31,31,0.15) 0%, transparent 60%)',
+          transform: `translate(${parallax.current.x}px, ${parallax.current.y}px)`,
+          transition: 'transform 0.3s ease-out',
+        }} />
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'url(/hero.png) center/cover no-repeat',
+          opacity: 0.4,
+          filter: 'grayscale(30%) contrast(1.1)',
+        }} />
+        
+        <div style={{
+          position: 'relative',
+          zIndex: 10,
+          textAlign: 'center',
+          padding: '0 24px',
+        }}>
+          <h1 className="font-display glow-text" style={{
+            fontSize: 'clamp(80px, 20vw, 240px)',
+            lineHeight: 0.85,
+            letterSpacing: '0.05em',
+          }}>
+            GOROSEI
+          </h1>
+          <p className="font-display" style={{
+            fontSize: 'clamp(16px, 3vw, 28px)',
+            letterSpacing: '0.5em',
+            color: 'var(--text-muted)',
+            marginTop: 24,
+          }}>
+            LOYALTY OVER EVERYTHING
+          </p>
+          <div style={{ marginTop: 64 }}>
+            <a href="#shop" className="btn">SHOP THE DROP</a>
           </div>
         </div>
-      </header>
-
-      {/* ABOUT */}
-      <section id="about" style={{ padding: '160px 48px', background: 'var(--surface)' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <span className="font-mono section-num red">ABOUT US</span>
-          <h2 className="font-display" style={{ fontSize: 'clamp(36px, 6vw, 72px)', lineHeight: 1, marginTop: 24 }}>
-            A KENYAN CLOTHING BRAND FOR THE REAL YOU
-          </h2>
-          <p className="font-mono" style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.9, marginTop: 32, maxWidth: 600 }}>
-            GOROSEI is a Kenyan streetwear brand that puts self-expression first. 
-            We create clothes that let you be yourself — bold, authentic, unapologetic. 
-            This is streetwear for those who know who they are.
-          </p>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginTop: 60 }}>
-            <div className="about-card" style={{ padding: 32, background: 'var(--bg)' }}>
-              <h3 className="font-display" style={{ fontSize: 24 }}>OUR VISION</h3>
-              <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, lineHeight: 1.8 }}>To be the go-to Kenyan brand for bold self-expression through streetwear.</p>
-            </div>
-            <div className="about-card" style={{ padding: 32, background: 'var(--bg)' }}>
-              <h3 className="font-display" style={{ fontSize: 24 }}>OUR STYLE</h3>
-              <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, lineHeight: 1.8 }}>Premium quality, bold designs, authentic Kenyan streetwear.</p>
-            </div>
-            <div className="about-card" style={{ padding: 32, background: 'var(--bg)' }}>
-              <h3 className="font-display" style={{ fontSize: 24 }}>JOIN US</h3>
-              <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16, lineHeight: 1.8 }}>Follow @goroseikenya on Instagram for drops and updates.</p>
-            </div>
-          </div>
+        
+        <div style={{
+          position: 'absolute',
+          bottom: 48,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+        }}>
+          <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--text-muted)' }}>SCROLL</span>
+          <div style={{ width: 1, height: 40, background: 'var(--crimson)' }} />
         </div>
       </section>
 
-      {/* SHOP */}
-      <section id="drops" style={{ padding: '160px 40px' }}>
-        <span className="font-mono section-num">[01] SHOP ALL</span>
-        
-        {loading && <div style={{ padding: 100, textAlign: 'center', color: 'var(--text-muted)' }}>LOADING...</div>}
-        
-        {!loading && products.length === 0 && (
-          <div style={{ padding: 100, textAlign: 'center' }}>
-            <p className="font-display" style={{ fontSize: 48 }}>NO PRODUCTS YET</p>
-            <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 16 }}>Add products in /admin</p>
-          </div>
-        )}
-        
-        <div className="grid-products" style={{ display: 'grid', gap: 32, marginTop: 60 }}>
-          {products.map((p) => (
-            <a href={`/product/${p.id}`} key={p.id} className="product-card" style={{ background: 'var(--surface)', position: 'relative', paddingBottom: 24 }}>
-              <div style={{ aspectRatio: '3/4', background: 'var(--surface-light)', position: 'relative', overflow: 'hidden' }}>
-                {p.Image_url ? (
-                  <img src={getImageUrl(p.Image_url)} alt={p.Name} className="product-img" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>NO IMAGE</div>
-                )}
-              </div>
-              <div style={{ padding: 24 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 14, fontWeight: 'bold', textTransform: 'uppercase' }}>{p.Name}</span>
-                  <span style={{ color: 'var(--crimson)', fontSize: 14, fontWeight: 'bold' }}>KSh {FIXED_PRICE}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12 }}>
-                  <span className="font-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>SIZE: {p.size || 'M'}</span>
-                  <span className="font-mono" style={{ fontSize: 11, color: 'var(--crimson)' }}>VIEW</span>
-                </div>
-              </div>
-            </a>
+      {/* FEATURES */}
+      <section style={{ padding: '120px 48px', borderTop: '1px solid var(--surface-light)' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: 64,
+          maxWidth: 1200,
+          margin: '0 auto',
+        }}>
+          {[
+            { title: "Premium Heavyweight Cotton", desc: "280GSM quality" },
+            { title: "Limited Drop", desc: "Once they're gone" },
+            { title: "Worldwide Shipping", desc: "Wherever you are" },
+          ].map((feat, i) => (
+            <div key={i} style={{ textAlign: 'center' }}>
+              <h3 className="font-display" style={{ fontSize: 28, color: 'var(--crimson)' }}>0{i + 1}</h3>
+              <p className="font-mono" style={{ fontSize: 11, letterSpacing: '0.2em', marginTop: 16 }}>{feat.title.toUpperCase()}</p>
+              <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>{feat.desc}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      <footer style={{ padding: '80px 48px', borderTop: '1px solid var(--surface-light)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <img src="/logo.png" alt="GOROSEI" style={{ height: 40, objectFit: 'contain' }} />
-            <span className="font-display" style={{ fontSize: 24, letterSpacing: '0.15em', color: 'var(--text)' }}>GOROSEI</span>
-          </a>
-          <a href="/admin" className="font-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>ADMIN</a>
+      {/* SHOP SECTION */}
+      <section id="shop" style={{ padding: '160px 48px' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+          <div style={{ marginBottom: 80 }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>01 — THE DROP</span>
+            <h2 className="font-display" style={{ fontSize: 'clamp(48px, 10vw, 96px)', marginTop: 16 }}>SHIRTS</h2>
+          </div>
+          
+          <div className="grid-products" style={{ display: 'grid', gap: 48 }}>
+            {products.slice(0, 6).map((p, i) => (
+              <a href={p.Image_url ? `/product/${p.id}` : "#shop"} key={i} className="hover-lift" style={{ display: 'block' }}>
+                <div style={{
+                  aspectRatio: '3/4',
+                  background: 'var(--surface)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  border: '1px solid var(--surface-light)',
+                }}>
+                  {p.Image_url ? (
+                    <img 
+                      src={getImageUrl(p.Image_url)} 
+                      alt={p.Name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
+                    />
+                  ) : (
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'var(--surface-light)',
+                    }}>
+                      <span className="font-display" style={{ fontSize: 64, color: 'var(--text-muted)' }}>{p.Name.charAt(0)}</span>
+                    </div>
+                  )}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: 24,
+                    background: 'linear-gradient(transparent, rgba(0,0,0,0.9))',
+                  }}>
+                    <p className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--crimson)' }}>{p.tagline || "T-SHIRT"}</p>
+                  </div>
+                </div>
+                <div style={{ paddingTop: 20 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span className="font-display" style={{ fontSize: 24 }}>{p.Name}</span>
+                    <span style={{ color: 'var(--crimson)', fontSize: 14 }}>KSh {FIXED_PRICE}</span>
+                  </div>
+                  <p className="font-mono" style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{p.size || 'M'} · HEAVYWEIGHT</p>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
-        <div style={{ textAlign: 'center', marginTop: 40, color: 'var(--text-muted)', fontSize: 11 }}>© 2025 GOROSEI KENYA</div>
+      </section>
+
+      {/* STORY SECTION */}
+      <section id="story" style={{
+        padding: '200px 48px',
+        position: 'relative',
+        textAlign: 'center',
+        background: 'var(--surface)',
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'radial-gradient(circle at 50% 50%, rgba(209,31,31,0.1) 0%, transparent 50%)',
+        }} />
+        <div style={{ position: 'relative', zIndex: 10, maxWidth: 800, margin: '0 auto' }}>
+          <p className="font-display" style={{ fontSize: 'clamp(48px, 12vw, 120px)', lineHeight: 1 }}>
+            NOT JUST<br />A BRAND.
+          </p>
+          <p className="font-display" style={{ fontSize: 'clamp(48px, 12vw, 120px)', lineHeight: 1, color: 'var(--crimson)', marginTop: 16 }}>
+            A BROTHERHOOD.
+          </p>
+          <p className="font-mono" style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 48, lineHeight: 2 }}>
+            We don't chase trends. We build legacy.<br/>
+            Every design tells a story. Every piece means something.<br/>
+            This is for the ones who know.
+          </p>
+        </div>
+      </section>
+
+      {/* CTA SECTION */}
+      <section style={{ padding: '160px 48px', textAlign: 'center' }}>
+        <h2 className="font-display" style={{ fontSize: 'clamp(36px, 8vw, 72px)', lineHeight: 1 }}>
+          JOIN THE BROTHERHOOD
+        </h2>
+        <p className="font-mono" style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 24, maxWidth: 400, margin: '24px auto' }}>
+          Be the first to know about drops. Exclusive access. Real ones only.
+        </p>
+        <a href="#shop" className="btn" style={{ marginTop: 48 }}>GET EARLY ACCESS</a>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{
+        padding: '80px 48px',
+        borderTop: '1px solid var(--surface-light)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <img src="/logo.png" alt="GOROSEI" style={{ height: 32 }} />
+        </a>
+        <div style={{ display: 'flex', gap: 32 }}>
+          <a href="#" className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>INSTAGRAM</a>
+          <a href="#" className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>TIKTOK</a>
+        </div>
       </footer>
     </div>
   );
@@ -303,51 +440,104 @@ function ProductPage({ id }) {
     setLoading(false);
   }
 
-  if (loading) return <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span className="font-mono" style={{ color: 'var(--text-muted)' }}>LOADING...</span></div>;
-  if (!product) return <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span className="font-mono" style={{ color: 'var(--text-muted)' }}>NOT FOUND</span></div>;
+  if (loading) return (
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <span className="font-mono" style={{ color: 'var(--text-muted)' }}>LOADING...</span>
+    </div>
+  );
+  
+  if (!product && !products.find(p => p.id === id)) return (
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
+        <h1 className="font-display" style={{ fontSize: 64 }}>NOT FOUND</h1>
+        <a href="/" className="btn" style={{ marginTop: 32 }}>BACK TO SHOP</a>
+      </div>
+    </div>
+  );
 
+  const p = product || products.find(p => p.id === id) || { Name: "GOROSEI SHIRT", size: "M" };
   const sizes = ["S", "M", "L", "XL"];
-  const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi GOROSEI, I want: ${product.Name} (Size: ${selectedSize}) - KSh ${FIXED_PRICE}`)}`;
+  const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi GOROSEI, I want: ${p.Name} (Size: ${selectedSize}) - KSh ${FIXED_PRICE}`)}`;
 
   return (
-    <div className="product-page">
-      {/* Close */}
-      <a href="/" style={{ position: 'fixed', top: 24, left: 40, zIndex: 400, fontSize: 13, color: 'var(--text)', background: 'rgba(0,0,0,0.5)', padding: '12px 24px', backdropFilter: 'blur(10px)' }} className="font-mono">← BACK</a>
-      
-      {/* Full screen edge-to-edge image */}
-      <div className="product-hero">
-        <img 
-          src={getImageUrl(product.Image_url)} 
-          alt={product.Name} 
-          className="product-hero-img"
-          style={{ transform: `scale(1.02) translate(${parallax.current.x}px, ${parallax.current.y}px)` }}
-        />
+    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+      <a href="/" style={{
+        position: 'fixed',
+        top: 24,
+        left: 48,
+        zIndex: 1000,
+        padding: '12px 24px',
+        background: 'rgba(0,0,0,0.8)',
+        backdropFilter: 'blur(10px)',
+      }}>
+        <span className="font-mono" style={{ fontSize: 11, letterSpacing: '0.2em' }}>← BACK</span>
+      </a>
+
+      <div style={{
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        {product?.Image_url ? (
+          <img 
+            src={getImageUrl(product.Image_url)}
+            alt={p.Name}
+            style={{
+              maxWidth: '80%',
+              maxHeight: '80%',
+              objectFit: 'contain',
+              transform: `translate(${parallax.current.x}px, ${parallax.current.y}px)`,
+              transition: 'transform 0.2s ease-out',
+            }}
+          />
+        ) : (
+          <div className="font-display" style={{ fontSize: 120, color: 'var(--surface-light)' }}>{p.Name}</div>
+        )}
       </div>
-      
-      {/* Info overlay */}
-      <div className="product-overlay">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 24 }}>
+
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: '48px',
+        background: 'linear-gradient(transparent, var(--bg))',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 32 }}>
           <div>
-            <span className="font-mono section-num red">NOW VIEWING</span>
-            <h1 className="font-display" style={{ fontSize: 'clamp(32px, 5vw, 56px)', lineHeight: 1, marginTop: 8 }}>{product.Name}</h1>
+            <p className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>NOW VIEWING</p>
+            <h1 className="font-display" style={{ fontSize: 48, marginTop: 8 }}>{p.Name}</h1>
             
-            {/* Size selector */}
             <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
               {sizes.map((s) => (
-                <button 
-                  key={s} 
-                  onClick={() => setSelectedSize(s)} 
-                  className={`size-btn ${selectedSize === s ? 'selected' : ''}`}
+                <button
+                  key={s}
+                  onClick={() => setSelectedSize(s)}
+                  style={{
+                    width: 48,
+                    height: 48,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: `1px solid ${selectedSize === s ? 'var(--crimson)' : 'var(--surface-light)'}`,
+                    background: selectedSize === s ? 'var(--crimson)' : 'transparent',
+                    color: 'var(--text)',
+                    fontSize: 13,
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                  }}
                 >
                   {s}
                 </button>
               ))}
             </div>
           </div>
-          
+
           <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: 42, fontWeight: 'bold', color: 'var(--text)' }}>KSh {FIXED_PRICE}</p>
-            <a href={buyLink} className="btn" style={{ marginTop: 16, display: 'inline-block' }}>ORDER NOW →</a>
+            <p style={{ fontSize: 42, fontWeight: 'bold' }}>KSh {FIXED_PRICE}</p>
+            <a href={buyLink} className="btn" style={{ marginTop: 24 }}>ORDER NOW →</a>
           </div>
         </div>
       </div>
@@ -361,7 +551,7 @@ function AdminPage() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [url, setUrl] = useState("");
-  const [imageMode, setImageMode] = useState("file");
+  const [imageMode, setImageMode] = useState("url");
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
   const [products, setProducts] = useState([]);
@@ -407,30 +597,36 @@ function AdminPage() {
   }
 
   async function fetchProducts() { 
-    const { data } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false }); 
-    setProducts(data || []); 
+    try {
+      const { data } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false }); 
+      setProducts(data || []); 
+    } catch (err) { setProducts([]); }
   }
-  async function markSold(id) { await supabase.from("products for Gorosei").update({ sold: true }).eq("id", id); fetchProducts(); }
-  async function deleteProduct(id) { await supabase.from("products for Gorosei").delete().eq("id", id); fetchProducts(); }
+  async function deleteProduct(id) { 
+    try {
+      await supabase.from("products for Gorosei").delete().eq("id", id); 
+      fetchProducts();
+    } catch (err) { console.error(err); }
+  }
 
   return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh', padding: '120px 40px 50px' }}>
-      <nav style={{ marginBottom: 40, display: 'flex', justifyContent: 'space-between' }}>
-        <span className="font-display" style={{ fontSize: 28 }}>ADMIN</span>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', padding: '120px 48px 50px' }}>
+      <nav style={{ marginBottom: 48, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span className="font-display" style={{ fontSize: 32 }}>ADMIN</span>
         <a href="/" className="font-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>← STORE</a>
       </nav>
 
       <div style={{ maxWidth: 500 }}>
-        <span className="font-mono section-num red">ADD PRODUCT</span>
+        <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>ADD PRODUCT</span>
         
-        <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+        <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
           <button onClick={() => toggleMode("file")} style={{ flex: 1, padding: 16, background: imageMode === "file" ? 'var(--crimson)' : 'var(--surface)', border: '1px solid var(--crimson)', color: 'var(--text)', fontFamily: 'inherit', fontSize: 11, cursor: 'pointer' }}>UPLOAD</button>
           <button onClick={() => toggleMode("url")} style={{ flex: 1, padding: 16, background: imageMode === "url" ? 'var(--crimson)' : 'var(--surface)', border: '1px solid var(--crimson)', color: 'var(--text)', fontFamily: 'inherit', fontSize: 11, cursor: 'pointer' }}>URL</button>
         </div>
 
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="PRODUCT NAME" style={{ width: '100%', padding: 16, marginTop: 15, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)', fontSize: 14 }} />
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="PRODUCT NAME" style={{ width: '100%', padding: 16, marginTop: 24, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)', fontSize: 14 }} />
         
-        <div style={{ display: 'flex', gap: 10, marginTop: 15 }}>
+        <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
           <select value={size} onChange={(e) => setSize(e.target.value)} style={{ padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }}>
             <option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option>
           </select>
@@ -444,29 +640,25 @@ function AdminPage() {
           )}
         </div>
 
-        {preview && <img src={preview} style={{ width: 100, height: 100, objectFit: 'cover', marginTop: 15 }} />}
+        {preview && <img src={preview} style={{ width: 100, height: 100, objectFit: 'cover', marginTop: 16 }} />}
 
-        <button onClick={handleAdd} disabled={saving} style={{ width: '100%', padding: 18, background: 'var(--crimson)', border: 'none', color: 'var(--text)', fontSize: 12, fontWeight: 'bold', marginTop: 15, cursor: 'pointer' }}>
+        <button onClick={handleAdd} disabled={saving} style={{ width: '100%', padding: 18, background: 'var(--crimson)', border: 'none', color: 'var(--text)', fontSize: 12, fontWeight: 'bold', marginTop: 24, cursor: 'pointer' }}>
           {saving ? "..." : `ADD PRODUCT`}
         </button>
-        {status && <p style={{ marginTop: 15, color: status.includes("Error") ? 'var(--crimson)' : 'var(--text)', fontSize: 12 }}>{status}</p>}
+        {status && <p style={{ marginTop: 16, color: status.includes("Error") ? 'var(--crimson)' : 'var(--text)', fontSize: 12 }}>{status}</p>}
       </div>
 
-      <div style={{ marginTop: 60, maxWidth: 500 }}>
-        <span className="font-mono section-num red">STOCK ({products.length})</span>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 20 }}>
+      <div style={{ marginTop: 64, maxWidth: 500 }}>
+        <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>STOCK ({products.length})</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 24 }}>
           {products.map((p) => (
-            <div key={p.id} style={{ display: 'flex', gap: 15, padding: 15, background: 'var(--surface)', alignItems: 'center' }}>
-              <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: 60, height: 60, objectFit: 'cover' }} />
+            <div key={p.id} style={{ display: 'flex', gap: 16, padding: 16, background: 'var(--surface)', alignItems: 'center' }}>
+              {p.Image_url && <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: 60, height: 60, objectFit: 'cover' }} />}
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 14 }}>{p.Name}</p>
-                <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Size: {p.size} — KSh {FIXED_PRICE}</p>
-                <span style={{ fontSize: 10, color: p.sold ? 'var(--crimson)' : '#4ade80' }}>{p.sold ? "SOLD" : "AVAILABLE"}</span>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Size: {p.size}</p>
               </div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {!p.sold && <button onClick={() => markSold(p.id)} style={{ padding: '8px 12px', border: '1px solid #4ade80', color: '#4ade80', background: 'none', fontSize: 10, cursor: 'pointer' }}>SOLD</button>}
-                <button onClick={() => deleteProduct(p.id)} style={{ padding: '8px 12px', border: '1px solid var(--crimson)', color: 'var(--crimson)', background: 'none', fontSize: 10, cursor: 'pointer' }}>DEL</button>
-              </div>
+              <button onClick={() => deleteProduct(p.id)} style={{ padding: '8px 16px', border: '1px solid var(--crimson)', color: 'var(--crimson)', background: 'none', fontSize: 10, cursor: 'pointer' }}>DEL</button>
             </div>
           ))}
         </div>
