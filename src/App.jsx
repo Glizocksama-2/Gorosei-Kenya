@@ -4,7 +4,8 @@ import { createClient } from "@supabase/supabase-js";
 const SUPABASE_URL = "https://bmasldizsbbgvrrdsfek.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtYXNsZGl6c2JiZ3ZycmRzZmVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxODA1MTksImV4cCI6MjA5Mjc1NjUxOX0.kvUbduSCcfqixg8zUqU27O3cWdw63jOlePxIe26cUVw";
 const WHATSAPP_NUMBER = "254734944512";
-const FIXED_PRICE = 1500;
+const FIXED_PRICE = 2000;
+const ORIGINAL_PRICE = 2500;
 const BUCKET_NAME = "products-images";
 const ADMIN_PASSWORD = "gorosei2025";
 
@@ -482,11 +483,15 @@ function CustomerPage() {
                     </div>
                   )}
                 </div>
-                <div style={{ padding: 24 }}>
+                <div style={{ padding: 24, position: 'relative' }}>
+                  <div style={{ position: 'absolute', top: 16, right: 16, background: 'var(--crimson)', color: 'var(--text)', padding: '4px 8px', fontSize: 9, letterSpacing: '0.1em' }}>LOW STOCK</div>
                   <p className="font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--crimson)' }}>{p.size || 'T-SHIRT'}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, alignItems: 'center' }}>
                     <span className="font-display" style={{ fontSize: 24 }}>{p.Name}</span>
-                    <span style={{ color: 'var(--crimson)', fontSize: 14 }}>KSh {FIXED_PRICE}</span>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ color: 'var(--crimson)', fontSize: 14 }}>KSh {FIXED_PRICE}</span>
+                      <span style={{ fontSize: 10, color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: 8 }}>KSh {ORIGINAL_PRICE}</span>
+                    </div>
                   </div>
                 </div>
               </a>
@@ -735,6 +740,10 @@ function ProductPage({ id }) {
 
           <div style={{ textAlign: 'right' }}>
             <p style={{ fontSize: 28, fontWeight: 'bold' }}>KSh {FIXED_PRICE}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+              <span style={{ fontSize: 10, color: 'var(--text-muted)', textDecoration: 'line-through' }}>KSh {ORIGINAL_PRICE}</span>
+              <span style={{ fontSize: 9, color: '#ff4444', letterSpacing: '0.1em' }}>SAVE KSh {ORIGINAL_PRICE - FIXED_PRICE}</span>
+            </div>
             <a href={buyLink} className="btn" style={{ marginTop: 12, padding: '12px 24px', fontSize: 10 }}>ORDER NOW</a>
           </div>
         </div>
