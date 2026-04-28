@@ -169,7 +169,7 @@ function CustomerPage() {
         </a>
         <div style={{ display: 'flex', gap: 48 }}>
           <a href="#drop" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>SHOP</a>
-          <a href="#story" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>STORY</a>
+          <a href="#about" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>ABOUT</a>
           <a href="#contact" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>CONTACT</a>
           <a href="/admin" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>ADMIN</a>
         </div>
@@ -292,8 +292,8 @@ function CustomerPage() {
       </Section>
 
       {/* 3. IDENTITY SECTION */}
-      <section style={{
-        minHeight: '80vh',
+      <section id="about" style={{
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -308,18 +308,48 @@ function CustomerPage() {
         }} />
         
         <AnimatedSection>
-          <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', maxWidth: 900, margin: '0 auto' }}>
-            <h2 className="font-display" style={{ fontSize: 'clamp(40px, 10vw, 120px)', lineHeight: 1 }}>
+          <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', maxWidth: 900, margin: '0 auto', padding: '0 24px' }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>04 — OUR STORY</span>
+            
+            <h2 className="font-display" style={{ fontSize: 'clamp(32px, 8vw, 80px)', lineHeight: 1, marginTop: 24 }}>
               NOT JUST<br />A BRAND.
             </h2>
-            <h2 className="font-display" style={{ fontSize: 'clamp(40px, 10vw, 120px)', lineHeight: 1, color: 'var(--crimson)', marginTop: 24 }}>
+            <h2 className="font-display" style={{ fontSize: 'clamp(32px, 8vw, 80px)', lineHeight: 1, color: 'var(--crimson)', marginTop: 16 }}>
               A BROTHERHOOD.
             </h2>
+            
             <p className="font-mono" style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 48, lineHeight: 2 }}>
-              We don't chase trends. We build legacy.<br />
-              Every design tells a story. Every piece means something.<br />
-              This is for the ones who know.
+              Born in Nairobi. Built for the bold.<br />
+              GOROSEI means "elder" in Japanese — but we're not your grandparents' fashion.<br />
+              We're the new generation. Streetwear with substance.
             </p>
+            
+            <div style={{ marginTop: 64, display: 'grid', gap: 48, textAlign: 'left', maxWidth: 600, margin: '64px auto 0' }}>
+              <div>
+                <h3 className="font-display" style={{ fontSize: 24, color: 'var(--crimson)' }}>OUR MISSION</h3>
+                <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.8 }}>
+                  To create streetwear that speaks. Not just threads — identity. 
+                  We're here for those who dress with intent, not just for comfort.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="font-display" style={{ fontSize: 24, color: 'var(--crimson)' }}>OUR CRAFT</h3>
+                <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.8 }}>
+                  280GSM heavyweight cotton. Premium quality that lasts.
+                  Limited drops — when they're gone, they're gone.
+                  No restocks. No compromises.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="font-display" style={{ fontSize: 24, color: 'var(--crimson)' }}>JOIN THE MOVEMENT</h3>
+                <p className="font-mono" style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.8 }}>
+                  Follow @goroseikenya on Instagram. Join the brotherhood.
+                  Be first to know about drops. This is for the ones who know.
+                </p>
+              </div>
+            </div>
           </div>
         </AnimatedSection>
       </section>
