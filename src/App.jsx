@@ -109,8 +109,8 @@ export default function App() {
         .size-btn.selected { background: var(--crimson); border-color: var(--crimson); color: var(--bg); }
         
         .hero-product { position: relative; display: flex; justify-content: center; align-items: center; transition: transform 0.1s ease-out; }
-        .hero-product-img { max-height: 65vh; object-fit: contain; transition: transform 0.3s ease-out; }
-        .hero-product:hover .hero-product-img { transform: scale(1.03); }
+        .hero-product-img { max-height: 80vh; width: auto; max-width: 100%; object-fit: contain; transition: transform 0.3s ease-out; }
+        .hero-product:hover .hero-product-img { transform: scale(1.02); }
         
         @media (min-width: 768px) {
           .grid-products { grid-template-columns: repeat(3, 1fr); }
