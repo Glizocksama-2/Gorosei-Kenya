@@ -378,8 +378,9 @@ function CustomerPage() {
           <img src="/logo.png" alt="GOROSEI" style={{ height: 32 }} />
         </a>
         <div style={{ display: 'flex', gap: 48 }}>
-          <a href="#drop" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>DROP</a>
-          <a href="#values" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>VALUES</a>
+          <a href="#drop" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>SHOP</a>
+          <a href="#story" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>STORY</a>
+          <a href="#contact" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>CONTACT</a>
           <a href="/admin" className="nav-link font-mono" style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-muted)' }}>ADMIN</a>
         </div>
       </nav>
@@ -571,7 +572,7 @@ function CustomerPage() {
       </Section>
 
       {/* 6. BRAND VALUES */}
-      <Section id="values">
+      <Section id="story">
         <AnimatedSection>
           <section style={{ padding: '120px 48px', borderTop: '1px solid var(--surface-light)', borderBottom: '1px solid var(--surface-light)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 64, maxWidth: 1200, margin: '0 auto' }}>
@@ -592,7 +593,7 @@ function CustomerPage() {
       </Section>
 
       {/* 7. FINAL CTA */}
-      <section style={{ padding: '200px 48px', textAlign: 'center' }}>
+      <section id="contact" style={{ padding: '200px 48px', textAlign: 'center' }}>
         <AnimatedSection>
           <h2 className="font-display" style={{ fontSize: 'clamp(36px, 8vw, 80px)', lineHeight: 1 }}>
             JOIN THE<br />BROTHERHOOD
@@ -611,13 +612,16 @@ function CustomerPage() {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: 24,
       }}>
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src="/logo.png" alt="GOROSEI" style={{ height: 28 }} />
         </a>
         <div style={{ display: 'flex', gap: 32 }}>
-          <a href="#" className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>INSTAGRAM</a>
-          <a href="#" className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>TIKTOK</a>
+          <a href="https://instagram.com/goroseikenya" target="_blank" className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>INSTAGRAM</a>
+          <a href="https://tiktok.com/@goroseikenya" target="_blank" className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>TIKTOK</a>
+          <a href="https://wa.me/254734944512" target="_blank" className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>WHATSAPP</a>
         </div>
       </footer>
     </div>
