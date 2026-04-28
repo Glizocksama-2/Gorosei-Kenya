@@ -121,37 +121,45 @@ function AdminPage() {
       let imagePath;
       
       if (imageMode === "url") {
+        // For URL mode, skip storage and use URL directly
         imagePath = url.trim();
+        
+        const { error: err2 } = await supabase.from("products for Gorosei").insert({
+          Name: name.trim(),
+          Price: FIXED_PRICE,
+          size,
+          Image_url: imagePath,
+          sold: false
+        });
+        
+        if (err2) {
+          throw new Error("DB: " + err2.message);
+        }
       } else {
-        const fileName = `${Date.now()}-${file.name}`;
+        // File upload mode
+        const fileName = `img_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+        console.log("Uploading:", fileName);
+        
         const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(fileName, file);
-        if (error) throw error;
+        
+        if (error) {
+          console.error("Storage error:", error);
+          throw new Error("Storage: " + error.message);
+        }
+        
         imagePath = data.path;
-      }
-      
-      // Trim the name to avoid issues
-      const productName = name.trim();
-      
-      const { error: err2 } = await supabase.from("products for Gorosei").insert({
-        Name: productName,
-        Price: FIXED_PRICE,
-        size,
-        Image_url: imagePath,
-        sold: false
-      });
-      if (err2) {
-        if (err2.code === "23505") {
-          // Duplicate name - add timestamp suffix
-          const { error: err3 } = await supabase.from("products for Gorosei").insert({
-            Name: `${productName}_${Date.now()}`,
-            Price: FIXED_PRICE,
-            size,
-            Image_url: imagePath,
-            sold: false
-          });
-          if (err3) throw err3;
-        } else {
-          throw err2;
+        
+        const { error: err2 } = await supabase.from("products for Gorosei").insert({
+          Name: name.trim(),
+          Price: FIXED_PRICE,
+          size,
+          Image_url: imagePath,
+          sold: false
+        });
+        
+        if (err2) {
+          console.error("DB error:", err2);
+          throw new Error("DB: " + err2.message);
         }
       }
       
@@ -162,6 +170,7 @@ function AdminPage() {
       setUrl("");
       fetchProducts();
     } catch (err) {
+      console.error("Full error:", err);
       setStatus("Error: " + err.message);
     } finally {
       setSaving(false);
