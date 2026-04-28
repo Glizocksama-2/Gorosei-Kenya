@@ -118,9 +118,14 @@ export default function App() {
         .hero-product-img { width: 100%; height: auto; max-height: none; object-fit: cover; transition: transform 0.3s ease-out; }
         .hero-product:hover .hero-product-img { transform: scale(1.02); }
         
-        @media (min-width: 768px) {
-          .grid-products { grid-template-columns: repeat(3, 1fr); }
+@media (min-width: 768px) {
+          .grid-products { grid-template-columns: repeat(3, 1fr); gap: 32px; }
           .hero-title { font-size: clamp(64px, 12vw, 120px); }
+        }
+        @media (max-width: 767px) {
+          .grid-products { grid-template-columns: 1fr; gap: 24px; }
+          .hero-title { fontSize: clamp(48px, 10vw, 72px); }
+          .product-overlay { padding: 24px; }
         }
         @media (max-width: 767px) {
           .grid-products { grid-template-columns: 1fr; }
@@ -168,7 +173,7 @@ function CustomerPage() {
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
       {/* NAV */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 40px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(8,8,8,0.9)', backdropFilter: 'blur(10px)' }}>
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 48px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(8,8,8,0.95)', backdropFilter: 'blur(10px)' }}>
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <img src="/logo.png" alt="GOROSEI" style={{ height: 50, objectFit: 'contain' }} />
           <span className="font-display" style={{ fontSize: 28, letterSpacing: '0.15em', color: 'var(--text)' }}>GOROSEI</span>
@@ -186,7 +191,7 @@ function CustomerPage() {
           alt="GOROSEI Streetwear"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', background: 'var(--surface)' }}
         />
-        <div style={{ position: 'relative', zIndex: 10, padding: '80px 40px', width: '100%', background: 'linear-gradient(transparent 30%, rgba(0,0,0,0.8))' }}>
+        <div style={{ position: 'relative', zIndex: 10, padding: '100px 48px', width: '100%', background: 'linear-gradient(transparent 30%, rgba(0,0,0,0.8))' }}>
           <div style={{ maxWidth: 600 }}>
             <span className="font-mono section-num reveal active" style={{ color: 'var(--crimson)' }}>NEW DROP — 2025</span>
             <h1 className="font-display hero-title reveal active" style={{ fontSize: 'clamp(48px, 10vw, 110px)', lineHeight: 0.95, marginTop: 16 }}>
@@ -201,7 +206,7 @@ function CustomerPage() {
       </header>
 
       {/* ABOUT */}
-      <section id="about" style={{ padding: '120px 40px', background: 'var(--surface)' }}>
+      <section id="about" style={{ padding: '160px 48px', background: 'var(--surface)' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <span className="font-mono section-num red">ABOUT US</span>
           <h2 className="font-display" style={{ fontSize: 'clamp(36px, 6vw, 72px)', lineHeight: 1, marginTop: 24 }}>
@@ -231,7 +236,7 @@ function CustomerPage() {
       </section>
 
       {/* SHOP */}
-      <section id="drops" style={{ padding: '120px 40px' }}>
+      <section id="drops" style={{ padding: '160px 40px' }}>
         <span className="font-mono section-num">[01] SHOP ALL</span>
         
         {loading && <div style={{ padding: 100, textAlign: 'center', color: 'var(--text-muted)' }}>LOADING...</div>}
@@ -243,17 +248,17 @@ function CustomerPage() {
           </div>
         )}
         
-        <div className="grid-products" style={{ display: 'grid', gap: 1, marginTop: 40, background: 'var(--surface-light)' }}>
+        <div className="grid-products" style={{ display: 'grid', gap: 32, marginTop: 60 }}>
           {products.map((p) => (
-            <a href={`/product/${p.id}`} key={p.id} className="product-card" style={{ background: 'var(--surface)', position: 'relative' }}>
-              <div style={{ aspectRatio: '1', background: 'var(--surface-light)', position: 'relative', overflow: 'hidden' }}>
+            <a href={`/product/${p.id}`} key={p.id} className="product-card" style={{ background: 'var(--surface)', position: 'relative', paddingBottom: 24 }}>
+              <div style={{ aspectRatio: '3/4', background: 'var(--surface-light)', position: 'relative', overflow: 'hidden' }}>
                 {p.Image_url ? (
-                  <img src={getImageUrl(p.Image_url)} alt={p.Name} className="product-img" />
+                  <img src={getImageUrl(p.Image_url)} alt={p.Name} className="product-img" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                   <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>NO IMAGE</div>
                 )}
               </div>
-              <div style={{ padding: 20 }}>
+              <div style={{ padding: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 14, fontWeight: 'bold', textTransform: 'uppercase' }}>{p.Name}</span>
                   <span style={{ color: 'var(--crimson)', fontSize: 14, fontWeight: 'bold' }}>KSh {FIXED_PRICE}</span>
@@ -268,7 +273,7 @@ function CustomerPage() {
         </div>
       </section>
 
-      <footer style={{ padding: '60px 40px', borderTop: '1px solid var(--surface-light)' }}>
+      <footer style={{ padding: '80px 48px', borderTop: '1px solid var(--surface-light)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <img src="/logo.png" alt="GOROSEI" style={{ height: 40, objectFit: 'contain' }} />
