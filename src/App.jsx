@@ -116,10 +116,13 @@ function AdminPage() {
     setStatus("Uploading...");
     try {
       const fileName = `${Date.now()}-${file.name}`;
+      console.log("Uploading to:", BUCKET_NAME, fileName);
+      
       const { data, error } = await supabase.storage
         .from(BUCKET_NAME)
         .upload(fileName, file);
       
+      console.log("Upload result:", data, error);
       if (error) throw error;
       
       await supabase.from("products for Gorosei").insert({
@@ -136,7 +139,8 @@ function AdminPage() {
       setPreview(null);
       fetchProducts();
     } catch (err) {
-      setStatus("Error: " + err.message);
+      console.error("Full error:", err);
+      setStatus("Error: " + (err.message || JSON.stringify(err)));
     } finally {
       setUploading(false);
     }
