@@ -360,9 +360,16 @@ function CustomerPage() {
     "/hero5.png", "/hero6.png", "/hero7.png", "/hero8.png"
   ];
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => setCurrentSlide((p) => (p + 1) % heroImages.length), 5000);
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentSlide((p) => (p + 1) % heroImages.length);
+        setIsTransitioning(false);
+      }, 600);
+    }, 8000);
     return () => clearInterval(interval);
   }, []);
 
@@ -401,21 +408,12 @@ function CustomerPage() {
 
       console.log("Fetched products:", data?.length || 0, "error:", error);
       
-      // Show products if exists, otherwise fallback demo
       if (!error && data?.length) {
         setProducts(data);
-      } else {
-        // Fallback demo products
-        setProducts([
-          { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "" },
-          { id: 2, Name: "VOID TEE", size: "L", Price: 2000, Image_url: "" },
-          { id: 3, Name: "SHADOW JACKET", size: "XL", Price: 2000, Image_url: "" },
-        ]);
       }
       if (colData?.length) setCollections(colData);
     } catch (err) {
       console.error("Fetch error:", err);
-      setProducts([]);
     }
     setLoading(false);
   }, []);
@@ -551,20 +549,39 @@ function CustomerPage() {
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section style={{ minHeight: "100vh", position: "relative", display: "flex", alignItems: "center", overflow: "hidden" }}>
-        {heroImages.map((img, i) => (
+        {/* Base layer - always visible */}
+        <div
+          className="hero-image-layer"
+          style={{
+            position: "absolute", inset: 0,
+            background: `url(${heroImages[currentSlide]}) center/cover no-repeat`,
+            filter: "brightness(0.85)",
+            pointerEvents: "none",
+          }}
+        />
+        
+        {/* Transition overlay - pixelated transition effect */}
+        {isTransitioning && (
           <div
-            key={i}
-            className={`hero-image-layer ${i === currentSlide ? "active-slide" : ""}`}
+            className="hero-image-layer transition-overlay"
             style={{
               position: "absolute", inset: 0,
-              background: `url(${img}) center/cover no-repeat`,
-              filter: "brightness(0.85)",
-              opacity: i === currentSlide ? 1 : 0,
-              transition: "opacity 1s ease-in-out",
+              background: `url(${heroImages[(currentSlide + 1) % heroImages.length]}) center/cover no-repeat`,
+              filter: "brightness(0.85) contrast(1.2)",
               pointerEvents: "none",
+              imageRendering: "pixelated",
+              animation: "pixelScan 0.6s steps(8) forwards",
             }}
           />
-        ))}
+        )}
+        
+        {/* Scanline effect for digital feel */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px)",
+          pointerEvents: "none",
+          zIndex: 5,
+        }} />
 
         {/* FIX: Slide dots moved to bottom-left so they don't overlap scroll indicator */}
         <div style={{
@@ -821,7 +838,7 @@ function CustomerPage() {
 
       {/* FIX: Product strip REMOVED — was duplicating the grid above with no added value */}
 
-      {/* ── WORLDWIDE STATEMENT ───────────────────────────────────────── */}
+      {/* ── NAIROBI STATEMENT ───────────────────────────────────────── */}
       {/* FIX: Padding cut from 200px to 80px — was dead space */}
       <section className="section" style={{ padding: isMobile ? "80px 24px" : "80px 48px", textAlign: "center" }}>
         <AnimatedSection>
@@ -829,11 +846,11 @@ function CustomerPage() {
             fontSize: isMobile ? "clamp(48px, 14vw, 80px)" : "clamp(64px, 12vw, 160px)",
             lineHeight: 0.9,
           }}>
-            GOROSEI<br />WORLDWIDE.
+            GOROSEI<br />FROM NAIROBI.
           </h2>
           <div style={{ width: 120, height: 1, background: "var(--crimson)", margin: "48px auto" }} />
           <p className="font-mono" style={{ fontSize: 12, color: "var(--text-muted)", maxWidth: 400, margin: "0 auto", lineHeight: 1.8 }}>
-            From Nairobi streets to the world.<br />Dressed in your real self.
+            From the streets of Nairobi.<br />Dressed in your real self.
           </p>
         </AnimatedSection>
       </section>
