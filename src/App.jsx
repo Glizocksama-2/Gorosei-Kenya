@@ -452,7 +452,17 @@ function CustomerPage() {
       
       if (error) console.error("Fetch error:", error);
       const available = (data || []).filter(p => !p.sold);
-      setProducts(available);
+      
+      // Fallback demo products if none in DB
+      if (available.length === 0) {
+        setProducts([
+          { id: 1, Name: "INFERNO HOODIE", size: "M", Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
+          { id: 2, Name: "VOID TEE", size: "L", Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
+          { id: 3, Name: "SHADOW JACKET", size: "XL", Image_url: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800" },
+        ]);
+      } else {
+        setProducts(available);
+      }
     } catch (err) {
       console.error("Catch error:", err);
     }
