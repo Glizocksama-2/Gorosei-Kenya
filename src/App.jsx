@@ -421,16 +421,8 @@ function WordReveal({ text, className = "", splitOn = " " }) {
 function CustomerPage() {
   const { pos, active } = useMousePosition();
   const scrolled = useNavScroll();
-  const useRedGlow = useRedGlow();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [heroParallax, setHeroParallax] = useState({ imageRef: null, grainRef: null, textRef: null });
-  const heroRefs = HeroParallaxLayers();
-  
-  useEffect(() => {
-    setHeroParallax(heroRefs);
-    fetchProducts();
-  }, []);
   
   useEffect(() => {
     const imageEl = document.querySelector('.hero-image-layer');
