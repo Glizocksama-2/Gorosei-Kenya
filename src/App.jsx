@@ -398,25 +398,6 @@ function HeroParallaxLayers() {
   return { heroRef, imageRef, grainRef, textRef };
 }
 
-function WordReveal({ text, className = "", splitOn = " " }) {
-  const words = text.split(splitOn);
-  const { ref, visible } = useScrollReveal(0.15);
-  
-  return (
-    <span ref={ref} className={className}>
-      {words.map((word, i) => (
-        <span
-          key={i}
-          className={`reveal-word ${visible ? 'visible' : ''}`}
-          style={{ transitionDelay: `${i * 55}ms`, display: 'inline-block', marginRight: splitOn === " " ? '0.3em' : 0 }}
-        >
-          {word}
-        </span>
-      ))}
-    </span>
-  );
-}
-
 function CustomerPage() {
   const { pos, active } = useMousePosition();
   const scrolled = useNavScroll();
