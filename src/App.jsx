@@ -886,17 +886,26 @@ const name = product?.Name || id.toUpperCase();
 }
 
 function AdminPage() {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(() => {
+    return window.localStorage.getItem('gorosei_auth') === 'true';
+  });
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   
   function handleLogin() {
     if (password === ADMIN_PASSWORD) {
       setAuthenticated(true);
+      window.localStorage.setItem('gorosei_auth', 'true');
       setError("");
     } else {
       setError("Incorrect password");
     }
+  }
+  
+  function handleLogout() {
+    setAuthenticated(false);
+    window.localStorage.removeItem('gorosei_auth');
+    window.location.href = '/';
   }
   
   if (!authenticated) {
@@ -971,7 +980,10 @@ function AdminPage() {
     <div style={{ background: 'var(--bg)', minHeight: '100vh', padding: '120px 48px 50px' }}>
       <nav style={{ marginBottom: 48, display: 'flex', justifyContent: 'space-between' }}>
         <span className="font-display" style={{ fontSize: 32 }}>ADMIN</span>
-        <a href="/" className="font-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>← STORE</a>
+        <div style={{ display: 'flex', gap: 24 }}>
+          <a href="/" className="font-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>← STORE</a>
+          <button onClick={handleLogout} className="font-mono" style={{ fontSize: 11, color: 'var(--crimson)', background: 'none', border: 'none', cursor: 'pointer' }}>LOGOUT</button>
+        </div>
       </nav>
       
       <div style={{ maxWidth: 500 }}>
