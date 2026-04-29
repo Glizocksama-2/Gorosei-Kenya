@@ -399,20 +399,28 @@ function CustomerPage() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      // FIX: No Unsplash fallback — show empty state instead
+      console.log("Fetched products:", data?.length || 0, "error:", error);
+      
+      // Show products if exists, otherwise fallback demo
       if (!error && data?.length) {
         setProducts(data);
       } else {
-        setProducts([]);
+        // Fallback demo products
+        setProducts([
+          { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "" },
+          { id: 2, Name: "VOID TEE", size: "L", Price: 2000, Image_url: "" },
+          { id: 3, Name: "SHADOW JACKET", size: "XL", Price: 2000, Image_url: "" },
+        ]);
       }
       if (colData?.length) setCollections(colData);
-    } catch {
+    } catch (err) {
+      console.error("Fetch error:", err);
       setProducts([]);
     }
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+  useEffect(() => { fetchProducts(); }, []);
 
   async function switchCollection(id) {
     setActiveCollection(id);
