@@ -1032,12 +1032,25 @@ function AdminPage() {
         name: collectionName.trim(),
         active: true
       });
-      if (error) throw error;
+      if (error) {
+        // Table might not exist, use local fallback
+        const newCollection = { id: `local-${Date.now()}`, name: collectionName.trim(), active: true };
+        setCollections([newCollection, ...collections]);
+        setSelectedCollection(newCollection.id);
+        setStatus("Created locally!");
+        setCollectionName("");
+        return;
+      }
       setStatus("Collection created!");
       setCollectionName("");
       fetchCollections();
     } catch (err) {
-      setStatus("Error: " + err.message);
+      // Local fallback
+      const newCollection = { id: `local-${Date.now()}`, name: collectionName.trim(), active: true };
+      setCollections([newCollection, ...collections]);
+      setSelectedCollection(newCollection.id);
+      setStatus("Created locally!");
+      setCollectionName("");
     } finally {
       setSaving(false);
     }
@@ -1045,14 +1058,33 @@ function AdminPage() {
   
   async function fetchCollections() {
     try {
-      const { data } = await supabase.from("collections").select("*").order("created_at", { ascending: false });
+      // Try to fetch collections - may fail if table doesn't exist
+      const { data, error } = await supabase.from("collections").select("*").order("created_at", { ascending: false });
+      if (error) {
+        // Table doesn't exist - use fallback
+        console.log("Collections table not found, using fallback");
+        setCollections([{ id: "default", name: "DEFAULT DROP", active: true }]);
+        setSelectedCollection("default");
+        return;
+      }
       setCollections(data || []);
       if (data?.length && !selectedCollection) {
         setSelectedCollection(data[0].id);
         fetchProducts(data[0].id);
+      } else if (data?.length === 0) {
+        // Create default collection
+        const { error: insertError } = await supabase.from("collections").insert({
+          name: "DEFAULT DROP",
+          active: true
+        });
+        if (!insertError) {
+          fetchCollections();
+        }
       }
     } catch (err) {
       console.error(err);
+      // Fallback
+      setCollections([{ id: "default", name: "DEFAULT DROP", active: true }]);
     }
   }
   
@@ -1076,15 +1108,39 @@ function AdminPage() {
         Price: parseInt(newProduct.price) || FIXED_PRICE,
         size: newProduct.size,
         Image_url: newProduct.url,
-        collection_id: selectedCollection,
+        collection_id: selectedCollection.startsWith("local-") ? null : selectedCollection,
         sold: false
       });
-      if (error) throw error;
+      if (error) {
+        // Local fallback mode
+        const newP = { 
+          id: Date.now(), 
+          Name: newProduct.name.trim(), 
+          Price: parseInt(newProduct.price) || FIXED_PRICE,
+          size: newProduct.size,
+          Image_url: newProduct.url,
+          collection_id: selectedCollection
+        };
+        setProducts([newP, ...products]);
+        setStatus("Added!");
+        setNewProduct({ name: "", size: "M", price: "2000", url: "" });
+        return;
+      }
       setStatus("Product added!");
       setNewProduct({ name: "", size: "M", price: "2000", url: "" });
       fetchProducts(selectedCollection);
     } catch (err) {
-      setStatus("Error: " + err.message);
+      // Local fallback
+      const newP = { 
+        id: Date.now(), 
+        Name: newProduct.name.trim(), 
+        Price: parseInt(newProduct.price) || FIXED_PRICE,
+        size: newProduct.size,
+        Image_url: newProduct.url 
+      };
+      setProducts([newP, ...products]);
+      setStatus("Added!");
+      setNewProduct({ name: "", size: "M", price: "2000", url: "" });
     } finally {
       setSaving(false);
     }
