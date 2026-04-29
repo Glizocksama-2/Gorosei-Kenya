@@ -4,6 +4,10 @@
   ],
   "routes": [
     { "handle": "filesystem" },
-    { "src": "/admin", "dest": "/" }
-  ]
+    { "src": "/admin", "dest": "/" },
+    { "src": "/admin/(.*)", "dest": "/" }
+  ],
+  "github": {
+    "silent": true
+  }
 }
