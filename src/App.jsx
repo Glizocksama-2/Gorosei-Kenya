@@ -355,7 +355,10 @@ function CustomerPage() {
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false); // FIX: Mobile nav state
 
-  const heroImages = ["/hero.png", "/hero2.png", "/hero3.png"];
+  const heroImages = [
+    "/hero1.png", "/hero2.png", "/hero3.png", "/hero4.png",
+    "/hero5.png", "/hero6.png", "/hero7.png", "/hero8.png"
+  ];
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -594,14 +597,14 @@ function CustomerPage() {
           paddingBottom: 120,
         }}>
           <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
-            COLLECTION 01 — 2025
+            FROM THE STREETS OF NAIROBI
           </span>
           <h1 className="font-display" style={{
-            fontSize: isMobile ? "clamp(48px, 14vw, 80px)" : "clamp(64px, 9vw, 130px)",
-            lineHeight: 0.88, marginTop: 24,
+            fontSize: isMobile ? "clamp(32px, 10vw, 64px)" : "clamp(48px, 7vw, 100px)",
+            lineHeight: 0.95, marginTop: 24,
           }}>
-            YOUR REAL<br />SELF STARTS<br />
-            <span style={{ color: "var(--crimson)" }}>HERE.</span>
+            Sometimes all you have to do is put that shit on<br />
+            <span style={{ color: "var(--crimson)" }}>and go about your day.</span>
           </h1>
           <div style={{ display: "flex", gap: 16, marginTop: 48, flexWrap: "wrap" }}>
             <MagneticButton>
@@ -629,29 +632,77 @@ function CustomerPage() {
       <section id="about" className="section section-dark">
         <AnimatedSection>
           <div style={{
-            maxWidth: 900, margin: "0 auto",
+            maxWidth: 1200, margin: "0 auto",
             padding: isMobile ? "80px 24px" : "120px 48px",
             position: "relative",
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: isMobile ? 48 : 80,
+            alignItems: "center",
           }}>
-            <div className="concentric-circles" />
-            <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
-              • WHO WE ARE
-            </span>
-            <h2 className="font-display" style={{
-              fontSize: isMobile ? "clamp(36px, 10vw, 64px)" : "clamp(48px, 8vw, 96px)",
-              lineHeight: 1, marginTop: 24,
-            }}>
-              A KENYAN BRAND THAT WILL HAVE YOU FEELING LIKE YOUR{" "}
-              <span style={{ color: "var(--crimson)" }}>REAL SELF.</span>
-            </h2>
-            <p className="font-mono" style={{
-              fontSize: 13, color: "var(--text-muted)", marginTop: 48,
-              lineHeight: 1.7, maxWidth: 520,
-            }}>
-              Born in Nairobi. Every piece is made for the person who already knows who they are —
-              they just needed the right uniform.
-            </p>
-            <div className="corner-brackets" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
+            {/* Founder Image */}
+            <div style={{ position: "relative" }}>
+              <img 
+                src="/founder.png" 
+                alt="Brian Mukwe - Founder" 
+                style={{ 
+                  width: "100%", 
+                  maxWidth: 400, 
+                  aspectRatio: "3/4", 
+                  objectFit: "cover",
+                  filter: "grayscale(30%)",
+                }} 
+              />
+              <div style={{
+                position: "absolute", bottom: 0, left: 0, right: 0,
+                background: "linear-gradient(to top, rgba(8,8,8,0.9), transparent)",
+                padding: "40px 24px 24px",
+              }}>
+                <p className="font-display" style={{ fontSize: 24 }}>BRIAN MUKWE</p>
+                <p className="font-mono" style={{ fontSize: 11, color: "var(--crimson)", marginTop: 4 }}>
+                  GLIZOCK / GLOCK
+                </p>
+              </div>
+            </div>
+            
+            {/* About Content */}
+            <div style={{ position: "relative" }}>
+              <div className="concentric-circles" />
+              <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+                • WHO WE ARE
+              </span>
+              <h2 className="font-display" style={{
+                fontSize: isMobile ? "clamp(36px, 10vw, 64px)" : "clamp(48px, 8vw, 96px)",
+                lineHeight: 1, marginTop: 24,
+              }}>
+                NAIROBI'S<br /><span style={{ color: "var(--crimson)" }}>VISION</span>
+              </h2>
+              <p className="font-mono" style={{
+                fontSize: 14, color: "var(--text-muted)", marginTop: 24,
+                letterSpacing: "0.1em",
+              }}>
+                LUCKY SUMMER 2026
+              </p>
+              <p className="font-mono" style={{
+                fontSize: 13, color: "var(--text-muted)", marginTop: 32,
+                lineHeight: 1.8, maxWidth: 480,
+              }}>
+                I started GOROSEI because I wanted to add more graphical content to the streets of Nairobi. A breath of life in the streets. Tired of all the gloomy and average pieces.
+              </p>
+              <p className="font-mono" style={{
+                fontSize: 13, color: "var(--text-muted)", marginTop: 24,
+                lineHeight: 1.8, maxWidth: 480,
+              }}>
+                When I was a kid I used to get hand-me-downs from my cousin. I was literally a 14yr old kid rocking the meanest skull t-shirt with old timberlands.
+              </p>
+              <p className="font-display" style={{
+                fontSize: isMobile ? 24 : 32, marginTop: 40,
+                color: "var(--crimson)",
+              }}>
+                "simply to put that shit on"
+              </p>
+              <div className="corner-brackets" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
+            </div>
           </div>
         </AnimatedSection>
       </section>
