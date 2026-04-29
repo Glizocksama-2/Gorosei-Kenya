@@ -339,7 +339,7 @@ function ProductCard({ product }) {
       <div style={{ padding: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span className="font-display" style={{ fontSize: 20 }}>{name}</span>
-          <span className="font-mono" style={{ fontSize: 12, color: 'var(--crimson)', letterSpacing: '0.1em' }}>KSh {FIXED_PRICE}</span>
+          <span className="font-mono" style={{ fontSize: 12, color: 'var(--crimson)', letterSpacing: '0.1em' }}>KSh {product?.Price || FIXED_PRICE}</span>
         </div>
         <span className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 8, display: 'block', letterSpacing: '0.2em' }}>ADD TO CART →</span>
       </div>
@@ -703,7 +703,7 @@ function CustomerPage() {
               )}
               <div className="info">
                 <span className="font-display" style={{ fontSize: 18 }}>{p.Name}</span>
-                <span className="font-mono" style={{ fontSize: 11, color: 'var(--crimson)', marginLeft: 12 }}>KSh {FIXED_PRICE}</span>
+                <span className="font-mono" style={{ fontSize: 11, color: 'var(--crimson)', marginLeft: 12 }}>KSh {p.Price || FIXED_PRICE}</span>
               </div>
             </a>
           ))}
@@ -785,9 +785,10 @@ function ProductPage({ id }) {
     </div>
   );
   
-  const name = product?.Name || id.toUpperCase();
+const name = product?.Name || id.toUpperCase();
+  const price = product?.Price || FIXED_PRICE;
   const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${FIXED_PRICE}\n\nIs it available?`
+    `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Price: KSh ${price}\n\nIs it available?`
   )}`;
   
   return (
@@ -870,7 +871,7 @@ function ProductPage({ id }) {
           </div>
           
           <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: 28, fontWeight: 'bold' }}>KSh {FIXED_PRICE}</p>
+            <p style={{ fontSize: 28, fontWeight: 'bold' }}>KSh {product?.Price || FIXED_PRICE}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
               <span style={{ fontSize: 10, color: 'var(--text-muted)', textDecoration: 'line-through' }}>KSh {ORIGINAL_PRICE}</span>
               <span style={{ fontSize: 9, color: '#ff4444', letterSpacing: '0.1em' }}>SAVE KSh {ORIGINAL_PRICE - FIXED_PRICE}</span>
@@ -921,6 +922,7 @@ function AdminPage() {
   
   const [name, setName] = useState("");
   const [size, setSize] = useState("M");
+  const [price, setPrice] = useState("2000");
   const [url, setUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
@@ -929,20 +931,21 @@ function AdminPage() {
   useEffect(() => { fetchProducts(); }, []);
   
   async function handleAdd() {
-    if (!name || !url) { setStatus("Name and URL required"); return; }
+    if (!name || !url) { setStatus("Name and Image URL required"); return; }
     setSaving(true);
     setStatus("Saving...");
     try {
       const { error } = await supabase.from("products for Gorosei").insert({
         "Name": name.trim(),
-        "Price": FIXED_PRICE,
+        "Price": parseInt(price) || FIXED_PRICE,
         size,
         "Image_url": url.trim(),
         sold: false
       });
       if (error) throw error;
       setStatus("Done!");
-      setName(""); setUrl("");
+      setName("");
+      setUrl("");
       fetchProducts();
     } catch (err) {
       setStatus("Error: " + (err.message || JSON.stringify(err)));
@@ -972,7 +975,7 @@ function AdminPage() {
       </nav>
       
       <div style={{ maxWidth: 500 }}>
-        <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>ADD PRODUCT</span>
+        <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>ADD TO DROP</span>
         
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder="PRODUCT NAME" style={{ width: '100%', padding: 16, marginTop: 24, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)', fontSize: 14 }} />
         
@@ -980,24 +983,25 @@ function AdminPage() {
           <select value={size} onChange={(e) => setSize(e.target.value)} style={{ padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }}>
             <option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option>
           </select>
+          <input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="PRICE (KSh)" style={{ width: 120, padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }} />
           <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="IMAGE URL" style={{ flex: 1, padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }} />
         </div>
         
         <button onClick={handleAdd} disabled={saving} className="btn" style={{ width: '100%', marginTop: 24 }}>
-          {saving ? "..." : "ADD PRODUCT"}
+          {saving ? "..." : "ADD TO DROP"}
         </button>
         {status && <p style={{ marginTop: 16, color: status.includes("Error") ? 'var(--crimson)' : 'var(--text)', fontSize: 12 }}>{status}</p>}
       </div>
       
       <div style={{ marginTop: 64, maxWidth: 500 }}>
-        <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>STOCK ({products.length})</span>
+        <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>CURRENT DROP ({products.length})</span>
         <div style={{ marginTop: 24 }}>
           {products.map((p) => (
             <div key={p.id} style={{ display: 'flex', gap: 16, padding: 16, background: 'var(--surface)', alignItems: 'center', marginTop: 12 }}>
               {p.Image_url && <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: 60, height: 60, objectFit: 'cover' }} />}
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 14 }}>{p.Name}</p>
-                <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Size: {p.size}</p>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Size: {p.size} • KSh {p.Price || FIXED_PRICE}</p>
               </div>
               <button onClick={() => deleteProduct(p.id)} style={{ padding: '8px 16px', border: '1px solid var(--crimson)', color: 'var(--crimson)', background: 'none', fontSize: 10, cursor: 'pointer' }}>DEL</button>
             </div>
