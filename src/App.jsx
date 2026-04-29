@@ -8,7 +8,6 @@ const FIXED_PRICE = 2000;
 const ORIGINAL_PRICE = 2500;
 const BUCKET_NAME = "products-images";
 const ADMIN_PASSWORD = "gorosei2025";
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1498814467864264854/BM_MgL_SsTsYWT_5XwD3hnyUwy2o4yFX9z1yHcGFQahhw2rLYWz1OXj_aGuzwYqs1xZQ";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -422,6 +421,8 @@ function CustomerPage() {
   const { pos, active } = useMousePosition();
   const scrolled = useNavScroll();
   const [products, setProducts] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const [activeCollection, setActiveCollection] = useState(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
@@ -445,28 +446,54 @@ function CustomerPage() {
   
   async function fetchProducts() {
     try {
-      const { data, error } = await supabase
-        .from("products for Gorosei")
+      // First get active collections
+      const { data: collectionsData } = await supabase
+        .from("collections")
         .select("*")
+        .eq("active", true)
         .order("created_at", { ascending: false });
       
-      if (error) console.error("Fetch error:", error);
-      const available = (data || []).filter(p => !p.sold);
-      
-      // Fallback demo products if none in DB
-      if (available.length === 0) {
-        setProducts([
-          { id: 1, Name: "INFERNO HOODIE", size: "M", Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
-          { id: 2, Name: "VOID TEE", size: "L", Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
-          { id: 3, Name: "SHADOW JACKET", size: "XL", Image_url: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800" },
-        ]);
+      if (collectionsData?.length) {
+        setCollections(collectionsData);
+        setActiveCollection(collectionsData[0].id);
+        
+        // Then get products for first collection
+        const { data, error } = await supabase
+          .from("products for Gorosei")
+          .select("*")
+          .eq("collection_id", collectionsData[0].id)
+          .eq("sold", false)
+          .order("created_at", { ascending: false });
+        
+        if (error) console.error("Fetch error:", error);
+        setProducts(data || []);
       } else {
-        setProducts(available);
+        // Fallback demo products if no collections
+        setProducts([
+          { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
+          { id: 2, Name: "VOID TEE", size: "L", Price: 1500, Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
+          { id: 3, Name: "SHADOW JACKET", size: "XL", Price: 3500, Image_url: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800" },
+        ]);
       }
     } catch (err) {
       console.error("Catch error:", err);
     }
     setLoading(false);
+  }
+  
+  async function switchCollection(id) {
+    setActiveCollection(id);
+    try {
+      const { data } = await supabase
+        .from("products for Gorosei")
+        .select("*")
+        .eq("collection_id", id)
+        .eq("sold", false)
+        .order("created_at", { ascending: false });
+      setProducts(data || []);
+    } catch (err) {
+      console.error(err);
+    }
   }
   
   return (
@@ -666,8 +693,36 @@ function CustomerPage() {
       <section id="drop" className="section">
         <AnimatedSection>
           <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-            <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>02 — PIECES</span>
-            <h2 className="font-display" style={{ fontSize: 'clamp(48px, 10vw, 96px)', marginTop: 16 }}>THE DROP</h2>
+            {/* Collection tabs */}
+            {collections.length > 0 ? (
+              <div style={{ display: 'flex', gap: 24, marginBottom: 32, flexWrap: 'wrap' }}>
+                {collections.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => switchCollection(c.id)}
+                    className="font-mono"
+                    style={{
+                      fontSize: 11,
+                      letterSpacing: '0.2em',
+                      color: activeCollection === c.id ? 'var(--crimson)' : 'var(--text-muted)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      paddingBottom: 4,
+                      borderBottom: activeCollection === c.id ? '1px solid var(--crimson)' : '1px solid transparent',
+                    }}
+                  >
+                    {c.name.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>02 — PIECES</span>
+            )}
+            
+            <h2 className="font-display" style={{ fontSize: 'clamp(48px, 10vw, 96px)', marginTop: 16 }}>
+              {collections.length > 0 ? collections.find(c => c.id === activeCollection)?.name?.toUpperCase() || "THE DROP" : "THE DROP"}
+            </h2>
           </div>
           
           <div className="grid-3" style={{ marginTop: 80, maxWidth: 1400, margin: '80px auto 0' }}>
@@ -929,50 +984,125 @@ function AdminPage() {
     );
   }
   
-  const [name, setName] = useState("");
-  const [size, setSize] = useState("M");
-  const [price, setPrice] = useState("2000");
-  const [url, setUrl] = useState("");
+  // Collection management state
+  const [activeTab, setActiveTab] = useState("collections");
+  const [collections, setCollections] = useState([]);
+  const [collectionName, setCollectionName] = useState("");
+  const [selectedCollection, setSelectedCollection] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [newProduct, setNewProduct] = useState({ name: "", size: "M", price: "2000", url: "" });
+  const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
-  const [products, setProducts] = useState([]);
   
-  useEffect(() => { fetchProducts(); }, []);
+  useEffect(() => { fetchCollections(); }, []);
   
-  async function handleAdd() {
-    if (!name || !url) { setStatus("Name and Image URL required"); return; }
+  async function handleUploadImage(file) {
+    if (!file) return null;
+    setUploading(true);
+    try {
+      const fileName = `${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(fileName, file);
+      if (error) throw error;
+      return getImageUrl(data.path);
+    } catch (err) {
+      console.error(err);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  }
+  
+  async function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const imageUrl = await handleUploadImage(file);
+    if (imageUrl) {
+      setNewProduct({ ...newProduct, url: imageUrl });
+      setStatus("Image uploaded!");
+    }
+  }
+  
+  async function createCollection() {
+    if (!collectionName.trim()) { setStatus("Collection name required"); return; }
     setSaving(true);
-    setStatus("Saving...");
+    setStatus("Creating...");
+    try {
+      const { error } = await supabase.from("collections").insert({
+        name: collectionName.trim(),
+        active: true
+      });
+      if (error) throw error;
+      setStatus("Collection created!");
+      setCollectionName("");
+      fetchCollections();
+    } catch (err) {
+      setStatus("Error: " + err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+  
+  async function fetchCollections() {
+    try {
+      const { data } = await supabase.from("collections").select("*").order("created_at", { ascending: false });
+      setCollections(data || []);
+      if (data?.length && !selectedCollection) {
+        setSelectedCollection(data[0].id);
+        fetchProducts(data[0].id);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  
+  async function fetchProducts(collectionId) {
+    try {
+      const { data } = await supabase.from("products for Gorosei").select("*").eq("collection_id", collectionId).order("created_at", { ascending: false });
+      setProducts(data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  
+  async function addProductToCollection() {
+    if (!selectedCollection) { setStatus("Select a collection first"); return; }
+    if (!newProduct.name || !newProduct.url) { setStatus("Name and image required"); return; }
+    setSaving(true);
+    setStatus("Adding...");
     try {
       const { error } = await supabase.from("products for Gorosei").insert({
-        "Name": name.trim(),
-        "Price": parseInt(price) || FIXED_PRICE,
-        size,
-        "Image_url": url.trim(),
+        Name: newProduct.name.trim(),
+        Price: parseInt(newProduct.price) || FIXED_PRICE,
+        size: newProduct.size,
+        Image_url: newProduct.url,
+        collection_id: selectedCollection,
         sold: false
       });
       if (error) throw error;
-      setStatus("Done!");
-      setName("");
-      setUrl("");
-      fetchProducts();
+      setStatus("Product added!");
+      setNewProduct({ name: "", size: "M", price: "2000", url: "" });
+      fetchProducts(selectedCollection);
     } catch (err) {
-      setStatus("Error: " + (err.message || JSON.stringify(err)));
+      setStatus("Error: " + err.message);
+    } finally {
+      setSaving(false);
     }
-    finally { setSaving(false); }
-  }
-  
-  async function fetchProducts() {
-    try {
-      const { data } = await supabase.from("products for Gorosei").select("*").order("created_at", { ascending: false });
-      setProducts(data || []);
-    } catch (err) { setProducts([]); }
   }
   
   async function deleteProduct(id) {
     try {
       await supabase.from("products for Gorosei").delete().eq("id", id);
-      fetchProducts();
+      fetchProducts(selectedCollection);
+    } catch (err) { console.error(err); }
+  }
+  
+  async function deleteCollection(id) {
+    if (!confirm("Delete this collection and all its products?")) return;
+    try {
+      await supabase.from("products for Gorosei").delete().eq("collection_id", id);
+      await supabase.from("collections").delete().eq("id", id);
+      fetchCollections();
     } catch (err) { console.error(err); }
   }
   
@@ -986,40 +1116,86 @@ function AdminPage() {
         </div>
       </nav>
       
-      <div style={{ maxWidth: 500 }}>
-        <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>ADD TO DROP</span>
-        
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="PRODUCT NAME" style={{ width: '100%', padding: 16, marginTop: 24, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)', fontSize: 14 }} />
-        
-        <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-          <select value={size} onChange={(e) => setSize(e.target.value)} style={{ padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }}>
-            <option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option>
-          </select>
-          <input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="PRICE (KSh)" style={{ width: 120, padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }} />
-          <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="IMAGE URL" style={{ flex: 1, padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }} />
-        </div>
-        
-        <button onClick={handleAdd} disabled={saving} className="btn" style={{ width: '100%', marginTop: 24 }}>
-          {saving ? "..." : "ADD TO DROP"}
-        </button>
-        {status && <p style={{ marginTop: 16, color: status.includes("Error") ? 'var(--crimson)' : 'var(--text)', fontSize: 12 }}>{status}</p>}
+      {/* Tab navigation */}
+      <div style={{ display: 'flex', gap: 24, marginBottom: 48, borderBottom: '1px solid var(--surface-light)', paddingBottom: 16 }}>
+        <button onClick={() => setActiveTab("collections")} className="font-mono" style={{ fontSize: 11, color: activeTab === 'collections' ? 'var(--crimson)' : 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.2em' }}>COLLECTIONS</button>
+        <button onClick={() => setActiveTab("products")} className="font-mono" style={{ fontSize: 11, color: activeTab === 'products' ? 'var(--crimson)' : 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.2em' }}>PRODUCTS</button>
       </div>
       
-      <div style={{ marginTop: 64, maxWidth: 500 }}>
-        <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>CURRENT DROP ({products.length})</span>
-        <div style={{ marginTop: 24 }}>
-          {products.map((p) => (
-            <div key={p.id} style={{ display: 'flex', gap: 16, padding: 16, background: 'var(--surface)', alignItems: 'center', marginTop: 12 }}>
-              {p.Image_url && <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: 60, height: 60, objectFit: 'cover' }} />}
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 14 }}>{p.Name}</p>
-                <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Size: {p.size} • KSh {p.Price || FIXED_PRICE}</p>
-              </div>
-              <button onClick={() => deleteProduct(p.id)} style={{ padding: '8px 16px', border: '1px solid var(--crimson)', color: 'var(--crimson)', background: 'none', fontSize: 10, cursor: 'pointer' }}>DEL</button>
+      {/* Collections Tab */}
+      {activeTab === "collections" && (
+        <div>
+          <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>NEW COLLECTION</span>
+          <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+            <input value={collectionName} onChange={(e) => setCollectionName(e.target.value)} placeholder="Collection name (e.g., SUMMER 2025)" style={{ flex: 1, padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)', fontSize: 14 }} />
+            <button onClick={createCollection} disabled={saving} className="btn" style={{ padding: '16px 32px' }}>CREATE COLLECTION</button>
+          </div>
+          
+          <div style={{ marginTop: 48 }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>ALL COLLECTIONS ({collections.length})</span>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 16, marginTop: 24 }}>
+              {collections.map((c) => (
+                <div key={c.id} style={{ padding: 24, background: 'var(--surface)', border: selectedCollection === c.id ? '1px solid var(--crimson)' : '1px solid var(--surface-light)', cursor: 'pointer' }} onClick={() => { setSelectedCollection(c.id); fetchProducts(c.id); }}>
+                  <p className="font-display" style={{ fontSize: 20 }}>{c.name}</p>
+                  <p className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 8 }}>{c.active ? 'ACTIVE' : 'INACTIVE'}</p>
+                  <button onClick={(e) => { e.stopPropagation(); deleteCollection(c.id); }} style={{ marginTop: 16, padding: '8px 16px', border: '1px solid var(--crimson)', color: 'var(--crimson)', background: 'none', fontSize: 10, cursor: 'pointer' }}>DELETE</button>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      )}
+      
+      {/* Products Tab */}
+      {activeTab === "products" && (
+        <div>
+          <div style={{ display: 'flex', gap: 16, marginBottom: 32, flexWrap: 'wrap' }}>
+            <select value={selectedCollection || ""} onChange={(e) => { setSelectedCollection(e.target.value); fetchProducts(e.target.value); }} style={{ padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)', minWidth: 200 }}>
+              <option value="">Select collection</option>
+              {collections.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
+            </select>
+          </div>
+          
+          <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>ADD PRODUCT</span>
+          
+          <div style={{ display: 'flex', gap: 12, marginTop: 16, flexWrap: 'wrap' }}>
+            <input value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} placeholder="Product name" style={{ flex: '1 1 200px', padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)', fontSize: 14, minWidth: 200 }} />
+            <select value={newProduct.size} onChange={(e) => setNewProduct({ ...newProduct, size: e.target.value })} style={{ padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }}>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+            <input value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} placeholder="Price" style={{ width: 120, padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', color: 'var(--text)' }} />
+            
+            {/* Image upload */}
+            <label style={{ cursor: 'pointer', padding: 16, background: 'var(--surface)', border: '1px solid var(--surface-light)', display: 'flex', alignItems: 'center', gap: 12 }}>
+              {uploading ? <span className="font-mono" style={{ fontSize: 10 }}>UPLOADING...</span> : newProduct.url ? <img src={newProduct.url} style={{ width: 40, height: 40, objectFit: 'cover' }} /> : <span className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>UPLOAD IMAGE</span>}
+              <input type="file" accept="image/*" onChange={handleFileSelect} style={{ display: 'none' }} />
+            </label>
+          </div>
+          
+          <button onClick={addProductToCollection} disabled={saving} className="btn" style={{ marginTop: 24 }}>{saving ? "..." : "ADD PRODUCT"}</button>
+          {status && <p style={{ marginTop: 16, color: status.includes("Error") ? 'var(--crimson)' : 'var(--text)', fontSize: 12 }}>{status}</p>}
+          
+          {/* Products in collection */}
+          {selectedCollection && (
+            <div style={{ marginTop: 48 }}>
+              <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>PRODUCTS IN COLLECTION ({products.length})</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16, marginTop: 24 }}>
+                {products.map((p) => (
+                  <div key={p.id} style={{ padding: 16, background: 'var(--surface)' }}>
+                    {p.Image_url && <img src={getImageUrl(p.Image_url)} alt={p.Name} style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />}
+                    <p style={{ fontSize: 14, marginTop: 12 }}>{p.Name}</p>
+                    <p className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>Size: {p.size} • KSh {p.Price || FIXED_PRICE}</p>
+                    <button onClick={() => deleteProduct(p.id)} style={{ marginTop: 12, padding: '8px 16px', border: '1px solid var(--crimson)', color: 'var(--crimson)', background: 'none', fontSize: 10, cursor: 'pointer', width: '100%' }}>DELETE</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
