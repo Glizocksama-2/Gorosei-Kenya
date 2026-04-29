@@ -443,48 +443,24 @@ function CustomerPage() {
   
   async function fetchProducts() {
     try {
-      // Try fetching collections
-      const { data: collectionsData, error: collectionsError } = await supabase
-        .from("collections")
+      // Always fetch all unsold products
+      const { data, error } = await supabase
+        .from("products for Gorosei")
         .select("*")
+        .eq("sold", false)
         .order("created_at", { ascending: false });
       
-      if (collectionsError) {
-        // Try fetching all products directly (no collections)
-        const { data, error } = await supabase
-          .from("products for Gorosei")
+      if (!error && data?.length) {
+        setProducts(data);
+        // Also try fetching collections for the filter UI
+        const { data: collectionsData } = await supabase
+          .from("collections")
           .select("*")
-          .eq("sold", false)
           .order("created_at", { ascending: false });
-        
-        if (!error && data?.length) {
-          setProducts(data);
-        } else {
-          // Fallback demo products
-          setProducts([
-            { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
-            { id: 2, Name: "VOID TEE", size: "L", Price: 1500, Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
-            { id: 3, Name: "SHADOW JACKET", size: "XL", Price: 3500, Image_url: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800" },
-          ]);
+        if (collectionsData?.length) {
+          setCollections(collectionsData);
+          setActiveCollection(collectionsData[0].id);
         }
-        setLoading(false);
-        return;
-      }
-      
-      if (collectionsData?.length) {
-        setCollections(collectionsData);
-        setActiveCollection(collectionsData[0].id);
-        
-        // Get products for first collection
-        const { data, error } = await supabase
-          .from("products for Gorosei")
-          .select("*")
-          .eq("collection_id", collectionsData[0].id)
-          .eq("sold", false)
-          .order("created_at", { ascending: false });
-        
-        if (error) console.error("Fetch error:", error);
-        setProducts(data || []);
       } else {
         // Fallback demo products
         setProducts([
@@ -494,7 +470,13 @@ function CustomerPage() {
         ]);
       }
     } catch (err) {
-      console.error("Catch error:", err);
+      console.error("Fetch error:", err);
+      // Fallback demo products on error
+      setProducts([
+        { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
+        { id: 2, Name: "VOID TEE", size: "L", Price: 1500, Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
+        { id: 3, Name: "SHADOW JACKET", size: "XL", Price: 3500, Image_url: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800" },
+      ]);
     }
     setLoading(false);
   }
