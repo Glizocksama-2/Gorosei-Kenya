@@ -1,11 +1,7 @@
 {
+  "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/admin", "dest": "/" },
-    { "src": "/admin/(.*)", "dest": "/" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "github": {
     "silent": true
