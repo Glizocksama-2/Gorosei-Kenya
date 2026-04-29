@@ -443,35 +443,36 @@ function CustomerPage() {
   
   async function fetchProducts() {
     try {
-      // Always fetch all unsold products
-      const { data, error } = await supabase
+      // Fetch all products without collection filter
+      const { data: productsData, error: productsError } = await supabase
         .from("products for Gorosei")
         .select("*")
         .eq("sold", false)
         .order("created_at", { ascending: false });
       
-      if (!error && data?.length) {
-        setProducts(data);
-        // Also try fetching collections for the filter UI
-        const { data: collectionsData } = await supabase
-          .from("collections")
-          .select("*")
-          .order("created_at", { ascending: false });
-        if (collectionsData?.length) {
-          setCollections(collectionsData);
-          setActiveCollection(collectionsData[0].id);
-        }
+      // Fetch collections
+      const { data: collectionsData } = await supabase
+        .from("collections")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      if (!productsError && productsData?.length) {
+        setProducts(productsData);
+        console.log("Fetched products:", productsData.length);
       } else {
-        // Fallback demo products
+        console.log("No products from Supabase, using fallback");
         setProducts([
           { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
           { id: 2, Name: "VOID TEE", size: "L", Price: 1500, Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
           { id: 3, Name: "SHADOW JACKET", size: "XL", Price: 3500, Image_url: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800" },
         ]);
       }
+      
+      if (collectionsData?.length) {
+        setCollections(collectionsData);
+      }
     } catch (err) {
       console.error("Fetch error:", err);
-      // Fallback demo products on error
       setProducts([
         { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
         { id: 2, Name: "VOID TEE", size: "L", Price: 1500, Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
@@ -479,6 +480,11 @@ function CustomerPage() {
       ]);
     }
     setLoading(false);
+  }
+  
+  function showAllDrops() {
+    setActiveCollection(null);
+    fetchProducts();
   }
   
   async function switchCollection(id) {
@@ -728,35 +734,49 @@ function CustomerPage() {
       <section id="drop" className="section">
         <AnimatedSection>
           <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-            {/* Collection tabs */}
-            {collections.length > 0 ? (
-              <div style={{ display: 'flex', gap: 24, marginBottom: 32, flexWrap: 'wrap' }}>
-                {collections.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => switchCollection(c.id)}
-                    className="font-mono"
-                    style={{
-                      fontSize: 11,
-                      letterSpacing: '0.2em',
-                      color: activeCollection === c.id ? 'var(--crimson)' : 'var(--text-muted)',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      paddingBottom: 4,
-                      borderBottom: activeCollection === c.id ? '1px solid var(--crimson)' : '1px solid transparent',
-                    }}
-                  >
-                    {c.name.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <span className="font-mono" style={{ fontSize: 10, letterSpacing: '0.3em', color: 'var(--crimson)' }}>02 — PIECES</span>
-            )}
+            {/* Collection filters + All Drops */}
+            <div style={{ display: 'flex', gap: 24, marginBottom: 32, flexWrap: 'wrap', alignItems: 'center' }}>
+              <button
+                onClick={showAllDrops}
+                className="font-mono"
+                style={{
+                  fontSize: 11,
+                  letterSpacing: '0.2em',
+                  color: activeCollection === null ? 'var(--crimson)' : 'var(--text-muted)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  paddingBottom: 4,
+                  borderBottom: activeCollection === null ? '1px solid var(--crimson)' : '1px solid transparent',
+                }}
+              >
+                ALL DROPS
+              </button>
+              {collections.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => switchCollection(c.id)}
+                  className="font-mono"
+                  style={{
+                    fontSize: 11,
+                    letterSpacing: '0.2em',
+                    color: activeCollection === c.id ? 'var(--crimson)' : 'var(--text-muted)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    paddingBottom: 4,
+                    borderBottom: activeCollection === c.id ? '1px solid var(--crimson)' : '1px solid transparent',
+                  }}
+                >
+                  {c.name?.toUpperCase() || "COLLECTION"}
+                </button>
+              ))}
+            </div>
             
             <h2 className="font-display" style={{ fontSize: 'clamp(48px, 10vw, 96px)', marginTop: 16 }}>
-              {collections.length > 0 ? collections.find(c => c.id === activeCollection)?.name?.toUpperCase() || "THE DROP" : "THE DROP"}
+              {activeCollection === null 
+                ? "ALL DROPS" 
+                : collections.find(c => c.id === activeCollection)?.name?.toUpperCase() || "THE DROP"}
             </h2>
           </div>
           
