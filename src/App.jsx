@@ -636,7 +636,7 @@ function CustomerPage() {
               <a href="#drop" className="btn">SHOP THE DROP</a>
             </MagneticButton>
             {/* FIX: "LOOKBOOK" renamed to "OUR STORY" — about section has no imagery */}
-            <a href="#about" className="btn btn-outline">OUR STORY</a>
+            <a href="#lookbook" className="btn btn-outline">LOOKBOOK</a>
           </div>
         </div>
 
@@ -852,6 +852,65 @@ function CustomerPage() {
           <p className="font-mono" style={{ fontSize: 12, color: "var(--text-muted)", maxWidth: 400, margin: "0 auto", lineHeight: 1.8 }}>
             From the streets of Nairobi.<br />Dressed in your real self.
           </p>
+        </AnimatedSection>
+      </section>
+
+      {/* ── LOOKBOOK ──────────────────────────────────────────────── */}
+      <section id="lookbook" className="section" style={{ padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <AnimatedSection>
+          <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+              • LOOKBOOK
+            </span>
+            <h2 className="font-display" style={{
+              fontSize: isMobile ? "clamp(36px, 10vw, 64px)" : "clamp(48px, 8vw, 96px)",
+              lineHeight: 1, marginTop: 24,
+            }}>
+              ON THE STREETS
+            </h2>
+            <p className="font-mono" style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 24, lineHeight: 1.8 }}>
+              Real fit checks. Real Nairobi. No studio, no filter.
+            </p>
+          </div>
+          
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            gap: 16,
+            marginTop: 48,
+          }}>
+            {/* Using a few hero images as lookbook shots - replace with actual lifestyle shots when available */}
+            {[
+              { src: "/hero1.png", alt: "GOROSEI fit check 1" },
+              { src: "/hero3.png", alt: "GOROSEI fit check 2" },
+              { src: "/hero5.png", alt: "GOROSEI fit check 3" },
+            ].map((img, i) => (
+              <div key={i} style={{ position: "relative", overflow: "hidden" }}>
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  style={{
+                    width: "100%",
+                    aspectRatio: "3/4",
+                    objectFit: "cover",
+                    filter: "grayscale(20%)",
+                  }}
+                />
+                <div style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: "24px",
+                  background: "linear-gradient(to top, rgba(8,8,8,0.9), transparent)",
+                }}>
+                  <span className="font-mono" style={{ fontSize: 10, color: "var(--crimson)" }}>
+                    0{i + 1}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </AnimatedSection>
       </section>
 
