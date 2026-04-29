@@ -406,6 +406,22 @@ function CustomerPage() {
   const [activeCollection, setActiveCollection] = useState(null);
   const [loading, setLoading] = useState(true);
   
+  // Hero slideshow state
+  const heroImages = [
+    '/hero.png',
+    '/hero2.png', 
+    '/hero3.png',
+  ];
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Auto-advance slideshow
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+  
   useEffect(() => {
     const imageEl = document.querySelector('.hero-image-layer');
     const grainEl = document.querySelector('.hero-grain-layer');
@@ -427,18 +443,39 @@ function CustomerPage() {
   
   async function fetchProducts() {
     try {
-      // First get active collections
-      const { data: collectionsData } = await supabase
+      // Try fetching collections
+      const { data: collectionsData, error: collectionsError } = await supabase
         .from("collections")
         .select("*")
-        .eq("active", true)
         .order("created_at", { ascending: false });
+      
+      if (collectionsError) {
+        // Try fetching all products directly (no collections)
+        const { data, error } = await supabase
+          .from("products for Gorosei")
+          .select("*")
+          .eq("sold", false)
+          .order("created_at", { ascending: false });
+        
+        if (!error && data?.length) {
+          setProducts(data);
+        } else {
+          // Fallback demo products
+          setProducts([
+            { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
+            { id: 2, Name: "VOID TEE", size: "L", Price: 1500, Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
+            { id: 3, Name: "SHADOW JACKET", size: "XL", Price: 3500, Image_url: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800" },
+          ]);
+        }
+        setLoading(false);
+        return;
+      }
       
       if (collectionsData?.length) {
         setCollections(collectionsData);
         setActiveCollection(collectionsData[0].id);
         
-        // Then get products for first collection
+        // Get products for first collection
         const { data, error } = await supabase
           .from("products for Gorosei")
           .select("*")
@@ -449,7 +486,7 @@ function CustomerPage() {
         if (error) console.error("Fetch error:", error);
         setProducts(data || []);
       } else {
-        // Fallback demo products if no collections
+        // Fallback demo products
         setProducts([
           { id: 1, Name: "INFERNO HOODIE", size: "M", Price: 2000, Image_url: "https://images.unsplash.com/photo-1556822044-cd92b00d68d0?w=800" },
           { id: 2, Name: "VOID TEE", size: "L", Price: 1500, Image_url: "https://images.unsplash.com/photo-1576566588028-4147f8832be0?w=800" },
@@ -519,17 +556,52 @@ function CustomerPage() {
         alignItems: 'center',
         overflow: 'hidden',
       }}>
-        {/* Hero Background Image - 100vh visible on load */}
-        <div
-          className="hero-image-layer"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'url(/hero.png) center/cover no-repeat',
-            filter: 'brightness(0.85)',
-            objectFit: 'cover',
-          }}
-        />
+        {/* Hero Slideshow Background */}
+        {heroImages.map((img, i) => (
+          <div
+            key={i}
+            className="hero-image-layer"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: `url(${img}) center/cover no-repeat`,
+              filter: 'brightness(0.85)',
+              opacity: i === currentSlide ? 1 : 0,
+              transition: 'opacity 1s ease-in-out',
+              pointerEvents: 'none',
+            }}
+          />
+        ))}
+        
+        {/* Slide Indicators */}
+        <div style={{
+          position: 'absolute',
+          right: 48,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 20,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+        }}>
+          {heroImages.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentSlide(i)}
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                border: '1px solid var(--crimson)',
+                background: i === currentSlide ? 'var(--crimson)' : 'transparent',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                padding: 0,
+              }}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
         
         {/* Gradient overlays */}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(8,8,8,0.9) 0%, transparent 50%)' }} />
