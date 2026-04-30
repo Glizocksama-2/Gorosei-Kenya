@@ -363,9 +363,15 @@ function CustomerPage() {
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
   const [waitlistLoading, setWaitlistLoading] = useState(false);
 
-  const heroImages = [
-    "/hero1.png", "/hero2.png", "/hero3.png", "/hero4.png",
-    "/hero5.png", "/hero6.png", "/hero7.png", "/hero8.png"
+  const heroMedia = [
+    { src: "/hero1.png", type: "image" },
+    { src: "/hero2.png", type: "image" },
+    { src: "/hero3.png", type: "image" },
+    { src: "/hero4.png", type: "image" },
+    { src: "/hero5.png", type: "image" },
+    { src: "/hero6.png", type: "image" },
+    { src: "/hero7.png", type: "image" },
+    { src: "/hero8.png", type: "image" },
   ];
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -374,7 +380,7 @@ function CustomerPage() {
     const interval = setInterval(() => {
       setIsTransitioning(true);
       setTimeout(() => {
-        setCurrentSlide((p) => (p + 1) % heroImages.length);
+        setCurrentSlide((p) => (p + 1) % heroMedia.length);
         setIsTransitioning(false);
       }, 600);
     }, 8000);
@@ -674,29 +680,68 @@ if (colData?.length) setCollections(colData);
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section style={{ minHeight: "100vh", position: "relative", display: "flex", alignItems: "center", overflow: "hidden" }}>
         {/* Base layer - always visible */}
-        <div
-          className="hero-image-layer"
-          style={{
-            position: "absolute", inset: 0,
-            background: `url(${heroImages[currentSlide]}) center/cover no-repeat`,
-            filter: "brightness(0.85)",
-            pointerEvents: "none",
-          }}
-        />
+        {heroMedia[currentSlide]?.type === "video" ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="hero-image-layer"
+            style={{
+              position: "absolute", inset: 0,
+              width: "100%", height: "100%",
+              objectFit: "cover",
+              filter: "brightness(0.85)",
+              pointerEvents: "none",
+            }}
+          >
+            <source src={heroMedia[currentSlide].src} type="video/mp4" />
+          </video>
+        ) : (
+          <div
+            className="hero-image-layer"
+            style={{
+              position: "absolute", inset: 0,
+              background: `url(${heroMedia[currentSlide]?.src}) center/cover no-repeat`,
+              filter: "brightness(0.85)",
+              pointerEvents: "none",
+            }}
+          />
+        )}
         
         {/* Transition overlay - pixelated transition effect */}
         {isTransitioning && (
-          <div
-            className="hero-image-layer transition-overlay"
-            style={{
-              position: "absolute", inset: 0,
-              background: `url(${heroImages[(currentSlide + 1) % heroImages.length]}) center/cover no-repeat`,
-              filter: "brightness(0.85) contrast(1.2)",
-              pointerEvents: "none",
-              imageRendering: "pixelated",
-              animation: "pixelScan 0.6s steps(8) forwards",
-            }}
-          />
+          heroMedia[(currentSlide + 1) % heroMedia.length]?.type === "video" ? (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="hero-image-layer transition-overlay"
+              style={{
+                position: "absolute", inset: 0,
+                width: "100%", height: "100%",
+                objectFit: "cover",
+                filter: "brightness(0.85) contrast(1.2)",
+                pointerEvents: "none",
+                animation: "pixelScan 0.6s steps(8) forwards",
+              }}
+            >
+              <source src={heroMedia[(currentSlide + 1) % heroMedia.length].src} type="video/mp4" />
+            </video>
+          ) : (
+            <div
+              className="hero-image-layer transition-overlay"
+              style={{
+                position: "absolute", inset: 0,
+                background: `url(${heroMedia[(currentSlide + 1) % heroMedia.length]?.src}) center/cover no-repeat`,
+                filter: "brightness(0.85) contrast(1.2)",
+                pointerEvents: "none",
+                imageRendering: "pixelated",
+                animation: "pixelScan 0.6s steps(8) forwards",
+              }}
+            />
+          )
         )}
         
         {/* Scanline effect for digital feel */}
@@ -716,7 +761,7 @@ if (colData?.length) setCollections(colData);
           display: "flex",
           gap: 12,
         }}>
-          {heroImages.map((_, i) => (
+          {heroMedia.map((item, i) => (
             <button key={i} onClick={() => setCurrentSlide(i)}
               style={{
                 width: 8, height: 8, borderRadius: "50%",
