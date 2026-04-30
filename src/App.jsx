@@ -365,6 +365,7 @@ function CustomerPage() {
 
   const heroMedia = [
     { src: "/hero1.png", type: "image" },
+    { src: "/hero-video1.mp4", type: "video" },
     { src: "/hero2.png", type: "image" },
     { src: "/hero3.png", type: "image" },
     { src: "/hero4.png", type: "image" },
