@@ -353,7 +353,15 @@ function CustomerPage() {
   const [collections, setCollections] = useState([]);
   const [activeCollection, setActiveCollection] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false); // FIX: Mobile nav state
+  const [menuOpen, setMenuOpen] = useState(false);
+  
+  // Drop countdown state
+  const [activeDrop, setActiveDrop] = useState(null);
+  const [dropLocked, setDropLocked] = useState(false);
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+  const [waitlistPhone, setWaitlistPhone] = useState("");
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const [waitlistLoading, setWaitlistLoading] = useState(false);
 
   const heroImages = [
     "/hero1.png", "/hero2.png", "/hero3.png", "/hero4.png",
@@ -411,14 +419,89 @@ function CustomerPage() {
       if (!error && data?.length) {
         setProducts(data);
       }
-      if (colData?.length) setCollections(colData);
+if (colData?.length) setCollections(colData);
     } catch (err) {
       console.error("Fetch error:", err);
     }
     setLoading(false);
   }, []);
-
-  useEffect(() => { fetchProducts(); }, []);
+  
+  // Fetch active drop
+  const fetchActiveDrop = useCallback(async () => {
+    try {
+      const { data } = await supabase
+        .from("drops")
+        .select("*")
+        .eq("active", true)
+        .single();
+      
+      if (data) {
+        setActiveDrop(data);
+        setDropLocked(data.locked);
+      } else {
+        setActiveDrop(null);
+        setDropLocked(false);
+      }
+    } catch { /* no active drop */ }
+  }, []);
+  
+  // Countdown timer
+  const updateCountdown = useCallback(() => {
+    if (!activeDrop?.drop_date) return;
+    
+    const dropTime = new Date(activeDrop.drop_date).getTime();
+    const now = Date.now();
+    const diff = dropTime - now;
+    
+    if (diff <= 0) {
+      if (dropLocked && activeDrop) {
+        setDropLocked(false);
+        // Trigger webhook on unlock
+        if (DISCORD_WEBHOOK) {
+          fetch(DISCORD_WEBHOOK, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              content: `🔥 DROP LIVE: ${activeDrop.collection_name} is now available!`
+            })
+          }).catch(() => {});
+        }
+      }
+      setCountdown({ days: 0, hours: 0, mins: 0, secs: 0 });
+      return;
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    setCountdown({ days, hours, mins, secs });
+  }, [activeDrop, dropLocked]);
+  
+  // Submit to waitlist
+  const submitWaitlist = async () => {
+    if (!waitlistPhone.trim()) return;
+    setWaitlistLoading(true);
+    try {
+      const phone = waitlistPhone.replace(/[^0-9]/g, "");
+      await supabase.from("waitlist").insert({ phone, drop_id: activeDrop?.id });
+      setWaitlistSubmitted(true);
+    } catch (err) {
+      console.error("Waitlist error:", err);
+    }
+    setWaitlistLoading(false);
+  };
+  
+  useEffect(() => { fetchProducts(); fetchActiveDrop(); }, []);
+  
+  // Countdown interval
+  useEffect(() => {
+    if (!activeDrop) return;
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [activeDrop, updateCountdown]);
 
   async function switchCollection(id) {
     setActiveCollection(id);
@@ -519,6 +602,47 @@ function CustomerPage() {
           </button>
         )}
       </nav>
+
+      {/* COUNTDOWN BANNER - Show when drop is locked */}
+      {dropLocked && activeDrop && (
+        <div style={{
+          position: "fixed",
+          top: scrolled ? 60 : 80,
+          left: 0,
+          right: 0,
+          zIndex: 999,
+          background: "var(--crimson)",
+          padding: "8px 24px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 16,
+          fontFamily: "var(--font-mono)",
+        }}>
+          <span style={{ fontSize: 10, letterSpacing: "0.2em" }}>
+            {activeDrop?.collection_name || "DROP"} DROPS IN
+          </span>
+          <span style={{ 
+            fontSize: 14, 
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            fontVariantNumeric: "tabular-nums",
+          }}>
+            {String(countdown.days).padStart(2, "0")}D : {String(countdown.hours).padStart(2, "0")}H : {String(countdown.mins).padStart(2, "0")}M : {String(countdown.secs).padStart(2, "0")}S
+          </span>
+          <a 
+            href="#waitlist" 
+            style={{ 
+              fontSize: 10, 
+              letterSpacing: "0.1em",
+              color: "white",
+              textDecoration: "underline",
+            }}
+          >
+            JOIN WAITLIST
+          </a>
+        </div>
+      )}
 
       {/* FIX: Mobile nav dropdown */}
       {isMobile && menuOpen && (
@@ -777,6 +901,83 @@ function CustomerPage() {
       {/* ── PRODUCT GRID ──────────────────────────────────────────────── */}
       <section id="drop" className="section">
         <AnimatedSection>
+          {/* LOCKED VIEW - Show waitlist instead of products */}
+          {dropLocked && activeDrop ? (
+            <div style={{ 
+              maxWidth: 600, 
+              margin: "0 auto", 
+              padding: isMobile ? "80px 24px" : "120px 48px",
+              textAlign: "center",
+            }} id="waitlist">
+              <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+                • WAITLIST
+              </span>
+              <h2 className="font-display" style={{
+                fontSize: isMobile ? "clamp(36px, 12vw, 64px)" : "clamp(48px, 10vw, 96px)",
+                marginTop: 24,
+              }}>
+                {activeDrop.collection_name?.toUpperCase() || "DROP"} LOCKED
+              </h2>
+              <p className="font-mono" style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 32, lineHeight: 1.8 }}>
+                This collection drops in:<br />
+                <span style={{ fontSize: 24, color: "var(--crimson)", fontWeight: 700 }}>
+                  {String(countdown.days).padStart(2, "0")}D : {String(countdown.hours).padStart(2, "0")}H : {String(countdown.mins).padStart(2, "0")}M : {String(countdown.secs).padStart(2, "0")}S
+                </span>
+              </p>
+              <p className="font-mono" style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 32, lineHeight: 1.8 }}>
+                Join the waitlist to get early access when it drops.
+              </p>
+              
+              {waitlistSubmitted ? (
+                <div style={{ marginTop: 48, padding: 24, border: "1px solid var(--crimson)" }}>
+                  <p className="font-mono" style={{ fontSize: 12, color: "var(--crimson)" }}>
+                    ✓ YOU'RE ON THE LIST
+                  </p>
+                  <p className="font-mono" style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 8 }}>
+                    We'll notify you when the drop goes live.
+                  </p>
+                </div>
+              ) : (
+                <div style={{ marginTop: 48, display: "flex", flexDirection: "column", gap: 16, maxWidth: 300, margin: "48px auto 0" }}>
+                  <input
+                    type="tel"
+                    placeholder="254XXXXXXXXX"
+                    value={waitlistPhone}
+                    onChange={(e) => setWaitlistPhone(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "16px",
+                      background: "var(--surface)",
+                      border: "1px solid var(--surface-light)",
+                      color: "var(--text)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 14,
+                      textAlign: "center",
+                    }}
+                  />
+                  <button
+                    onClick={submitWaitlist}
+                    disabled={waitlistLoading || !waitlistPhone.trim()}
+                    style={{
+                      width: "100%",
+                      padding: "16px",
+                      background: waitlistLoading ? "var(--surface-light)" : "var(--crimson)",
+                      border: "none",
+                      color: "var(--text)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 12,
+                      letterSpacing: "0.2em",
+                      cursor: waitlistLoading ? "not-allowed" : "pointer",
+                      opacity: waitlistLoading ? 0.5 : 1,
+                    }}
+                  >
+                    {waitlistLoading ? "JOINING..." : "JOIN WAITLIST"}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+          /* UNLOCKED VIEW - Show products normally */
           <div style={{ maxWidth: 1400, margin: "0 auto", padding: isMobile ? "0 24px" : "0 48px" }}>
             <div style={{ display: "flex", gap: 24, marginBottom: 32, flexWrap: "wrap", alignItems: "center" }}>
               <button onClick={showAllDrops} className="font-mono"
@@ -807,32 +1008,34 @@ function CustomerPage() {
               {activeCollection === null ? "ALL DROPS" : collections.find((c) => c.id === activeCollection)?.name?.toUpperCase() || "THE DROP"}
             </h2>
           </div>
+          )}
 
-          <div
-            className="grid-3"
-            style={{
-              marginTop: 80, maxWidth: 1400,
-              margin: "80px auto 0",
-              padding: isMobile ? "0 24px" : "0 48px",
-              // FIX: 2 columns on mobile instead of broken 3
-              gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : undefined,
-            }}
-          >
-            {loading ? (
-              <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 100, color: "var(--text-muted)" }}>
-                LOADING...
-              </div>
-            ) : products.length === 0 ? (
-              <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 100 }}>
-                <p className="font-display" style={{ fontSize: isMobile ? 32 : 48 }}>NO DROPS YET</p>
-                <p className="font-mono" style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 16 }}>
-                  Check back soon.
-                </p>
-              </div>
-            ) : (
-              products.map((p, i) => <ProductCard key={p.id || i} product={p} />)
-            )}
-          </div>
+          {/* Show products only when NOT locked */}
+          {!dropLocked && (
+            <div
+              className="grid-3"
+              style={{
+                marginTop: 80, maxWidth: 1400,
+                margin: "80px auto 0",
+                padding: isMobile ? "0 24px" : "0 48px",
+              }}
+            >
+              {loading ? (
+                <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 100, color: "var(--text-muted)" }}>
+                  LOADING...
+                </div>
+              ) : products.length === 0 ? (
+                <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 100 }}>
+                  <p className="font-display" style={{ fontSize: isMobile ? 32 : 48 }}>NO DROPS YET</p>
+                  <p className="font-mono" style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 16 }}>
+                    Check back soon.
+                  </p>
+                </div>
+              ) : (
+                products.map((p, i) => <ProductCard key={p.id || i} product={p} />)
+              )}
+            </div>
+          )}
         </AnimatedSection>
       </section>
 
@@ -1165,8 +1368,14 @@ function AdminDashboard({ onLogout }) {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
+  
+  // Drop management state
+  const [drops, setDrops] = useState([]);
+  const [activeDropId, setActiveDropId] = useState(null);
+  const [newDrop, setNewDrop] = useState({ name: "", collection_name: "", drop_date: "" });
+  const [waitlistCount, setWaitlistCount] = useState(0);
 
-  useEffect(() => { fetchCollections(); }, []);
+  useEffect(() => { fetchCollections(); fetchDrops(); }, []);
 
   async function handleFileSelect(e) {
     const file = e.target.files[0];
@@ -1212,6 +1421,55 @@ function AdminDashboard({ onLogout }) {
         .order("created_at", { ascending: false });
       setProducts(data || []);
     } catch { /* silent */ }
+  }
+  
+  // Drop management
+  async function fetchDrops() {
+    try {
+      const { data } = await supabase.from("drops").select("*").order("created_at", { ascending: false });
+      setDrops(data || []);
+      const active = data?.find(d => d.active);
+      if (active) {
+        setActiveDropId(active.id);
+        fetchWaitlistCount(active.id);
+      }
+    } catch { /* silent */ }
+  }
+  
+  async function fetchWaitlistCount(dropId) {
+    try {
+      const { count } = await supabase.from("waitlist").select("*", { count: true, head: true }).eq("drop_id", dropId);
+      setWaitlistCount(count || 0);
+    } catch { /* silent */ }
+  }
+  
+  async function createDrop() {
+    if (!newDrop.collection_name.trim()) { setStatus("Collection name required"); return; }
+    setSaving(true);
+    try {
+      await supabase.from("drops").insert({ ...newDrop });
+      setStatus("Drop created!");
+      setNewDrop({ name: "", collection_name: "", drop_date: "" });
+      fetchDrops();
+    } catch { setStatus("Failed"); }
+    setSaving(false);
+  }
+  
+  async function setActiveDrop(dropId) {
+    try {
+      await supabase.from("drops").update({ active: false }).eq("active", true);
+      await supabase.from("drops").update({ active: true }).eq("id", dropId);
+      fetchDrops();
+      setStatus("Active drop updated!");
+    } catch { setStatus("Failed"); }
+  }
+  
+  async function toggleDropLock(dropId, locked) {
+    try {
+      await supabase.from("drops").update({ locked }).eq("id", dropId);
+      fetchDrops();
+      setStatus(locked ? "Drop locked!" : "Drop unlocked!");
+    } catch { setStatus("Failed"); }
   }
 
   async function createCollection() {
@@ -1283,7 +1541,7 @@ function AdminDashboard({ onLogout }) {
       </nav>
 
       <div style={{ display: "flex", gap: 24, marginBottom: 48, borderBottom: "1px solid var(--surface-light)", paddingBottom: 16 }}>
-        {["collections", "products"].map((tab) => (
+        {["collections", "products", "drops"].map((tab) => (
           <button key={tab} onClick={() => setActiveTab(tab)} className="font-mono"
             style={{
               fontSize: 11, letterSpacing: "0.2em",
@@ -1401,6 +1659,64 @@ function AdminDashboard({ onLogout }) {
               </div>
             </div>
           )}
+        </div>
+      )}
+    </div>
+  )}
+  
+  {activeTab === "drops" && (
+    <div>
+      <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+        CREATE DROP
+      </span>
+      <div style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
+        <input value={newDrop.collection_name} onChange={(e) => setNewDrop({ ...newDrop, collection_name: e.target.value })}
+          placeholder="Collection name (e.g., Stoic Samurai Edition)" style={{ ...inputStyle, flex: "1 1 250px", minWidth: 250 }} />
+        <input type="datetime-local" value={newDrop.drop_date} onChange={(e) => setNewDrop({ ...newDrop, drop_date: e.target.value })}
+          style={inputStyle} />
+      </div>
+      <button onClick={createDrop} disabled={saving} className="btn" style={{ marginTop: 24 }}>
+        {saving ? "..." : "CREATE DROP"}
+      </button>
+      
+      {status && (
+        <p style={{ marginTop: 16, color: status.includes("Error") ? "var(--crimson)" : "var(--text)", fontSize: 12 }}>
+          {status}
+        </p>
+      )}
+      
+      <div style={{ marginTop: 48 }}>
+        <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+          MANAGE DROPS ({drops.length})
+        </span>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16, marginTop: 24 }}>
+          {drops.map((drop) => (
+            <div key={drop.id} style={{ padding: 16, background: "var(--surface)", border: drop.active ? "1px solid var(--crimson)" : "1px solid transparent" }}>
+              <p style={{ fontSize: 14 }}>{drop.collection_name}</p>
+              <p className="font-mono" style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 4 }}>
+                {drop.drop_date ? new Date(drop.drop_date).toLocaleString("en-KE", { timeZone: "Africa/Nairobi" }) : "No date set"}
+              </p>
+              <p className="font-mono" style={{ fontSize: 10, color: "var(--crimson)", marginTop: 8 }}>
+                {drop.locked ? "🔒 LOCKED" : "🔓 UNLOCKED"} {drop.id === activeDropId && " • ACTIVE"}
+              </p>
+              <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+                <button onClick={() => setActiveDropId(drop.id)} disabled={saving}
+                  style={{ flex: 1, padding: "8px 12px", background: drop.active ? "var(--surface-light)" : "var(--crimson)", border: "none", color: "var(--text)", fontSize: 10, cursor: "pointer" }}>
+                  {drop.active ? "ACTIVE" : "SET ACTIVE"}
+                </button>
+                <button onClick={() => toggleDropLock(drop.id, !drop.locked)} disabled={saving}
+                  style={{ flex: 1, padding: "8px 12px", background: "none", border: "1px solid var(--crimson)", color: "var(--crimson)", fontSize: 10, cursor: "pointer" }}>
+                  {drop.locked ? "UNLOCK" : "LOCK"}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {waitlistCount > 0 && (
+        <div style={{ marginTop: 48, padding: 16, background: "var(--crimson)", textAlign: "center" }}>
+          <span className="font-mono" style={{ fontSize: 10 }}>WAITLIST: {waitlistCount} people</span>
         </div>
       )}
     </div>
