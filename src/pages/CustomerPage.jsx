@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { HERO_MEDIA, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "../config/constants.js";
+import { HERO_MEDIA, LOOKBOOK_MEDIA, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "../config/constants.js";
 import AnimatedSection from "../components/AnimatedSection.jsx";
 import NewsletterForm from "../components/NewsletterForm.jsx";
 import ProductCard from "../components/ProductCard.jsx";
@@ -16,6 +16,7 @@ export default function CustomerPage() {
   const [collections, setCollections] = useState([]);
   const [activeCollection, setActiveCollection] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [storeError, setStoreError] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("all");
 
@@ -66,9 +67,11 @@ export default function CustomerPage() {
         .order("sold", { ascending: true })
         .order("created_at", { ascending: false });
       setProducts(data || []);
+      setStoreError("");
     } catch (err) {
       console.error("fetchProducts error:", err);
       setProducts([]);
+      setStoreError("We could not load the drop. Refresh the page or check your connection.");
     } finally {
       setLoading(false);
     }
@@ -80,7 +83,7 @@ export default function CustomerPage() {
         .from("drops")
         .select("*")
         .eq("active", true)
-        .single();
+        .maybeSingle();
       if (data) {
         setActiveDrop(data);
         setDropLocked(data.locked ?? false);
@@ -153,7 +156,11 @@ export default function CustomerPage() {
         .order("sold", { ascending: true })
         .order("created_at", { ascending: false });
       setProducts(data || []);
-    } catch { /* silent */ }
+      setStoreError("");
+    } catch {
+      setProducts([]);
+      setStoreError("We could not load this collection. Refresh the page or check your connection.");
+    }
   }
 
   function showAllDrops() {
@@ -704,6 +711,30 @@ export default function CustomerPage() {
                       }}
                     />
                   ))
+                ) : storeError ? (
+                  <div style={{ gridColumn: "1/-1", textAlign: "center", padding: isMobile ? "56px 0" : "80px 0" }}>
+                    <p className="font-display" style={{ fontSize: isMobile ? 32 : 48 }}>
+                      DROP DIDN'T LOAD
+                    </p>
+                    <p className="font-mono" style={{ fontSize: 12, color: "var(--text-muted)", margin: "16px auto 0", maxWidth: 420, lineHeight: 1.8 }}>
+                      {storeError}
+                    </p>
+                    <button
+                      onClick={showAllDrops}
+                      className="font-mono"
+                      style={{
+                        marginTop: 24,
+                        padding: "12px 18px",
+                        border: "1px solid var(--crimson)",
+                        color: "var(--crimson)",
+                        background: "none",
+                        fontSize: 11,
+                        letterSpacing: "0.18em",
+                      }}
+                    >
+                      RETRY
+                    </button>
+                  </div>
                 ) : filteredProducts.length === 0 ? (
                   <div style={{ gridColumn: "1/-1", textAlign: "center", padding: "80px 0" }}>
                     <p className="font-display" style={{ fontSize: isMobile ? 32 : 48 }}>
@@ -769,6 +800,32 @@ export default function CustomerPage() {
             >
               BROWSE VIA WHATSAPP →
             </a>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))",
+                gap: isMobile ? 8 : 14,
+                marginTop: isMobile ? 44 : 56,
+              }}
+            >
+              {LOOKBOOK_MEDIA.slice(0, 4).map((item, index) => (
+                <img
+                  key={item.src}
+                  src={item.src}
+                  alt={item.title}
+                  loading="lazy"
+                  decoding="async"
+                  style={{
+                    width: "100%",
+                    aspectRatio: index % 2 === 0 ? "3 / 4" : "4 / 5",
+                    objectFit: "cover",
+                    display: "block",
+                    border: "1px solid var(--surface-light)",
+                    background: "var(--surface)",
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </AnimatedSection>
       </section>
@@ -792,6 +849,34 @@ export default function CustomerPage() {
           >
             From the streets of Nairobi. For anyone tired of gloomy, average pieces.
           </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1.2fr 0.8fr",
+              gap: isMobile ? 10 : 16,
+              maxWidth: 1120,
+              margin: isMobile ? "44px auto 0" : "56px auto 0",
+              textAlign: "left",
+            }}
+          >
+            {[LOOKBOOK_MEDIA[4], LOOKBOOK_MEDIA[5]].map((item, index) => (
+              <img
+                key={item.src}
+                src={item.src}
+                alt={item.title}
+                loading="lazy"
+                decoding="async"
+                style={{
+                  width: "100%",
+                  aspectRatio: isMobile ? "4 / 3" : index === 0 ? "16 / 10" : "4 / 5",
+                  objectFit: "cover",
+                  display: "block",
+                  border: "1px solid var(--surface-light)",
+                  background: "var(--surface)",
+                }}
+              />
+            ))}
+          </div>
         </AnimatedSection>
       </section>
 
@@ -811,6 +896,32 @@ export default function CustomerPage() {
             >
               GOTHIC VINTAGE<br />ANIME / STREET
             </h2>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "repeat(6, minmax(0, 1fr))",
+                gap: isMobile ? 8 : 12,
+                marginTop: isMobile ? 36 : 48,
+              }}
+            >
+              {LOOKBOOK_MEDIA.map((item, index) => (
+                <img
+                  key={item.src}
+                  src={item.src}
+                  alt={item.title}
+                  loading="lazy"
+                  decoding="async"
+                  style={{
+                    width: "100%",
+                    aspectRatio: index % 3 === 0 ? "3 / 4" : "1 / 1",
+                    objectFit: "cover",
+                    display: "block",
+                    border: "1px solid var(--surface-light)",
+                    background: "var(--surface)",
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </AnimatedSection>
       </section>

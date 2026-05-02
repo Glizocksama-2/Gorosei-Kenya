@@ -17,3 +17,11 @@ export const HERO_MEDIA = [
   { src: "/hero7.png", type: "image", durationMs: 5000 },
   { src: "/hero8.jpg", type: "image", durationMs: 5000 },
 ];
+export const LOOKBOOK_MEDIA = [
+  { src: "/lookbook-1.png", title: "Gorosei original graphic tee" },
+  { src: "/lookbook-2.png", title: "Loyalty over everything tee" },
+  { src: "/lookbook-3.png", title: "Angel of Misery tee" },
+  { src: "/lookbook-4.png", title: "Gorosei Worldwide tee" },
+  { src: "/lookbook-5.png", title: "Gorosei gothic collection" },
+  { src: "/lookbook-6.png", title: "Skulled Finger tee" },
+];

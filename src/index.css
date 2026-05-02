@@ -161,7 +161,6 @@ input, select, textarea {
    SECTIONS
 ============================================ */
 .section {
-  min-height: 100vh;
   padding: 120px 48px;
 }
 
