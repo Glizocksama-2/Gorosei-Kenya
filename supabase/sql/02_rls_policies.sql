@@ -28,6 +28,7 @@ drop policy if exists "Admins can read own admin row" on public.admin_users;
 drop policy if exists "Public can read active collections" on public.collections;
 drop policy if exists "Admins can manage collections" on public.collections;
 drop policy if exists "Public can read available products" on public."products for Gorosei";
+drop policy if exists "Public can read storefront products" on public."products for Gorosei";
 drop policy if exists "Admins can manage products" on public."products for Gorosei";
 drop policy if exists "Public can read active drops" on public.drops;
 drop policy if exists "Admins can manage drops" on public.drops;
@@ -55,11 +56,11 @@ to authenticated
 using (exists (select 1 from public.admin_users where user_id = (select auth.uid())))
 with check (exists (select 1 from public.admin_users where user_id = (select auth.uid())));
 
-create policy "Public can read available products"
+create policy "Public can read storefront products"
 on public."products for Gorosei"
 for select
 to anon
-using (sold = false);
+using (true);
 
 create policy "Admins can manage products"
 on public."products for Gorosei"

@@ -288,6 +288,7 @@ function ProductCard({ product }) {
   const hasDiscount = originalPrice > price;
   const images = getProductImages(product);
   const coverImage = images[0];
+  const isSold = Boolean(product?.sold);
 
   return (
     <a
@@ -299,6 +300,7 @@ function ProductCard({ product }) {
         textDecoration: "none",
         transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: "transform 0.5s ease",
+        opacity: isSold ? 0.72 : 1,
       }}
     >
       <div className="image-wrapper" style={{ "--lx": `${light.x}%`, "--ly": `${light.y}%` }}>
@@ -307,7 +309,7 @@ function ProductCard({ product }) {
             src={getImageUrl(coverImage, 600, 75)}
             alt={name}
             loading="lazy"
-            style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block" }}
+            style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block", filter: isSold ? "grayscale(1)" : "none" }}
           />
         ) : (
           <div
@@ -325,6 +327,22 @@ function ProductCard({ product }) {
             </span>
           </div>
         )}
+        <span
+          className="font-mono"
+          style={{
+            position: "absolute",
+            left: 10,
+            top: 10,
+            padding: "7px 9px",
+            background: isSold ? "rgba(255,255,255,0.92)" : "var(--crimson)",
+            color: isSold ? "#070707" : "#fff",
+            fontSize: 9,
+            letterSpacing: "0.12em",
+            zIndex: 2,
+          }}
+        >
+          {isSold ? "SOLD" : "ONE OF ONE"}
+        </span>
         {images.length > 1 && (
           <span
             className="font-mono"
@@ -353,6 +371,17 @@ function ProductCard({ product }) {
             KSh {price.toLocaleString()}
           </span>
         </div>
+        <div
+          className="font-mono"
+          style={{
+            fontSize: 9,
+            color: isSold ? "var(--crimson)" : "var(--text-muted)",
+            marginTop: 8,
+            letterSpacing: "0.12em",
+          }}
+        >
+          {isSold ? "THIS PIECE HAS LEFT THE RACK" : "ONLY ONE AVAILABLE"}
+        </div>
         {hasDiscount && (
           <div className="font-mono" style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 6 }}>
             <span style={{ textDecoration: "line-through", marginRight: 8 }}>
@@ -373,7 +402,7 @@ function ProductCard({ product }) {
           className="font-mono"
           style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 10, display: "block", letterSpacing: "0.2em" }}
         >
-          ORDER NOW →
+          {isSold ? "VIEW ARCHIVE →" : "ORDER NOW →"}
         </span>
       </div>
     </a>
@@ -438,7 +467,7 @@ function CustomerPage() {
       const { data } = await supabase
         .from("products for Gorosei")
         .select("*")
-        .eq("sold", false)
+        .order("sold", { ascending: true })
         .order("created_at", { ascending: false });
       setProducts(data || []);
     } catch (err) {
@@ -525,7 +554,7 @@ function CustomerPage() {
         .from("products for Gorosei")
         .select("*")
         .eq("collection_id", id)
-        .eq("sold", false)
+        .order("sold", { ascending: true })
         .order("created_at", { ascending: false });
       setProducts(data || []);
     } catch { /* silent */ }
@@ -1386,6 +1415,7 @@ function ProductPage({ id }) {
   const hasDiscount = originalPrice > price;
   const productImages = getProductImages(product);
   const selectedImage = productImages[selectedImageIndex] || productImages[0];
+  const isSold = Boolean(product.sold);
 
   const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${price.toLocaleString()}\n\nIs it available?`
@@ -1432,7 +1462,26 @@ function ProductPage({ id }) {
         <div style={{ overflow: "hidden", background: "var(--surface)", position: "relative" }}>
           {selectedImage ? (
             <>
-              <img src={getImageUrl(selectedImage, 1200, 90)} alt={name} style={imgStyle} />
+              <img src={getImageUrl(selectedImage, 1200, 90)} alt={name} style={{ ...imgStyle, filter: isSold ? "grayscale(1)" : "none" }} />
+              {isSold && (
+                <div
+                  className="font-display"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "rgba(0,0,0,0.35)",
+                    color: "#fff",
+                    fontSize: isMobile ? 52 : 96,
+                    letterSpacing: "0.04em",
+                    pointerEvents: "none",
+                  }}
+                >
+                  SOLD
+                </div>
+              )}
               {productImages.length > 1 && (
                 <div
                   style={{
@@ -1503,9 +1552,9 @@ function ProductPage({ id }) {
           {product.category && (
             <span
               className="font-mono"
-              style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)", marginBottom: 16 }}
+              style={{ fontSize: 10, letterSpacing: "0.3em", color: isSold ? "var(--text-muted)" : "var(--crimson)", marginBottom: 16 }}
             >
-              • {product.category.toUpperCase()}
+              {isSold ? "• SOLD ARCHIVE" : `• ${product.category.toUpperCase()} / ONE OF ONE`}
             </span>
           )}
           <h1 className="font-display" style={{ fontSize: isMobile ? 40 : 64, lineHeight: 0.9, marginBottom: 32 }}>
@@ -1525,6 +1574,14 @@ function ProductPage({ id }) {
                 KSh {originalPrice.toLocaleString()}
               </span>
             )}
+            <p
+              className="font-mono"
+              style={{ fontSize: 11, color: isSold ? "var(--crimson)" : "var(--text-muted)", marginTop: 16, lineHeight: 1.7, letterSpacing: "0.08em" }}
+            >
+              {isSold
+                ? "This piece has been sold. Use it as style reference and check the current drop."
+                : "Only one piece available. If it speaks to you, move before it leaves the rack."}
+            </p>
           </div>
 
           {/* Size selector */}
@@ -1537,6 +1594,7 @@ function ProductPage({ id }) {
                 <button
                   key={s}
                   onClick={() => setSelectedSize(s)}
+                  disabled={isSold}
                   className="font-mono"
                   style={{
                     width: 52,
@@ -1545,7 +1603,8 @@ function ProductPage({ id }) {
                     color: selectedSize === s ? "var(--crimson)" : "var(--text-muted)",
                     background: "none",
                     fontSize: 12,
-                    cursor: "pointer",
+                    cursor: isSold ? "not-allowed" : "pointer",
+                    opacity: isSold ? 0.45 : 1,
                     transition: "border-color 0.2s, color 0.2s",
                   }}
                 >
@@ -1557,14 +1616,15 @@ function ProductPage({ id }) {
 
           {/* CTA */}
           <a
-            href={buyLink}
-            target="_blank"
-            rel="noreferrer"
+            href={isSold ? "#drop" : buyLink}
+            target={isSold ? undefined : "_blank"}
+            rel={isSold ? undefined : "noreferrer"}
             style={{
               display: "block",
               padding: "18px 0",
-              background: "var(--crimson)",
-              color: "#fff",
+              background: isSold ? "transparent" : "var(--crimson)",
+              border: isSold ? "1px solid var(--surface-light)" : "none",
+              color: isSold ? "var(--text-muted)" : "#fff",
               textAlign: "center",
               textDecoration: "none",
               fontFamily: "var(--font-mono)",
@@ -1575,7 +1635,7 @@ function ProductPage({ id }) {
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            ORDER ON WHATSAPP
+            {isSold ? "SOLD OUT / VIEW CURRENT DROP" : "ORDER ON WHATSAPP"}
           </a>
 
           {product.description && (
