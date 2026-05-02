@@ -6,6 +6,7 @@ export default function ProductCard({ product }) {
   const ref = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [light, setLight] = useState({ x: 50, y: 50 });
+  const [failedImage, setFailedImage] = useState("");
 
   useEffect(() => {
     const el = ref.current;
@@ -51,11 +52,12 @@ export default function ProductCard({ product }) {
       }}
     >
       <div className="image-wrapper" style={{ "--lx": `${light.x}%`, "--ly": `${light.y}%` }}>
-        {coverImage ? (
+        {coverImage && coverImage !== failedImage ? (
           <img
             src={getImageUrl(coverImage, 600, 75)}
             alt={name}
             loading="lazy"
+            onError={() => setFailedImage(coverImage)}
             style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block", filter: isSold ? "grayscale(1)" : "none" }}
           />
         ) : (

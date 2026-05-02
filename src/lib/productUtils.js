@@ -2,14 +2,33 @@ import { BUCKET_NAME, HERO_MEDIA, SUPABASE_URL } from "../config/constants.js";
 import { supabase } from "./supabase.js";
 
 function getImageUrl(path, width = 800, quality = 80) {
-  if (!path) return "";
-  if (path.startsWith("http")) {
-    if (path.includes("supabase.co/storage")) {
-      return `${path}?width=${width}&quality=${quality}&resize=cover`;
+  const value = String(path || "").trim();
+  if (!value) return "";
+
+  if (value.startsWith("blob:") || value.startsWith("data:")) return value;
+
+  if (value.startsWith("http")) {
+    try {
+      const url = new URL(value);
+      if (url.hostname.includes("supabase.co") && url.pathname.includes("/storage/v1/")) {
+        url.searchParams.set("width", String(width));
+        url.searchParams.set("quality", String(quality));
+        url.searchParams.set("resize", "cover");
+        return url.toString();
+      }
+      return value;
+    } catch {
+      return value;
     }
-    return path;
   }
-  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${path}?width=${width}&quality=${quality}&resize=cover`;
+
+  if (!SUPABASE_URL) return value;
+
+  const cleanPath = value
+    .replace(/^\/+/, "")
+    .replace(new RegExp(`^(?:storage/v1/object/public/)?${BUCKET_NAME}/`), "");
+
+  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${cleanPath}?width=${width}&quality=${quality}&resize=cover`;
 }
 
 function getProductImages(product) {

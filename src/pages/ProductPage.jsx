@@ -11,6 +11,7 @@ export default function ProductPage({ id }) {
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [failedImages, setFailedImages] = useState(() => new Set());
   const [orderDraft, setOrderDraft] = useState({ name: "", phone: "" });
   const [orderStatus, setOrderStatus] = useState("");
   const [ordering, setOrdering] = useState(false);
@@ -24,6 +25,7 @@ export default function ProductPage({ id }) {
         .eq("id", id)
         .single();
       setSelectedImageIndex(0);
+      setFailedImages(new Set());
       setProduct(data);
     } catch {
       /* silent */
@@ -85,7 +87,8 @@ export default function ProductPage({ id }) {
   const originalPrice = Number(product.original_price) || 0;
   const hasDiscount = originalPrice > price;
   const productImages = getProductImages(product);
-  const selectedImage = productImages[selectedImageIndex] || productImages[0];
+  const usableProductImages = productImages.filter((image) => !failedImages.has(image));
+  const selectedImage = usableProductImages[selectedImageIndex] || usableProductImages[0];
   const isSold = Boolean(product.sold);
   const condition = product.condition ? product.condition.replace("-", " ").toUpperCase() : "";
 
@@ -168,7 +171,15 @@ export default function ProductPage({ id }) {
         <div style={{ overflow: "hidden", background: "var(--surface)", position: "relative" }}>
           {selectedImage ? (
             <>
-              <img src={getImageUrl(selectedImage, 1200, 90)} alt={name} style={{ ...imgStyle, filter: isSold ? "grayscale(1)" : "none" }} />
+              <img
+                src={getImageUrl(selectedImage, 1200, 90)}
+                alt={name}
+                onError={() => {
+                  setFailedImages((prev) => new Set(prev).add(selectedImage));
+                  setSelectedImageIndex(0);
+                }}
+                style={{ ...imgStyle, filter: isSold ? "grayscale(1)" : "none" }}
+              />
               {isSold && (
                 <div
                   className="font-display"
@@ -188,7 +199,7 @@ export default function ProductPage({ id }) {
                   SOLD
                 </div>
               )}
-              {productImages.length > 1 && (
+              {usableProductImages.length > 1 && (
                 <div
                   style={{
                     position: isMobile ? "static" : "absolute",
@@ -202,7 +213,7 @@ export default function ProductPage({ id }) {
                     maxWidth: isMobile ? "100%" : "calc(100% - 48px)",
                   }}
                 >
-                  {productImages.map((image, index) => (
+                  {usableProductImages.map((image, index) => (
                     <button
                       key={image}
                       onClick={() => setSelectedImageIndex(index)}
