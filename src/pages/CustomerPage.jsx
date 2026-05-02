@@ -1,0 +1,936 @@
+import { useCallback, useEffect, useState } from "react";
+import { HERO_MEDIA, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "../config/constants.js";
+import AnimatedSection from "../components/AnimatedSection.jsx";
+import NewsletterForm from "../components/NewsletterForm.jsx";
+import ProductCard from "../components/ProductCard.jsx";
+import { useGlobalMouse, useNavScroll, useWindowWidth } from "../hooks/index.js";
+import { isNearbyHeroSlide } from "../lib/productUtils.js";
+import { supabase } from "../lib/supabase.js";
+export default function CustomerPage() {
+  const mouse = useGlobalMouse();
+  const scrolled = useNavScroll();
+  const winWidth = useWindowWidth();
+  const isMobile = winWidth < 768;
+
+  const [products, setProducts] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const [activeCollection, setActiveCollection] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState("all");
+
+  // Drop state
+  const [activeDrop, setActiveDrop] = useState(null);
+  const [dropLocked, setDropLocked] = useState(false);
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
+  const [waitlistPhone, setWaitlistPhone] = useState("");
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const [waitlistLoading, setWaitlistLoading] = useState(false);
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [loadedHeroMedia, setLoadedHeroMedia] = useState(() => ({ [HERO_MEDIA[0].src]: true }));
+
+  const markHeroLoaded = useCallback((src) => {
+    setLoadedHeroMedia((loaded) => loaded[src] ? loaded : { ...loaded, [src]: true });
+  }, []);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % HERO_MEDIA.length);
+  }, []);
+
+  // Auto-advance hero
+  useEffect(() => {
+    const activeMedia = HERO_MEDIA[currentSlide];
+    const id = setTimeout(nextSlide, activeMedia.durationMs || 5000);
+    return () => clearTimeout(id);
+  }, [currentSlide, nextSlide]);
+
+  // Warm the next image in the carousel without forcing every hero asset onto first paint.
+  useEffect(() => {
+    const nextMedia = HERO_MEDIA[(currentSlide + 1) % HERO_MEDIA.length];
+    if (nextMedia.type !== "image" || loadedHeroMedia[nextMedia.src]) return;
+
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = () => markHeroLoaded(nextMedia.src);
+    img.src = nextMedia.src;
+  }, [currentSlide, loadedHeroMedia, markHeroLoaded]);
+
+  // ── Data fetching — memoized to avoid dep-array infinite loops ────────────
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data } = await supabase
+        .from("products for Gorosei")
+        .select("*")
+        .order("sold", { ascending: true })
+        .order("created_at", { ascending: false });
+      setProducts(data || []);
+    } catch (err) {
+      console.error("fetchProducts error:", err);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchActiveDrop = useCallback(async () => {
+    try {
+      const { data } = await supabase
+        .from("drops")
+        .select("*")
+        .eq("active", true)
+        .single();
+      if (data) {
+        setActiveDrop(data);
+        setDropLocked(data.locked ?? false);
+      } else {
+        setActiveDrop(null);
+        setDropLocked(false);
+      }
+    } catch {
+      // No active drop — normal state
+      setActiveDrop(null);
+      setDropLocked(false);
+    }
+  }, []);
+
+  const fetchCollections = useCallback(async () => {
+    try {
+      const { data: colData } = await supabase
+        .from("collections")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (colData?.length) setCollections(colData);
+    } catch {
+      /* silent */
+    }
+  }, []);
+
+  // Countdown updater — memoized
+  const updateCountdown = useCallback(() => {
+    if (!activeDrop?.drop_date) return;
+    const diff = new Date(activeDrop.drop_date).getTime() - Date.now();
+    if (diff <= 0) {
+      setDropLocked(false);
+      setCountdown({ days: 0, hours: 0, mins: 0, secs: 0 });
+      return;
+    }
+    setCountdown({
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      mins: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+      secs: Math.floor((diff % (1000 * 60)) / 1000),
+    });
+  }, [activeDrop]);
+
+  // Initial data load — deferred to avoid blocking first paint
+  useEffect(() => {
+    const t = setTimeout(() => {
+      fetchProducts();
+      fetchActiveDrop();
+      fetchCollections();
+    }, 0);
+    return () => clearTimeout(t);
+  }, [fetchProducts, fetchActiveDrop, fetchCollections]);
+
+  // Countdown interval
+  useEffect(() => {
+    if (!activeDrop) return;
+    const t = setTimeout(updateCountdown, 0);
+    const id = setInterval(updateCountdown, 1000);
+    return () => { clearTimeout(t); clearInterval(id); };
+  }, [activeDrop, updateCountdown]);
+
+  async function switchCollection(id) {
+    setActiveCollection(id);
+    setCategoryFilter("all");
+    try {
+      const { data } = await supabase
+        .from("products for Gorosei")
+        .select("*")
+        .eq("collection_id", id)
+        .order("sold", { ascending: true })
+        .order("created_at", { ascending: false });
+      setProducts(data || []);
+    } catch { /* silent */ }
+  }
+
+  function showAllDrops() {
+    setActiveCollection(null);
+    setCategoryFilter("all");
+    fetchProducts();
+  }
+
+  async function submitWaitlist() {
+    if (!waitlistPhone.trim()) return;
+    setWaitlistLoading(true);
+    try {
+      const phone = waitlistPhone.replace(/[^0-9]/g, "");
+      await supabase.from("waitlist").insert({ phone, drop_id: activeDrop?.id });
+      setWaitlistSubmitted(true);
+    } catch (err) {
+      console.error("Waitlist error:", err);
+    }
+    setWaitlistLoading(false);
+  }
+
+  // Filtered products
+  const filteredProducts =
+    categoryFilter === "all"
+      ? products
+      : products.filter((p) => (p.category || "tshirts") === categoryFilter);
+
+  // ── Cursor ─────────────────────────────────────────────────────────────────
+  const cursorStyle = {
+    position: "fixed",
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    background: "var(--crimson)",
+    left: mouse.x - 4,
+    top: mouse.y - 4,
+    pointerEvents: "none",
+    zIndex: 9999,
+    transition: "opacity 0.3s",
+    opacity: mouse.x === 0 && mouse.y === 0 ? 0 : 1,
+  };
+
+  return (
+    <div style={{ background: "var(--bg)", minHeight: "100vh", color: "var(--text)" }}>
+      {/* Custom cursor — desktop only */}
+      {!isMobile && <div style={cursorStyle} />}
+
+      {/* ── NAV ───────────────────────────────────────────────────────── */}
+      <nav
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          padding: isMobile ? "16px 24px" : "20px 48px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: scrolled ? "rgba(0,0,0,0.95)" : "transparent",
+          backdropFilter: scrolled ? "blur(12px)" : "none",
+          transition: "background 0.4s, backdrop-filter 0.4s",
+          borderBottom: scrolled ? "1px solid var(--surface-light)" : "none",
+        }}
+      >
+        <a
+          href="/"
+          className="font-display"
+          style={{ fontSize: isMobile ? 22 : 28, textDecoration: "none", letterSpacing: "0.05em" }}
+        >
+          GOROSEI
+        </a>
+
+        {/* Desktop links */}
+        {!isMobile && (
+          <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
+            {[["#drop", "THE DROP"], ["#lookbook", "LOOKBOOK"], ["#thrift", "THRIFT"], ["#about", "ABOUT"]].map(
+              ([href, label]) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="font-mono"
+                  style={{ fontSize: 10, letterSpacing: "0.2em", color: "var(--text-muted)", textDecoration: "none" }}
+                >
+                  {label}
+                </a>
+              )
+            )}
+            <a
+              href="/admin"
+              className="font-mono"
+              aria-label="Open admin dashboard"
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.2em",
+                color: "var(--text)",
+                textDecoration: "none",
+                border: "1px solid var(--crimson)",
+                padding: "9px 12px",
+                lineHeight: 1,
+              }}
+            >
+              ADMIN
+            </a>
+          </div>
+        )}
+
+        {/* Mobile hamburger */}
+        {isMobile && (
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}
+            aria-label="Menu"
+          >
+            <div style={{ width: 24, height: 1, background: "var(--text)", marginBottom: 6 }} />
+            <div style={{ width: 16, height: 1, background: "var(--text)" }} />
+          </button>
+        )}
+      </nav>
+
+      {/* Mobile menu overlay */}
+      {isMobile && menuOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 999,
+            background: "rgba(0,0,0,0.97)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 40,
+          }}
+        >
+          <button
+            onClick={() => setMenuOpen(false)}
+            style={{ position: "absolute", top: 24, right: 24, background: "none", border: "none", color: "var(--text)", fontSize: 24, cursor: "pointer" }}
+          >
+            ✕
+          </button>
+          {[["#drop", "THE DROP"], ["#lookbook", "LOOKBOOK"], ["#thrift", "THRIFT"], ["#about", "ABOUT"]].map(
+            ([href, label]) => (
+              <a
+                key={href}
+                href={href}
+                onClick={() => setMenuOpen(false)}
+                className="font-display"
+                style={{ fontSize: 40, textDecoration: "none", letterSpacing: "0.05em" }}
+              >
+                {label}
+              </a>
+            )
+          )}
+          <a
+            href="/admin"
+            onClick={() => setMenuOpen(false)}
+            className="font-mono"
+            style={{
+              fontSize: 12,
+              letterSpacing: "0.25em",
+              textDecoration: "none",
+              color: "var(--text)",
+              border: "1px solid var(--crimson)",
+              padding: "14px 18px",
+            }}
+          >
+            ADMIN
+          </a>
+        </div>
+      )}
+
+      {/* ── HERO ──────────────────────────────────────────────────────── */}
+      <section
+        style={{ position: "relative", height: "100svh", overflow: "hidden", display: "flex", alignItems: "flex-end" }}
+      >
+        {/* Slide background */}
+        {HERO_MEDIA.map((m, i) => {
+          if (!isNearbyHeroSlide(i, currentSlide)) return null;
+
+          const isActive = i === currentSlide;
+          const isLoaded = loadedHeroMedia[m.src];
+
+          return (
+            <div
+              key={m.src}
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: isActive ? 1 : 0,
+                transform: isActive ? "scale(1)" : "scale(1.02)",
+                transition: "opacity 900ms ease, transform 6500ms ease",
+                willChange: isActive ? "opacity, transform" : "auto",
+                background: "#060606",
+                backgroundImage: m.poster ? `url(${m.poster})` : "none",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              {m.type === "video" ? (
+                <video
+                  src={m.src}
+                  poster={m.poster}
+                  autoPlay={isActive}
+                  muted
+                  loop
+                  playsInline
+                  preload={isActive ? "auto" : "metadata"}
+                  onCanPlay={() => markHeroLoaded(m.src)}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    opacity: isLoaded || isActive ? 1 : 0,
+                    transition: "opacity 500ms ease",
+                  }}
+                />
+              ) : (
+                <img
+                  src={m.src}
+                  alt=""
+                  loading={i === 0 ? "eager" : "lazy"}
+                  fetchPriority={i === 0 ? "high" : "low"}
+                  decoding="async"
+                  onLoad={() => markHeroLoaded(m.src)}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    opacity: isLoaded ? 1 : 0,
+                    transition: "opacity 500ms ease",
+                  }}
+                />
+              )}
+            </div>
+          );
+        })}
+
+        {/* Gradient overlay */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
+          }}
+        />
+
+        {/* Hero content */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            padding: isMobile ? "0 24px 48px" : "0 48px 80px",
+            width: "100%",
+          }}
+        >
+          <div
+            className="font-mono"
+            style={{ fontSize: 10, letterSpacing: "0.4em", color: "var(--crimson)", marginBottom: 16 }}
+          >
+            LUCK SUMMER / 2026
+          </div>
+          <h1
+            className="font-display"
+            style={{
+              fontSize: isMobile ? "clamp(56px, 16vw, 80px)" : "clamp(80px, 12vw, 160px)",
+              lineHeight: 0.88,
+              marginBottom: 24,
+            }}
+          >
+            THRIFT OR GET
+            <br />
+            AN ORIGINAL PIECE.
+          </h1>
+          <p
+            className="font-mono"
+            style={{
+              fontSize: isMobile ? 11 : 13,
+              color: "rgba(255,255,255,0.78)",
+              lineHeight: 1.8,
+              maxWidth: 520,
+              marginBottom: 32,
+            }}
+          >
+            Sometimes all you have to do is put that sh!t on and go on about your day.
+          </p>
+          <a
+            href="#drop"
+            className="font-mono"
+            style={{
+              display: "inline-block",
+              padding: "14px 32px",
+              border: "1px solid var(--crimson)",
+              color: "var(--crimson)",
+              textDecoration: "none",
+              fontSize: 11,
+              letterSpacing: "0.3em",
+            }}
+          >
+            SHOP THE DROP
+          </a>
+        </div>
+
+        {/* Slide indicators */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: isMobile ? 24 : 40,
+            right: isMobile ? 24 : 48,
+            display: "flex",
+            gap: 8,
+          }}
+        >
+          {HERO_MEDIA.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentSlide(i)}
+              aria-label={`Show hero slide ${i + 1}`}
+              style={{
+                width: i === currentSlide ? 24 : 8,
+                height: 2,
+                background: i === currentSlide ? "var(--crimson)" : "rgba(255,255,255,0.3)",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                transition: "width 0.3s, background 0.3s",
+              }}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* ── MARQUEE ───────────────────────────────────────────────────── */}
+      <div
+        style={{
+          background: "var(--crimson)",
+          padding: "12px 0",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <div
+          className="font-mono"
+          style={{
+            display: "inline-block",
+            animation: "marquee 20s linear infinite",
+            fontSize: 10,
+            letterSpacing: "0.3em",
+          }}
+        >
+          {Array(6).fill("GOROSEI KENYA • FROM THE STREETS OF NAIROBI • SIMPLY PUT THAT SHIT ON • LUCK SUMMER 2026 •").join("  ")}
+        </div>
+      </div>
+
+      {/* ── DROP / PRODUCTS ───────────────────────────────────────────── */}
+      <section id="drop" className="section" style={{ padding: isMobile ? "80px 0 40px" : "120px 0 60px" }}>
+        <AnimatedSection>
+          {dropLocked ? (
+            /* LOCKED VIEW — countdown + waitlist */
+            <div style={{ padding: isMobile ? "0 24px" : "0 48px", maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+              <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+                • COMING SOON
+              </span>
+              <h2
+                className="font-display"
+                style={{ fontSize: isMobile ? 48 : 80, marginTop: 16, lineHeight: 0.9 }}
+              >
+                {activeDrop?.collection_name?.toUpperCase() || "THE DROP"}
+              </h2>
+              {/* Countdown */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: isMobile ? 16 : 32,
+                  marginTop: 48,
+                  flexWrap: "wrap",
+                }}
+              >
+                {[["DAYS", countdown.days], ["HRS", countdown.hours], ["MIN", countdown.mins], ["SEC", countdown.secs]].map(
+                  ([label, val]) => (
+                    <div key={label} style={{ textAlign: "center", minWidth: 64 }}>
+                      <div className="font-display" style={{ fontSize: isMobile ? 48 : 72 }}>
+                        {String(val).padStart(2, "0")}
+                      </div>
+                      <div className="font-mono" style={{ fontSize: 9, letterSpacing: "0.2em", color: "var(--text-muted)" }}>
+                        {label}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+              {/* Waitlist */}
+              {waitlistSubmitted ? (
+                <p className="font-mono" style={{ fontSize: 12, color: "var(--crimson)", marginTop: 40 }}>
+                  YOU'RE ON THE LIST. WE'LL NOTIFY YOU.
+                </p>
+              ) : (
+                <div style={{ marginTop: 40 }}>
+                  <input
+                    type="tel"
+                    value={waitlistPhone}
+                    onChange={(e) => setWaitlistPhone(e.target.value)}
+                    placeholder="Phone number (07xx...)"
+                    style={{
+                      width: "100%",
+                      padding: 16,
+                      background: "var(--surface)",
+                      border: "1px solid var(--surface-light)",
+                      color: "var(--text)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 12,
+                      marginBottom: 12,
+                      boxSizing: "border-box",
+                      outline: "none",
+                    }}
+                  />
+                  <button
+                    onClick={submitWaitlist}
+                    disabled={waitlistLoading || !waitlistPhone.trim()}
+                    style={{
+                      width: "100%",
+                      padding: 16,
+                      background: waitlistLoading ? "var(--surface-light)" : "var(--crimson)",
+                      border: "none",
+                      color: "var(--text)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 12,
+                      letterSpacing: "0.2em",
+                      cursor: waitlistLoading ? "not-allowed" : "pointer",
+                      opacity: waitlistLoading ? 0.5 : 1,
+                    }}
+                  >
+                    {waitlistLoading ? "JOINING..." : "JOIN WAITLIST"}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* UNLOCKED VIEW — collection + category filters + product grid */
+            <>
+              <div style={{ padding: isMobile ? "0 24px" : "0 48px", maxWidth: 1400, margin: "0 auto" }}>
+                {/* Collection tabs */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: isMobile ? 16 : 24,
+                    marginBottom: 16,
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    borderBottom: "1px solid var(--surface-light)",
+                    paddingBottom: 16,
+                  }}
+                >
+                  <button
+                    onClick={showAllDrops}
+                    className="font-mono"
+                    style={{
+                      fontSize: 11,
+                      letterSpacing: "0.2em",
+                      color: activeCollection === null ? "var(--crimson)" : "var(--text-muted)",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      paddingBottom: 4,
+                      borderBottom: activeCollection === null ? "1px solid var(--crimson)" : "1px solid transparent",
+                    }}
+                  >
+                    ALL DROPS
+                  </button>
+                  {collections.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => switchCollection(c.id)}
+                      className="font-mono"
+                      style={{
+                        fontSize: 11,
+                        letterSpacing: "0.2em",
+                        color: activeCollection === c.id ? "var(--crimson)" : "var(--text-muted)",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        paddingBottom: 4,
+                        borderBottom: activeCollection === c.id ? "1px solid var(--crimson)" : "1px solid transparent",
+                      }}
+                    >
+                      {c.name?.toUpperCase() || "COLLECTION"}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Category chips */}
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
+                  {["all", ...PRODUCT_CATEGORIES].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setCategoryFilter(cat)}
+                      className="font-mono"
+                      style={{
+                        fontSize: 10,
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase",
+                        color: categoryFilter === cat ? "#fff" : "var(--text-muted)",
+                        background: categoryFilter === cat ? "var(--crimson)" : "transparent",
+                        border: "1px solid var(--surface-light)",
+                        padding: "8px 14px",
+                        cursor: "pointer",
+                        transition: "background 0.2s, color 0.2s",
+                      }}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+
+                <h2
+                  className="font-display"
+                  style={{
+                    fontSize: isMobile ? "clamp(36px, 12vw, 64px)" : "clamp(48px, 8vw, 96px)",
+                    marginBottom: 40,
+                  }}
+                >
+                  {activeCollection === null
+                    ? "ALL DROPS"
+                    : collections.find((c) => c.id === activeCollection)?.name?.toUpperCase() || "THE DROP"}
+                </h2>
+              </div>
+
+              {/* Product grid */}
+              <div
+                className="grid-3"
+                style={{
+                  maxWidth: 1400,
+                  margin: "0 auto",
+                  padding: isMobile ? "0 24px" : "0 48px",
+                }}
+              >
+                {loading ? (
+                  /* Loading skeleton */
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        aspectRatio: "3/4",
+                        background: "var(--surface)",
+                        animation: "pulse 1.5s ease-in-out infinite",
+                        animationDelay: `${i * 0.1}s`,
+                      }}
+                    />
+                  ))
+                ) : filteredProducts.length === 0 ? (
+                  <div style={{ gridColumn: "1/-1", textAlign: "center", padding: "80px 0" }}>
+                    <p className="font-display" style={{ fontSize: isMobile ? 32 : 48 }}>
+                      {categoryFilter !== "all" ? `NO ${categoryFilter.toUpperCase()} YET` : "NO DROPS YET"}
+                    </p>
+                    <p className="font-mono" style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 16 }}>
+                      {categoryFilter !== "all" ? (
+                        <button
+                          onClick={() => setCategoryFilter("all")}
+                          style={{ background: "none", border: "none", color: "var(--crimson)", cursor: "pointer", fontFamily: "var(--font-mono)", fontSize: 12 }}
+                        >
+                          View all categories →
+                        </button>
+                      ) : (
+                        "Check back soon."
+                      )}
+                    </p>
+                  </div>
+                ) : (
+                  filteredProducts.map((p, i) => <ProductCard key={p.id || i} product={p} />)
+                )}
+              </div>
+            </>
+          )}
+        </AnimatedSection>
+      </section>
+
+      {/* ── THRIFT ────────────────────────────────────────────────────── */}
+      <section id="thrift" className="section" style={{ padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <AnimatedSection>
+          <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+              • THRIFT PIECES
+            </span>
+            <h2
+              className="font-display"
+              style={{
+                fontSize: isMobile ? "clamp(36px, 10vw, 64px)" : "clamp(48px, 8vw, 96px)",
+                marginTop: 24,
+                lineHeight: 0.9,
+              }}
+            >
+              CURATED<br />MTUMBA ESSENTIALS
+            </h2>
+            <p className="font-mono" style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 24, lineHeight: 1.8 }}>
+              Gothic vintage, anime energy, skull pieces, and graphic tees with actual life in them.
+            </p>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi GOROSEI, I'm interested in thrift pieces. What do you have available?")}`}
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono"
+              style={{
+                display: "inline-block",
+                marginTop: 32,
+                padding: "14px 32px",
+                border: "1px solid var(--crimson)",
+                color: "var(--crimson)",
+                textDecoration: "none",
+                fontSize: 11,
+                letterSpacing: "0.2em",
+              }}
+            >
+              BROWSE VIA WHATSAPP →
+            </a>
+          </div>
+        </AnimatedSection>
+      </section>
+
+      {/* ── NAIROBI STATEMENT ─────────────────────────────────────────── */}
+      <section className="section" style={{ padding: isMobile ? "80px 24px" : "80px 48px", textAlign: "center" }}>
+        <AnimatedSection>
+          <h2
+            className="font-display"
+            style={{
+              fontSize: isMobile ? "clamp(48px, 14vw, 80px)" : "clamp(64px, 12vw, 160px)",
+              lineHeight: 0.9,
+            }}
+          >
+            A BREATH<br />OF LIFE.
+          </h2>
+          <div style={{ width: 120, height: 1, background: "var(--crimson)", margin: "48px auto" }} />
+          <p
+            className="font-mono"
+            style={{ fontSize: 12, color: "var(--text-muted)", maxWidth: 460, margin: "0 auto", lineHeight: 1.8 }}
+          >
+            From the streets of Nairobi. For anyone tired of gloomy, average pieces.
+          </p>
+        </AnimatedSection>
+      </section>
+
+      {/* ── LOOKBOOK ──────────────────────────────────────────────────── */}
+      <section id="lookbook" className="section" style={{ padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <AnimatedSection>
+          <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+              • LOOKBOOK
+            </span>
+            <h2
+              className="font-display"
+              style={{
+                fontSize: isMobile ? "clamp(36px, 10vw, 64px)" : "clamp(48px, 8vw, 96px)",
+                marginTop: 24,
+              }}
+            >
+              GOTHIC VINTAGE<br />ANIME / STREET
+            </h2>
+          </div>
+        </AnimatedSection>
+      </section>
+
+      {/* ── ABOUT ─────────────────────────────────────────────────────── */}
+      <section id="about" className="section" style={{ padding: isMobile ? "80px 24px" : "120px 48px" }}>
+        <AnimatedSection>
+          <div style={{ maxWidth: 800, margin: "0 auto" }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+              • FOUNDER NOTE
+            </span>
+            <h2
+              className="font-display"
+              style={{
+                fontSize: isMobile ? "clamp(36px, 10vw, 64px)" : "clamp(48px, 8vw, 96px)",
+                marginTop: 24,
+                lineHeight: 0.9,
+              }}
+            >
+              BRIAN MUKWE
+            </h2>
+            <p className="font-mono" style={{ fontSize: 11, color: "var(--crimson)", marginTop: 14, letterSpacing: "0.18em" }}>
+              GLIZOCK / GLOCK
+            </p>
+            <p
+              className="font-mono"
+              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 32, lineHeight: 2, maxWidth: 620 }}
+            >
+              I make music and stream games, with a real passion for gothic vintage pieces and anime.
+              Gorosei is where I bring you my vision: more graphic content on the streets of Nairobi.
+            </p>
+            <p
+              className="font-mono"
+              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 20, lineHeight: 2, maxWidth: 620 }}
+            >
+              When I was a kid, I used to get hand-me-downs from my cool-ass cousin. He printed his own
+              T-shirts and gave them life, mostly skull pieces. He still does. That spirit is the root.
+            </p>
+            <p
+              className="font-mono"
+              style={{ fontSize: 12, color: "var(--text)", marginTop: 28, lineHeight: 1.9, maxWidth: 520 }}
+            >
+              Nairobi, Luck Summer. 2026. Mission: simply put that shit on.
+            </p>
+            <NewsletterForm />
+          </div>
+        </AnimatedSection>
+      </section>
+
+      {/* ── FOOTER ────────────────────────────────────────────────────── */}
+      <footer
+        style={{
+          padding: isMobile ? "60px 24px 40px" : "80px 48px 48px",
+          borderTop: "1px solid var(--surface-light)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+            gap: 32,
+            maxWidth: 1400,
+            margin: "0 auto",
+          }}
+        >
+          <div>
+            <span className="font-display" style={{ fontSize: 28 }}>GOROSEI</span>
+            <p className="font-mono" style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 8 }}>
+              NAIROBI, LUCK SUMMER
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+            <a
+              href="https://instagram.com/goroseikenya"
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono"
+              style={{ fontSize: 10, color: "var(--text-muted)", textDecoration: "none" }}
+            >
+              INSTAGRAM
+            </a>
+            <a
+              href="https://tiktok.com/@goroseikenya"
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono"
+              style={{ fontSize: 10, color: "var(--text-muted)", textDecoration: "none" }}
+            >
+              TIKTOK
+            </a>
+            <a
+              href="https://wa.me/254734944512"
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono"
+              style={{ fontSize: 10, color: "var(--text-muted)", textDecoration: "none" }}
+            >
+              WHATSAPP
+            </a>
+          </div>
+        </div>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: 48,
+            paddingTop: 32,
+            borderTop: "1px solid var(--surface-light)",
+            maxWidth: 1400,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <span className="font-mono" style={{ fontSize: 10, color: "#333" }}>
+            © 2026 GOROSEI — ALL RIGHTS RESERVED
+          </span>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
