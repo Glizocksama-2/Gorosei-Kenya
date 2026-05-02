@@ -13,5 +13,8 @@ drop table if exists public."products for Gorosei" cascade;
 drop table if exists public.drops cascade;
 drop table if exists public.collections cascade;
 
-delete from storage.objects where bucket_id = 'products-images';
-delete from storage.buckets where id = 'products-images';
+-- Supabase does not allow direct SQL deletion from storage.objects.
+-- To clear old product images, use the Supabase Dashboard:
+-- Storage -> products-images -> select files/folders -> Delete.
+--
+-- The bucket itself is recreated/updated safely in 03_storage.sql.
