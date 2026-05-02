@@ -9,7 +9,6 @@ export const ORDER_STATUSES = ["new", "contacted", "paid", "delivered", "cancell
 export const DISCORD_WEBHOOK = import.meta?.env?.VITE_DISCORD_WEBHOOK || "";
 export const HERO_MEDIA = [
   { src: "/hero1.png", type: "image", durationMs: 5000 },
-  { src: "/hero-video1.mp4", type: "video", poster: "/hero1.png", durationMs: 6500 },
   { src: "/hero2.png", type: "image", durationMs: 5000 },
   { src: "/hero3.png", type: "image", durationMs: 5000 },
   { src: "/hero4.png", type: "image", durationMs: 5000 },
