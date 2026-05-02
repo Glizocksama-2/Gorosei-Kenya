@@ -9,6 +9,19 @@ const FIXED_PRICE = 2000;
 const BUCKET_NAME = "products-images";
 const PRODUCT_CATEGORIES = ["tshirts", "jackets", "pants", "accessories", "shoes", "socks"];
 const DISCORD_WEBHOOK = import.meta?.env?.VITE_DISCORD_WEBHOOK || "";
+const HERO_MEDIA = [
+  { src: "/hero1.png", type: "image", durationMs: 5000 },
+  { src: "/hero-video1.mp4", type: "video", poster: "/hero1.png", durationMs: 6500 },
+  { src: "/hero2.png", type: "image", durationMs: 5000 },
+  { src: "/hero3.png", type: "image", durationMs: 5000 },
+  { src: "/hero4.png", type: "image", durationMs: 5000 },
+  { src: "/hero5.png", type: "image", durationMs: 5000 },
+  { src: "/hero6.png", type: "image", durationMs: 5000 },
+  { src: "/hero7.png", type: "image", durationMs: 5000 },
+  { src: "/hero8.png", type: "image", durationMs: 5000 },
+  { src: "/hero9.png", type: "image", durationMs: 5000 },
+  { src: "/hero10.png", type: "image", durationMs: 5000 },
+];
 
 // Guard: prevent crashing when env vars are missing at build time
 const supabase = createClient(
@@ -30,6 +43,15 @@ function getImageUrl(path, width = 800, quality = 80) {
 
 function lerp(a, b, f) {
   return a + (b - a) * f;
+}
+
+function isNearbyHeroSlide(index, current) {
+  const total = HERO_MEDIA.length;
+  return (
+    index === current ||
+    index === (current + 1) % total ||
+    index === (current - 1 + total) % total
+  );
 }
 
 // ─── HOOKS ─────────────────────────────────────────────────────────────────
@@ -352,37 +374,34 @@ function CustomerPage() {
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
   const [waitlistLoading, setWaitlistLoading] = useState(false);
 
-  // Hero carousel
-  const heroMedia = [
-    { src: "/hero1.png", type: "image" },
-    { src: "/hero-video1.mp4", type: "video" },
-    { src: "/hero2.png", type: "image" },
-    { src: "/hero3.png", type: "image" },
-    { src: "/hero4.png", type: "image" },
-    { src: "/hero5.png", type: "image" },
-    { src: "/hero6.png", type: "image" },
-    { src: "/hero7.png", type: "image" },
-    { src: "/hero8.png", type: "image" },
-    { src: "/hero9.png", type: "image" },
-    { src: "/hero10.png", type: "image" },
-  ];
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [loadedHeroMedia, setLoadedHeroMedia] = useState(() => ({ [HERO_MEDIA[0].src]: true }));
+
+  const markHeroLoaded = useCallback((src) => {
+    setLoadedHeroMedia((loaded) => loaded[src] ? loaded : { ...loaded, [src]: true });
+  }, []);
 
   const nextSlide = useCallback(() => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroMedia.length);
-      setIsTransitioning(false);
-    }, 400);
-  }, [isTransitioning, heroMedia.length]);
+    setCurrentSlide((prev) => (prev + 1) % HERO_MEDIA.length);
+  }, []);
 
   // Auto-advance hero
   useEffect(() => {
-    const id = setInterval(nextSlide, 5000);
-    return () => clearInterval(id);
-  }, [nextSlide]);
+    const activeMedia = HERO_MEDIA[currentSlide];
+    const id = setTimeout(nextSlide, activeMedia.durationMs || 5000);
+    return () => clearTimeout(id);
+  }, [currentSlide, nextSlide]);
+
+  // Warm the next image in the carousel without forcing every hero asset onto first paint.
+  useEffect(() => {
+    const nextMedia = HERO_MEDIA[(currentSlide + 1) % HERO_MEDIA.length];
+    if (nextMedia.type !== "image" || loadedHeroMedia[nextMedia.src]) return;
+
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = () => markHeroLoaded(nextMedia.src);
+    img.src = nextMedia.src;
+  }, [currentSlide, loadedHeroMedia, markHeroLoaded]);
 
   // ── Data fetching — memoized to avoid dep-array infinite loops ────────────
   const fetchProducts = useCallback(async () => {
@@ -659,34 +678,66 @@ function CustomerPage() {
         style={{ position: "relative", height: "100svh", overflow: "hidden", display: "flex", alignItems: "flex-end" }}
       >
         {/* Slide background */}
-        {heroMedia.map((m, i) => (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              inset: 0,
-              opacity: i === currentSlide ? (isTransitioning ? 0 : 1) : 0,
-              transition: "opacity 0.6s ease",
-            }}
-          >
-            {m.type === "video" ? (
-              <video
-                src={m.src}
-                autoPlay
-                muted
-                loop
-                playsInline
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              <img
-                src={m.src}
-                alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            )}
-          </div>
-        ))}
+        {HERO_MEDIA.map((m, i) => {
+          if (!isNearbyHeroSlide(i, currentSlide)) return null;
+
+          const isActive = i === currentSlide;
+          const isLoaded = loadedHeroMedia[m.src];
+
+          return (
+            <div
+              key={m.src}
+              style={{
+                position: "absolute",
+                inset: 0,
+                opacity: isActive ? 1 : 0,
+                transform: isActive ? "scale(1)" : "scale(1.02)",
+                transition: "opacity 900ms ease, transform 6500ms ease",
+                willChange: isActive ? "opacity, transform" : "auto",
+                background: "#060606",
+                backgroundImage: m.poster ? `url(${m.poster})` : "none",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              {m.type === "video" ? (
+                <video
+                  src={m.src}
+                  poster={m.poster}
+                  autoPlay={isActive}
+                  muted
+                  loop
+                  playsInline
+                  preload={isActive ? "auto" : "metadata"}
+                  onCanPlay={() => markHeroLoaded(m.src)}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    opacity: isLoaded || isActive ? 1 : 0,
+                    transition: "opacity 500ms ease",
+                  }}
+                />
+              ) : (
+                <img
+                  src={m.src}
+                  alt=""
+                  loading={i === 0 ? "eager" : "lazy"}
+                  fetchPriority={i === 0 ? "high" : "low"}
+                  decoding="async"
+                  onLoad={() => markHeroLoaded(m.src)}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    opacity: isLoaded ? 1 : 0,
+                    transition: "opacity 500ms ease",
+                  }}
+                />
+              )}
+            </div>
+          );
+        })}
 
         {/* Gradient overlay */}
         <div
@@ -751,10 +802,11 @@ function CustomerPage() {
             gap: 8,
           }}
         >
-          {heroMedia.map((_, i) => (
+          {HERO_MEDIA.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentSlide(i)}
+              aria-label={`Show hero slide ${i + 1}`}
               style={{
                 width: i === currentSlide ? 24 : 8,
                 height: 2,
