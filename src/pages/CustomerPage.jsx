@@ -818,16 +818,65 @@ export default function CustomerPage() {
       {/* ── ABOUT ─────────────────────────────────────────────────────── */}
       <section id="about" className="section" style={{ padding: isMobile ? "80px 24px" : "120px 48px" }}>
         <AnimatedSection>
-          <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div
+            style={{
+              maxWidth: 1280,
+              margin: "0 auto",
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "minmax(0, 0.95fr) minmax(360px, 1.05fr)",
+              gap: isMobile ? 40 : 72,
+              alignItems: "center",
+            }}
+          >
+            <figure
+              style={{
+                margin: 0,
+                border: "1px solid var(--surface-light)",
+                background: "var(--surface)",
+                overflow: "hidden",
+                order: isMobile ? 2 : 1,
+              }}
+            >
+              <img
+                src="/founder.png"
+                alt="Brian Mukwe, founder and creative director of Gorosei Kenya"
+                loading="lazy"
+                decoding="async"
+                style={{
+                  width: "100%",
+                  aspectRatio: "1672 / 941",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+              <figcaption
+                className="font-mono"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 16,
+                  padding: isMobile ? "12px 14px" : "14px 18px",
+                  fontSize: 9,
+                  color: "var(--text-muted)",
+                  letterSpacing: "0.16em",
+                  borderTop: "1px solid var(--surface-light)",
+                }}
+              >
+                <span>FOUNDER / VISIONARY</span>
+                <span>NAIROBI</span>
+              </figcaption>
+            </figure>
+            <div style={{ order: isMobile ? 1 : 2 }}>
             <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
               • FOUNDER NOTE
             </span>
             <h2
               className="font-display"
               style={{
-                fontSize: isMobile ? "clamp(36px, 10vw, 64px)" : "clamp(48px, 8vw, 96px)",
+                fontSize: isMobile ? "clamp(36px, 10vw, 64px)" : "clamp(42px, 5vw, 64px)",
                 marginTop: 24,
                 lineHeight: 0.9,
+                maxWidth: "100%",
               }}
             >
               BRIAN MUKWE
@@ -849,13 +898,21 @@ export default function CustomerPage() {
               When I was a kid, I used to get hand-me-downs from my cool-ass cousin. He printed his own
               T-shirts and gave them life, mostly skull pieces. He still does. That spirit is the root.
             </p>
-            <p
-              className="font-mono"
-              style={{ fontSize: 12, color: "var(--text)", marginTop: 28, lineHeight: 1.9, maxWidth: 520 }}
-            >
+              <p
+                className="font-mono"
+                style={{
+                  fontSize: 12,
+                  color: "var(--text)",
+                  marginTop: 28,
+                  lineHeight: 1.9,
+                  maxWidth: 520,
+                  overflowWrap: "anywhere",
+                }}
+              >
               Nairobi, Luck Summer. 2026. Mission: simply put that shit on.
             </p>
             <NewsletterForm />
+            </div>
           </div>
         </AnimatedSection>
       </section>
