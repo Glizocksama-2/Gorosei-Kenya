@@ -22,6 +22,7 @@ create table if not exists public."products for Gorosei" (
   size text not null default 'M'
     check (size in ('S', 'M', 'L', 'XL')),
   "Image_url" text not null,
+  "Image_urls" text[] not null default array[]::text[],
   collection_id uuid references public.collections(id) on delete set null,
   sold boolean not null default false,
   created_at timestamptz not null default now()

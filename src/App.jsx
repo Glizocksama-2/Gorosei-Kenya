@@ -41,6 +41,15 @@ function getImageUrl(path, width = 800, quality = 80) {
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${path}?width=${width}&quality=${quality}&resize=cover`;
 }
 
+function getProductImages(product) {
+  const gallery = Array.isArray(product?.Image_urls) ? product.Image_urls : [];
+  return [...new Set([product?.Image_url, ...gallery].filter(Boolean))];
+}
+
+function isMissingGalleryColumn(error) {
+  return error?.message?.includes("Image_urls") || error?.details?.includes("Image_urls");
+}
+
 function lerp(a, b, f) {
   return a + (b - a) * f;
 }
@@ -277,6 +286,8 @@ function ProductCard({ product }) {
   const price = Number(product?.Price) || FIXED_PRICE;
   const originalPrice = Number(product?.original_price) || 0;
   const hasDiscount = originalPrice > price;
+  const images = getProductImages(product);
+  const coverImage = images[0];
 
   return (
     <a
@@ -291,9 +302,9 @@ function ProductCard({ product }) {
       }}
     >
       <div className="image-wrapper" style={{ "--lx": `${light.x}%`, "--ly": `${light.y}%` }}>
-        {product?.Image_url ? (
+        {coverImage ? (
           <img
-            src={getImageUrl(product.Image_url, 600, 75)}
+            src={getImageUrl(coverImage, 600, 75)}
             alt={name}
             loading="lazy"
             style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block" }}
@@ -313,6 +324,23 @@ function ProductCard({ product }) {
               {name.charAt(0)}
             </span>
           </div>
+        )}
+        {images.length > 1 && (
+          <span
+            className="font-mono"
+            style={{
+              position: "absolute",
+              right: 10,
+              bottom: 10,
+              padding: "6px 8px",
+              background: "rgba(0,0,0,0.72)",
+              color: "var(--text)",
+              fontSize: 9,
+              letterSpacing: "0.12em",
+            }}
+          >
+            {images.length} PHOTOS
+          </span>
         )}
       </div>
       <div style={{ padding: 24 }}>
@@ -1289,6 +1317,7 @@ function ProductPage({ id }) {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("M");
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const sizes = ["S", "M", "L", "XL"];
 
   const fetchProduct = useCallback(async () => {
@@ -1298,6 +1327,7 @@ function ProductPage({ id }) {
         .select("*")
         .eq("id", id)
         .single();
+      setSelectedImageIndex(0);
       setProduct(data);
     } catch {
       /* silent */
@@ -1354,6 +1384,8 @@ function ProductPage({ id }) {
   const price = Number(product.Price) || FIXED_PRICE;
   const originalPrice = Number(product.original_price) || 0;
   const hasDiscount = originalPrice > price;
+  const productImages = getProductImages(product);
+  const selectedImage = productImages[selectedImageIndex] || productImages[0];
 
   const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${price.toLocaleString()}\n\nIs it available?`
@@ -1397,9 +1429,50 @@ function ProductPage({ id }) {
         }}
       >
         {/* Image */}
-        <div style={{ overflow: "hidden", background: "var(--surface)" }}>
-          {product.Image_url ? (
-            <img src={getImageUrl(product.Image_url, 1200, 90)} alt={name} style={imgStyle} />
+        <div style={{ overflow: "hidden", background: "var(--surface)", position: "relative" }}>
+          {selectedImage ? (
+            <>
+              <img src={getImageUrl(selectedImage, 1200, 90)} alt={name} style={imgStyle} />
+              {productImages.length > 1 && (
+                <div
+                  style={{
+                    position: isMobile ? "static" : "absolute",
+                    left: isMobile ? 0 : 24,
+                    right: isMobile ? 0 : "auto",
+                    bottom: isMobile ? "auto" : 24,
+                    display: "flex",
+                    gap: 10,
+                    padding: isMobile ? "12px 16px" : 0,
+                    overflowX: "auto",
+                    maxWidth: isMobile ? "100%" : "calc(100% - 48px)",
+                  }}
+                >
+                  {productImages.map((image, index) => (
+                    <button
+                      key={image}
+                      onClick={() => setSelectedImageIndex(index)}
+                      aria-label={`View product photo ${index + 1}`}
+                      style={{
+                        width: 58,
+                        height: 76,
+                        flex: "0 0 auto",
+                        padding: 0,
+                        border: index === selectedImageIndex ? "1px solid var(--crimson)" : "1px solid rgba(255,255,255,0.25)",
+                        background: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <img
+                        src={getImageUrl(image, 160, 70)}
+                        alt=""
+                        loading="lazy"
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
           ) : (
             <div
               style={{
@@ -1636,10 +1709,11 @@ function AdminDashboard({ onLogout }) {
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
-    name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "",
+    name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [],
   });
   const [editDrafts, setEditDrafts] = useState({});
   const [uploading, setUploading] = useState(false);
+  const [uploadingProductId, setUploadingProductId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
 
@@ -1651,21 +1725,61 @@ function AdminDashboard({ onLogout }) {
   useEffect(() => { fetchCollections(); fetchDrops(); }, []);
 
   // ── Image upload ────────────────────────────────────────────────────────
+  async function uploadProductFiles(files) {
+    const uploadedPaths = [];
+    for (const file of files) {
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const fileName = `products/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { data, error } = await supabase.storage
+        .from(BUCKET_NAME)
+        .upload(fileName, file, { contentType: file.type || "image/jpeg" });
+      if (error) throw error;
+      uploadedPaths.push(data.path);
+    }
+    return uploadedPaths;
+  }
+
   async function handleFileSelect(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const fileName = `${Date.now()}.${ext}`;
-      const { data, error } = await supabase.storage.from(BUCKET_NAME).upload(fileName, file);
-      if (error) throw error;
-      setNewProduct((prev) => ({ ...prev, url: getImageUrl(data.path) }));
-      setStatus("Image uploaded!");
+      const uploadedPaths = await uploadProductFiles(files);
+      setNewProduct((prev) => {
+        const imageUrls = [...prev.imageUrls, ...uploadedPaths];
+        return { ...prev, imageUrls, url: prev.url || imageUrls[0] || "" };
+      });
+      setStatus(`${uploadedPaths.length} image${uploadedPaths.length === 1 ? "" : "s"} uploaded!`);
     } catch {
       setStatus("Upload failed. Check storage bucket.");
     } finally {
       setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  async function addImagesToProduct(product, files) {
+    const selectedFiles = Array.from(files || []);
+    if (!selectedFiles.length) return;
+    setUploadingProductId(product.id);
+    try {
+      const uploadedPaths = await uploadProductFiles(selectedFiles);
+      const existingImages = getProductImages(product);
+      const imageUrls = [...new Set([...existingImages, ...uploadedPaths])];
+      const { error } = await supabase
+        .from("products for Gorosei")
+        .update({
+          Image_url: product.Image_url || imageUrls[0],
+          Image_urls: imageUrls,
+        })
+        .eq("id", product.id);
+      if (error) throw error;
+      setStatus(`${uploadedPaths.length} photo${uploadedPaths.length === 1 ? "" : "s"} added to ${product.Name || "product"}.`);
+      fetchProductsForCollection(selectedCollection);
+    } catch (error) {
+      setStatus(`Upload failed: ${error.message || "Check storage bucket and Image_urls column."}`);
+    } finally {
+      setUploadingProductId(null);
     }
   }
 
@@ -1711,19 +1825,31 @@ function AdminDashboard({ onLogout }) {
     if (!newProduct.name || !newProduct.url) { setStatus("Name and image required"); return; }
     setSaving(true);
     try {
-      const { error } = await supabase.from("products for Gorosei").insert({
+      const payload = {
         Name: newProduct.name.trim(),
         Price: parseInt(newProduct.price) || FIXED_PRICE,
         original_price: newProduct.originalPrice ? parseInt(newProduct.originalPrice) : null,
         category: newProduct.category || "tshirts",
         size: newProduct.size,
         Image_url: newProduct.url,
+        Image_urls: newProduct.imageUrls.length ? newProduct.imageUrls : [newProduct.url],
         collection_id: selectedCollection === "default" ? null : selectedCollection,
         sold: false,
-      });
-      if (error) { setStatus(`Error: ${error.message}`); return; }
-      setStatus("Product added!");
-      setNewProduct({ name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "" });
+      };
+      const { error } = await supabase.from("products for Gorosei").insert(payload);
+      if (error && isMissingGalleryColumn(error)) {
+        const fallbackPayload = { ...payload };
+        delete fallbackPayload.Image_urls;
+        const fallback = await supabase.from("products for Gorosei").insert(fallbackPayload);
+        if (fallback.error) { setStatus(`Error: ${fallback.error.message}`); return; }
+        setStatus("Product added with cover image. Run 06_product_gallery.sql to save multiple photos.");
+      } else if (error) {
+        setStatus(`Error: ${error.message}`);
+        return;
+      } else {
+        setStatus("Product added!");
+      }
+      setNewProduct({ name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [] });
       fetchProductsForCollection(selectedCollection);
     } finally {
       setSaving(false);
@@ -2040,14 +2166,40 @@ function AdminDashboard({ onLogout }) {
             >
               {uploading ? (
                 <span className="font-mono" style={{ fontSize: 10 }}>UPLOADING...</span>
-              ) : newProduct.url ? (
-                <img src={newProduct.url} style={{ width: 40, height: 40, objectFit: "cover" }} alt="preview" />
+              ) : newProduct.imageUrls.length ? (
+                <>
+                  <img src={getImageUrl(newProduct.imageUrls[0], 120, 70)} style={{ width: 40, height: 40, objectFit: "cover" }} alt="preview" />
+                  <span className="font-mono" style={{ fontSize: 10 }}>{newProduct.imageUrls.length} PHOTOS</span>
+                </>
               ) : (
-                <span className="font-mono" style={{ fontSize: 10, color: "var(--text-muted)" }}>+ IMAGE</span>
+                <span className="font-mono" style={{ fontSize: 10, color: "var(--text-muted)" }}>+ IMAGES</span>
               )}
-              <input type="file" accept="image/*" onChange={handleFileSelect} style={{ display: "none" }} />
+              <input type="file" accept="image/*" multiple onChange={handleFileSelect} style={{ display: "none" }} />
             </label>
           </div>
+
+          {newProduct.imageUrls.length > 1 && (
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+              {newProduct.imageUrls.map((image, index) => (
+                <button
+                  key={image}
+                  type="button"
+                  onClick={() => setNewProduct((prev) => ({ ...prev, url: image }))}
+                  title={index === 0 ? "First uploaded image" : "Set as cover image"}
+                  style={{
+                    width: 52,
+                    height: 64,
+                    padding: 0,
+                    border: newProduct.url === image ? "1px solid var(--crimson)" : "1px solid var(--surface-light)",
+                    background: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <img src={getImageUrl(image, 120, 70)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                </button>
+              ))}
+            </div>
+          )}
 
           <button
             onClick={addProductToCollection}
@@ -2091,13 +2243,63 @@ function AdminDashboard({ onLogout }) {
                       opacity: p.sold ? 0.6 : 1,
                     }}
                   >
-                    {p.Image_url && (
-                      <img
-                        src={getImageUrl(p.Image_url, 400, 70)}
-                        alt={p.Name}
-                        style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block" }}
+                    {(() => {
+                      const images = getProductImages(p);
+                      return images.length > 0 && (
+                        <>
+                          <img
+                            src={getImageUrl(images[0], 400, 70)}
+                            alt={p.Name}
+                            style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block" }}
+                          />
+                          {images.length > 1 && (
+                            <div style={{ display: "flex", gap: 6, marginTop: 8, overflowX: "auto", paddingBottom: 2 }}>
+                              {images.slice(0, 6).map((image) => (
+                                <img
+                                  key={image}
+                                  src={getImageUrl(image, 80, 65)}
+                                  alt=""
+                                  loading="lazy"
+                                  style={{ width: 32, height: 40, objectFit: "cover", border: "1px solid var(--surface-light)", flex: "0 0 auto" }}
+                                />
+                              ))}
+                              {images.length > 6 && (
+                                <span className="font-mono" style={{ fontSize: 9, color: "var(--text-muted)", alignSelf: "center" }}>
+                                  +{images.length - 6}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
+                    <label
+                      className="font-mono"
+                      style={{
+                        display: "block",
+                        marginTop: 8,
+                        padding: "9px 0",
+                        border: "1px dashed var(--surface-light)",
+                        color: uploadingProductId === p.id ? "var(--text-muted)" : "var(--crimson)",
+                        textAlign: "center",
+                        fontSize: 9,
+                        letterSpacing: "0.12em",
+                        cursor: uploadingProductId ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      {uploadingProductId === p.id ? "UPLOADING..." : "+ ADD PHOTOS"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        disabled={Boolean(uploadingProductId)}
+                        onChange={(e) => {
+                          addImagesToProduct(p, e.target.files);
+                          e.target.value = "";
+                        }}
+                        style={{ display: "none" }}
                       />
-                    )}
+                    </label>
                     {/* Editable name */}
                     <input
                       value={editDrafts[p.id]?.name ?? p.Name ?? ""}
