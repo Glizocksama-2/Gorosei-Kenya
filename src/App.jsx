@@ -8,6 +8,8 @@ const WHATSAPP_NUMBER = "254734944512";
 const FIXED_PRICE = 2000;
 const BUCKET_NAME = "products-images";
 const PRODUCT_CATEGORIES = ["tshirts", "jackets", "pants", "accessories", "shoes", "socks"];
+const PRODUCT_CONDITIONS = ["new", "excellent", "good", "thrifted", "rare-find"];
+const ORDER_STATUSES = ["new", "contacted", "paid", "delivered", "cancelled"];
 const DISCORD_WEBHOOK = import.meta?.env?.VITE_DISCORD_WEBHOOK || "";
 const HERO_MEDIA = [
   { src: "/hero1.png", type: "image", durationMs: 5000 },
@@ -47,7 +49,59 @@ function getProductImages(product) {
 }
 
 function isMissingGalleryColumn(error) {
-  return error?.message?.includes("Image_urls") || error?.details?.includes("Image_urls");
+  const text = `${error?.message || ""} ${error?.details || ""}`;
+  return ["Image_urls", "condition", "fit_notes", "measurements", "story"].some((column) => text.includes(column));
+}
+
+function normalizePhone(phone) {
+  const digits = (phone || "").replace(/\D/g, "");
+  if (digits.startsWith("0")) return `254${digits.slice(1)}`;
+  return digits;
+}
+
+function parseMeasurements(value) {
+  if (!value) return {};
+  if (typeof value === "object" && !Array.isArray(value)) return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return {};
+  }
+}
+
+function formatMeasurements(measurements) {
+  const data = parseMeasurements(measurements);
+  return Object.entries(data)
+    .filter(([, value]) => value !== null && value !== undefined && String(value).trim())
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(", ");
+}
+
+function parseMeasurementInput(value) {
+  return value
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .reduce((acc, part) => {
+      const [rawKey, ...rest] = part.split(":");
+      const key = rawKey?.trim().toLowerCase().replace(/\s+/g, "_");
+      const val = rest.join(":").trim();
+      if (key && val) acc[key] = val;
+      return acc;
+    }, {});
+}
+
+async function trackProductEvent(productId, eventType, metadata = {}) {
+  if (!productId) return;
+  try {
+    await supabase.from("product_events").insert({
+      product_id: productId,
+      event_type: eventType,
+      metadata,
+    });
+  } catch {
+    /* analytics should never block shopping */
+  }
 }
 
 function lerp(a, b, f) {
@@ -1347,6 +1401,9 @@ function ProductPage({ id }) {
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [orderDraft, setOrderDraft] = useState({ name: "", phone: "" });
+  const [orderStatus, setOrderStatus] = useState("");
+  const [ordering, setOrdering] = useState(false);
   const sizes = ["S", "M", "L", "XL"];
 
   const fetchProduct = useCallback(async () => {
@@ -1369,6 +1426,10 @@ function ProductPage({ id }) {
     const task = setTimeout(fetchProduct, 0);
     return () => clearTimeout(task);
   }, [fetchProduct]);
+
+  useEffect(() => {
+    trackProductEvent(id, "view");
+  }, [id]);
 
   if (loading) {
     return (
@@ -1416,10 +1477,46 @@ function ProductPage({ id }) {
   const productImages = getProductImages(product);
   const selectedImage = productImages[selectedImageIndex] || productImages[0];
   const isSold = Boolean(product.sold);
+  const measurements = formatMeasurements(product.measurements);
+  const condition = product.condition ? product.condition.replace("-", " ").toUpperCase() : "";
 
   const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${price.toLocaleString()}\n\nIs it available?`
+    `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${price.toLocaleString()}${orderDraft.name ? `\n- Name: ${orderDraft.name.trim()}` : ""}${orderDraft.phone ? `\n- Phone: ${normalizePhone(orderDraft.phone)}` : ""}\n\nIs it available?`
   )}`;
+
+  async function placeOrder() {
+    if (isSold || ordering) return;
+    const phone = normalizePhone(orderDraft.phone);
+    if (!orderDraft.name.trim() || phone.length < 9) {
+      setOrderStatus("Add your name and phone first.");
+      return;
+    }
+
+    setOrdering(true);
+    setOrderStatus("Saving order...");
+    try {
+      const { error } = await supabase.from("orders").insert({
+        product_id: product.id,
+        product_name: name,
+        customer_name: orderDraft.name.trim(),
+        phone,
+        selected_size: selectedSize,
+        price,
+        status: "new",
+        source: "product_page",
+      });
+      if (error) throw error;
+      await trackProductEvent(product.id, "whatsapp_order", { selected_size: selectedSize, phone });
+      setOrderStatus("Order saved. Opening WhatsApp...");
+      window.open(buyLink, "_blank", "noopener,noreferrer");
+    } catch {
+      await trackProductEvent(product.id, "whatsapp_order_fallback", { selected_size: selectedSize });
+      setOrderStatus("Opening WhatsApp. Run the orders SQL to save leads in admin.");
+      window.open(buyLink, "_blank", "noopener,noreferrer");
+    } finally {
+      setOrdering(false);
+    }
+  }
 
   // Subtle parallax on desktop
   const imgStyle = {
@@ -1561,6 +1658,36 @@ function ProductPage({ id }) {
             {name}
           </h1>
 
+          {(condition || product.fit_notes || measurements) && (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+                gap: 10,
+                marginBottom: 32,
+              }}
+            >
+              {condition && (
+                <div style={{ border: "1px solid var(--surface-light)", padding: 14 }}>
+                  <p className="font-mono" style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: "0.16em" }}>CONDITION</p>
+                  <p className="font-mono" style={{ fontSize: 11, color: "var(--text)", marginTop: 8 }}>{condition}</p>
+                </div>
+              )}
+              {product.fit_notes && (
+                <div style={{ border: "1px solid var(--surface-light)", padding: 14 }}>
+                  <p className="font-mono" style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: "0.16em" }}>FIT</p>
+                  <p className="font-mono" style={{ fontSize: 11, color: "var(--text)", marginTop: 8 }}>{product.fit_notes}</p>
+                </div>
+              )}
+              {measurements && (
+                <div style={{ border: "1px solid var(--surface-light)", padding: 14 }}>
+                  <p className="font-mono" style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: "0.16em" }}>MEASUREMENTS</p>
+                  <p className="font-mono" style={{ fontSize: 11, color: "var(--text)", marginTop: 8 }}>{measurements}</p>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Price */}
           <div style={{ marginBottom: 40 }}>
             <span className="font-display" style={{ fontSize: 32, color: "var(--crimson)" }}>
@@ -1615,12 +1742,43 @@ function ProductPage({ id }) {
           </div>
 
           {/* CTA */}
-          <a
-            href={isSold ? "#drop" : buyLink}
-            target={isSold ? undefined : "_blank"}
-            rel={isSold ? undefined : "noreferrer"}
+          {!isSold && (
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10, marginBottom: 12 }}>
+              <input
+                value={orderDraft.name}
+                onChange={(e) => setOrderDraft((prev) => ({ ...prev, name: e.target.value }))}
+                placeholder="Your name"
+                style={{
+                  padding: 14,
+                  background: "var(--surface)",
+                  border: "1px solid var(--surface-light)",
+                  color: "var(--text)",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+              <input
+                value={orderDraft.phone}
+                onChange={(e) => setOrderDraft((prev) => ({ ...prev, phone: e.target.value }))}
+                placeholder="Phone / WhatsApp"
+                style={{
+                  padding: 14,
+                  background: "var(--surface)",
+                  border: "1px solid var(--surface-light)",
+                  color: "var(--text)",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={isSold ? () => { window.location.href = "/#drop"; } : placeOrder}
+            disabled={ordering}
             style={{
               display: "block",
+              width: "100%",
               padding: "18px 0",
               background: isSold ? "transparent" : "var(--crimson)",
               border: isSold ? "1px solid var(--surface-light)" : "none",
@@ -1631,19 +1789,24 @@ function ProductPage({ id }) {
               fontSize: 12,
               letterSpacing: "0.3em",
               transition: "opacity 0.2s",
+              cursor: ordering ? "not-allowed" : "pointer",
+              opacity: ordering ? 0.6 : 1,
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.85")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            {isSold ? "SOLD OUT / VIEW CURRENT DROP" : "ORDER ON WHATSAPP"}
-          </a>
+            {isSold ? "SOLD OUT / VIEW CURRENT DROP" : ordering ? "SAVING..." : "RESERVE / ORDER ON WHATSAPP"}
+          </button>
+          {orderStatus && (
+            <p className="font-mono" style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 12 }}>
+              {orderStatus}
+            </p>
+          )}
 
-          {product.description && (
+          {(product.story || product.description) && (
             <p
               className="font-mono"
               style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 32, lineHeight: 1.8 }}
             >
-              {product.description}
+              {product.story || product.description}
             </p>
           )}
         </div>
@@ -1770,19 +1933,27 @@ function AdminDashboard({ onLogout }) {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
     name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [],
+    condition: "thrifted", fitNotes: "", measurements: "", story: "",
   });
   const [editDrafts, setEditDrafts] = useState({});
   const [uploading, setUploading] = useState(false);
   const [uploadingProductId, setUploadingProductId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
+  const [orders, setOrders] = useState([]);
+  const [analytics, setAnalytics] = useState({ orders: 0, views: 0, clicks: 0, newsletter: 0, waitlist: 0 });
 
   // Drop management
   const [drops, setDrops] = useState([]);
   const [newDrop, setNewDrop] = useState({ collection_name: "", drop_date: "" });
   const [waitlistCount, setWaitlistCount] = useState(0);
 
-  useEffect(() => { fetchCollections(); fetchDrops(); }, []);
+  useEffect(() => {
+    fetchCollections();
+    fetchDrops();
+    fetchOrders();
+    fetchAnalytics();
+  }, []);
 
   // ── Image upload ────────────────────────────────────────────────────────
   async function uploadProductFiles(files) {
@@ -1893,6 +2064,10 @@ function AdminDashboard({ onLogout }) {
         size: newProduct.size,
         Image_url: newProduct.url,
         Image_urls: newProduct.imageUrls.length ? newProduct.imageUrls : [newProduct.url],
+        condition: newProduct.condition || "thrifted",
+        fit_notes: newProduct.fitNotes.trim() || null,
+        measurements: parseMeasurementInput(newProduct.measurements),
+        story: newProduct.story.trim() || null,
         collection_id: selectedCollection === "default" ? null : selectedCollection,
         sold: false,
       };
@@ -1900,16 +2075,23 @@ function AdminDashboard({ onLogout }) {
       if (error && isMissingGalleryColumn(error)) {
         const fallbackPayload = { ...payload };
         delete fallbackPayload.Image_urls;
+        delete fallbackPayload.condition;
+        delete fallbackPayload.fit_notes;
+        delete fallbackPayload.measurements;
+        delete fallbackPayload.story;
         const fallback = await supabase.from("products for Gorosei").insert(fallbackPayload);
         if (fallback.error) { setStatus(`Error: ${fallback.error.message}`); return; }
-        setStatus("Product added with cover image. Run 06_product_gallery.sql to save multiple photos.");
+        setStatus("Product added with core fields. Run 06 and 08 SQL helpers to save galleries and trust fields.");
       } else if (error) {
         setStatus(`Error: ${error.message}`);
         return;
       } else {
         setStatus("Product added!");
       }
-      setNewProduct({ name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [] });
+      setNewProduct({
+        name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [],
+        condition: "thrifted", fitNotes: "", measurements: "", story: "",
+      });
       fetchProductsForCollection(selectedCollection);
     } finally {
       setSaving(false);
@@ -1931,8 +2113,26 @@ function AdminDashboard({ onLogout }) {
       original_price: draft.originalPrice ? parseInt(draft.originalPrice) : null,
       category: draft.category || "tshirts",
       size: draft.size || "M",
+      condition: draft.condition || draft.condition === "" ? draft.condition || null : undefined,
+      fit_notes: draft.fitNotes ?? draft.fit_notes ?? null,
+      measurements: typeof draft.measurements === "string" ? parseMeasurementInput(draft.measurements) : draft.measurements,
+      story: draft.story ?? null,
     };
+    Object.keys(payload).forEach((key) => payload[key] === undefined && delete payload[key]);
     const { error } = await supabase.from("products for Gorosei").update(payload).eq("id", id);
+    if (error && isMissingGalleryColumn(error)) {
+      const fallbackPayload = { ...payload };
+      delete fallbackPayload.condition;
+      delete fallbackPayload.fit_notes;
+      delete fallbackPayload.measurements;
+      delete fallbackPayload.story;
+      const fallback = await supabase.from("products for Gorosei").update(fallbackPayload).eq("id", id);
+      if (fallback.error) { setStatus(`Error: ${fallback.error.message}`); return; }
+      setStatus("Product updated. Run 08_business_growth.sql to save trust fields.");
+      setEditDrafts((prev) => { const next = { ...prev }; delete next[id]; return next; });
+      fetchProductsForCollection(selectedCollection);
+      return;
+    }
     if (error) { setStatus(`Error: ${error.message}`); return; }
     setStatus("Product updated!");
     // Clear draft for this product after save
@@ -1953,6 +2153,49 @@ function AdminDashboard({ onLogout }) {
     // Waitlist count
     const { count } = await supabase.from("waitlist").select("*", { count: "exact", head: true });
     setWaitlistCount(count || 0);
+  }
+
+  async function fetchOrders() {
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(80);
+      if (error) throw error;
+      setOrders(data || []);
+    } catch {
+      setOrders([]);
+    }
+  }
+
+  async function updateOrderStatus(id, nextStatus) {
+    const { error } = await supabase.from("orders").update({ status: nextStatus }).eq("id", id);
+    if (error) { setStatus(`Order update failed: ${error.message}`); return; }
+    setStatus("Order updated.");
+    fetchOrders();
+    fetchAnalytics();
+  }
+
+  async function fetchAnalytics() {
+    try {
+      const [ordersRes, viewsRes, clicksRes, newsletterRes, waitlistRes] = await Promise.all([
+        supabase.from("orders").select("*", { count: "exact", head: true }),
+        supabase.from("product_events").select("*", { count: "exact", head: true }).eq("event_type", "view"),
+        supabase.from("product_events").select("*", { count: "exact", head: true }).in("event_type", ["whatsapp_order", "whatsapp_order_fallback"]),
+        supabase.from("newsletter").select("*", { count: "exact", head: true }),
+        supabase.from("waitlist").select("*", { count: "exact", head: true }),
+      ]);
+      setAnalytics({
+        orders: ordersRes.count || 0,
+        views: viewsRes.count || 0,
+        clicks: clicksRes.count || 0,
+        newsletter: newsletterRes.count || 0,
+        waitlist: waitlistRes.count || 0,
+      });
+    } catch {
+      setAnalytics((prev) => prev);
+    }
   }
 
   async function createDrop() {
@@ -2019,6 +2262,8 @@ function AdminDashboard({ onLogout }) {
   const TABS = [
     { id: "collections", label: "COLLECTIONS" },
     { id: "products", label: "PRODUCTS" },
+    { id: "orders", label: "ORDERS" },
+    { id: "analytics", label: "GROWTH" },
     { id: "drops", label: "DROPS" },
   ];
 
@@ -2220,6 +2465,31 @@ function AdminDashboard({ onLogout }) {
               placeholder="Original price"
               style={{ ...inputStyle, width: 130 }}
             />
+            <select
+              value={newProduct.condition}
+              onChange={(e) => setNewProduct({ ...newProduct, condition: e.target.value })}
+              style={inputStyle}
+            >
+              {PRODUCT_CONDITIONS.map((condition) => <option key={condition} value={condition}>{condition}</option>)}
+            </select>
+            <input
+              value={newProduct.fitNotes}
+              onChange={(e) => setNewProduct({ ...newProduct, fitNotes: e.target.value })}
+              placeholder="Fit notes"
+              style={{ ...inputStyle, flex: "1 1 180px", minWidth: 160 }}
+            />
+            <input
+              value={newProduct.measurements}
+              onChange={(e) => setNewProduct({ ...newProduct, measurements: e.target.value })}
+              placeholder="Measurements: chest: 22in, length: 28in"
+              style={{ ...inputStyle, flex: "1 1 260px", minWidth: 220 }}
+            />
+            <input
+              value={newProduct.story}
+              onChange={(e) => setNewProduct({ ...newProduct, story: e.target.value })}
+              placeholder="Product story / caption"
+              style={{ ...inputStyle, flex: "1 1 260px", minWidth: 220 }}
+            />
             {/* Image upload */}
             <label
               style={{ ...inputStyle, cursor: "pointer", display: "flex", alignItems: "center", gap: 12 }}
@@ -2389,6 +2659,31 @@ function AdminDashboard({ onLogout }) {
                     >
                       {PRODUCT_CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
+                    <select
+                      value={editDrafts[p.id]?.condition ?? p.condition ?? "thrifted"}
+                      onChange={(e) => setEditDrafts((prev) => ({ ...prev, [p.id]: { ...(prev[p.id] || p), condition: e.target.value } }))}
+                      style={{ ...inputStyle, width: "100%", marginTop: 8, padding: 10, fontSize: 12, boxSizing: "border-box" }}
+                    >
+                      {PRODUCT_CONDITIONS.map((condition) => <option key={condition} value={condition}>{condition}</option>)}
+                    </select>
+                    <input
+                      value={editDrafts[p.id]?.fitNotes ?? editDrafts[p.id]?.fit_notes ?? p.fit_notes ?? ""}
+                      onChange={(e) => setEditDrafts((prev) => ({ ...prev, [p.id]: { ...(prev[p.id] || p), fitNotes: e.target.value } }))}
+                      placeholder="Fit notes"
+                      style={{ ...inputStyle, width: "100%", marginTop: 8, padding: 10, fontSize: 12, boxSizing: "border-box" }}
+                    />
+                    <input
+                      value={typeof editDrafts[p.id]?.measurements === "string" ? editDrafts[p.id].measurements : formatMeasurements(p.measurements)}
+                      onChange={(e) => setEditDrafts((prev) => ({ ...prev, [p.id]: { ...(prev[p.id] || p), measurements: e.target.value } }))}
+                      placeholder="Measurements"
+                      style={{ ...inputStyle, width: "100%", marginTop: 8, padding: 10, fontSize: 12, boxSizing: "border-box" }}
+                    />
+                    <input
+                      value={editDrafts[p.id]?.story ?? p.story ?? ""}
+                      onChange={(e) => setEditDrafts((prev) => ({ ...prev, [p.id]: { ...(prev[p.id] || p), story: e.target.value } }))}
+                      placeholder="Story / caption"
+                      style={{ ...inputStyle, width: "100%", marginTop: 8, padding: 10, fontSize: 12, boxSizing: "border-box" }}
+                    />
                     {/* Actions */}
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
                       <button
@@ -2451,6 +2746,98 @@ function AdminDashboard({ onLogout }) {
               No products in this collection yet.
             </p>
           )}
+        </div>
+      )}
+
+      {/* ── ORDERS TAB ────────────────────────────────────────────────── */}
+      {activeTab === "orders" && (
+        <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+              ORDER BOARD ({orders.length})
+            </span>
+            <button
+              onClick={fetchOrders}
+              className="font-mono"
+              style={{ padding: "9px 14px", border: "1px solid var(--surface-light)", color: "var(--text-muted)", fontSize: 9, letterSpacing: "0.14em" }}
+            >
+              REFRESH
+            </button>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16, marginTop: 24 }}>
+            {orders.map((order) => (
+              <div key={order.id} style={{ padding: 18, background: "var(--surface)", border: "1px solid var(--surface-light)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                  <p className="font-display" style={{ fontSize: 20, lineHeight: 1 }}>{order.product_name || "ORDER"}</p>
+                  <span className="font-mono" style={{ fontSize: 9, color: "var(--crimson)", letterSpacing: "0.12em" }}>
+                    {(order.status || "new").toUpperCase()}
+                  </span>
+                </div>
+                <p className="font-mono" style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 12, lineHeight: 1.7 }}>
+                  {order.customer_name || "No name"} / {order.phone || "No phone"}<br />
+                  Size {order.selected_size || "-"} / KSh {Number(order.price || 0).toLocaleString()}
+                </p>
+                <select
+                  value={order.status || "new"}
+                  onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                  style={{ ...inputStyle, width: "100%", marginTop: 14, padding: 10, fontSize: 12 }}
+                >
+                  {ORDER_STATUSES.map((statusOption) => <option key={statusOption} value={statusOption}>{statusOption}</option>)}
+                </select>
+                {order.phone && (
+                  <a
+                    href={`https://wa.me/${order.phone}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-mono"
+                    style={{ display: "block", marginTop: 10, color: "var(--crimson)", fontSize: 10, letterSpacing: "0.15em" }}
+                  >
+                    OPEN WHATSAPP →
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+          {orders.length === 0 && (
+            <p className="font-mono" style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 32 }}>
+              No saved orders yet. Run the business growth SQL if this stays empty after testing an order.
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* ── GROWTH TAB ────────────────────────────────────────────────── */}
+      {activeTab === "analytics" && (
+        <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+              GROWTH SIGNALS
+            </span>
+            <button
+              onClick={fetchAnalytics}
+              className="font-mono"
+              style={{ padding: "9px 14px", border: "1px solid var(--surface-light)", color: "var(--text-muted)", fontSize: 9, letterSpacing: "0.14em" }}
+            >
+              REFRESH
+            </button>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 16, marginTop: 24 }}>
+            {[
+              ["ORDERS", analytics.orders],
+              ["PRODUCT VIEWS", analytics.views],
+              ["WHATSAPP INTENT", analytics.clicks],
+              ["NEWSLETTER", analytics.newsletter],
+              ["WAITLIST", analytics.waitlist],
+            ].map(([label, value]) => (
+              <div key={label} style={{ padding: 22, background: "var(--surface)", border: "1px solid var(--surface-light)" }}>
+                <p className="font-display" style={{ fontSize: 42, color: "var(--crimson)", lineHeight: 1 }}>{value}</p>
+                <p className="font-mono" style={{ fontSize: 10, color: "var(--text-muted)", letterSpacing: "0.16em", marginTop: 10 }}>{label}</p>
+              </div>
+            ))}
+          </div>
+          <p className="font-mono" style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 28, lineHeight: 1.8, maxWidth: 620 }}>
+            Use this to see whether products are getting attention before they sell. Views show curiosity, WhatsApp intent shows buying pressure, and orders show the actual lead pipeline.
+          </p>
         </div>
       )}
 

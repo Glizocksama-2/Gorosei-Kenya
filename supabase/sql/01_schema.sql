@@ -23,6 +23,10 @@ create table if not exists public."products for Gorosei" (
     check (size in ('S', 'M', 'L', 'XL')),
   "Image_url" text not null,
   "Image_urls" text[] not null default array[]::text[],
+  condition text default 'thrifted',
+  fit_notes text,
+  measurements jsonb not null default '{}'::jsonb,
+  story text,
   collection_id uuid references public.collections(id) on delete set null,
   sold boolean not null default false,
   created_at timestamptz not null default now()
@@ -50,6 +54,33 @@ create table if not exists public.waitlist (
 
 create index if not exists waitlist_drop_id_idx on public.waitlist(drop_id);
 create index if not exists products_collection_id_idx on public."products for Gorosei"(collection_id);
+
+create table if not exists public.orders (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid references public."products for Gorosei"(id) on delete set null,
+  product_name text not null,
+  customer_name text,
+  phone text not null,
+  selected_size text,
+  price integer,
+  status text not null default 'new'
+    check (status in ('new', 'contacted', 'paid', 'delivered', 'cancelled')),
+  source text not null default 'product_page',
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.product_events (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid references public."products for Gorosei"(id) on delete cascade,
+  event_type text not null,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists orders_status_idx on public.orders(status);
+create index if not exists orders_created_at_idx on public.orders(created_at desc);
+create index if not exists product_events_product_id_idx on public.product_events(product_id);
+create index if not exists product_events_type_idx on public.product_events(event_type);
 
 create table if not exists public.newsletter (
   id uuid primary key default gen_random_uuid(),
