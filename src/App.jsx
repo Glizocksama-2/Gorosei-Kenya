@@ -771,9 +771,9 @@ function CustomerPage() {
               marginBottom: 24,
             }}
           >
-            PUT THAT
+            THRIFT OR GET
             <br />
-            SH!T ON.
+            AN ORIGINAL PIECE.
           </h1>
           <p
             className="font-mono"
