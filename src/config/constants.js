@@ -16,7 +16,5 @@ export const HERO_MEDIA = [
   { src: "/hero5.png", type: "image", durationMs: 5000 },
   { src: "/hero6.png", type: "image", durationMs: 5000 },
   { src: "/hero7.png", type: "image", durationMs: 5000 },
-  { src: "/hero8.png", type: "image", durationMs: 5000 },
-  { src: "/hero9.png", type: "image", durationMs: 5000 },
-  { src: "/hero10.png", type: "image", durationMs: 5000 },
+  { src: "/hero8.jpg", type: "image", durationMs: 5000 },
 ];
