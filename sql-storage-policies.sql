@@ -1,21 +1,22 @@
--- Run this in Supabase SQL Editor to enable uploads
+-- Create collections table
+CREATE TABLE IF NOT EXISTS public.collections (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
--- 1. Allow anyone to upload to the bucket
-CREATE POLICY "Allow public uploads" ON storage.objects
-FOR INSERT TO anon, authenticated 
-WITH CHECK (bucket_id = 'products for Gorosei');
+-- Add collection_id to products table
+ALTER TABLE "products for Gorosei" ADD COLUMN IF NOT EXISTS collection_id UUID REFERENCES public.collections(id);
 
--- 2. Allow anyone to view uploaded files
-CREATE POLICY "Allow public reads" ON storage.objects
-FOR SELECT TO anon, authenticated 
-USING (bucket_id = 'products for Gorosei');
+-- Enable RLS
+ALTER TABLE collections ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "products for Gorosei" ENABLE ROW LEVEL SECURITY;
 
--- 3. Allow updates if needed
-CREATE POLICY "Allow public updates" ON storage.objects
-FOR UPDATE TO anon, authenticated 
-USING (bucket_id = 'products for Gorosei');
+-- Allow public read access
+CREATE POLICY "Public can read collections" ON collections FOR SELECT USING (true);
+CREATE POLICY "Public can read products" ON "products for Gorosei" FOR SELECT USING (true);
 
--- 4. Allow deletes if needed
-CREATE POLICY "Allow public deletes" ON storage.objects
-FOR DELETE TO anon, authenticated 
-USING (bucket_id = 'products for Gorosei');
+-- Allow authenticated insert/update (for admin)
+CREATE POLICY "Admin can manage collections" ON collections FOR ALL USING (true);
+CREATE POLICY "Admin can manage products" ON "products for Gorosei" FOR ALL USING (true);
