@@ -3,7 +3,6 @@
 alter table public."products for Gorosei"
   add column if not exists condition text default 'thrifted',
   add column if not exists fit_notes text,
-  add column if not exists measurements jsonb not null default '{}'::jsonb,
   add column if not exists story text;
 
 create table if not exists public.orders (

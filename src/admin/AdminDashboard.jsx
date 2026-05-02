@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BUCKET_NAME, FIXED_PRICE, ORDER_STATUSES, PRODUCT_CATEGORIES, PRODUCT_CONDITIONS } from "../config/constants.js";
-import { formatMeasurements, getImageUrl, getProductImages, isMissingGalleryColumn, parseMeasurementInput } from "../lib/productUtils.js";
+import { getImageUrl, getProductImages, isMissingGalleryColumn } from "../lib/productUtils.js";
 import { supabase } from "../lib/supabase.js";
 export default function AdminDashboard({ onLogout }) {
   const [activeTab, setActiveTab] = useState("collections");
@@ -10,7 +10,7 @@ export default function AdminDashboard({ onLogout }) {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
     name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [],
-    condition: "thrifted", fitNotes: "", measurements: "", story: "",
+    condition: "thrifted", fitNotes: "", story: "",
   });
   const [editDrafts, setEditDrafts] = useState({});
   const [uploading, setUploading] = useState(false);
@@ -143,7 +143,6 @@ export default function AdminDashboard({ onLogout }) {
         Image_urls: newProduct.imageUrls.length ? newProduct.imageUrls : [newProduct.url],
         condition: newProduct.condition || "thrifted",
         fit_notes: newProduct.fitNotes.trim() || null,
-        measurements: parseMeasurementInput(newProduct.measurements),
         story: newProduct.story.trim() || null,
         collection_id: selectedCollection === "default" ? null : selectedCollection,
         sold: false,
@@ -154,7 +153,6 @@ export default function AdminDashboard({ onLogout }) {
         delete fallbackPayload.Image_urls;
         delete fallbackPayload.condition;
         delete fallbackPayload.fit_notes;
-        delete fallbackPayload.measurements;
         delete fallbackPayload.story;
         const fallback = await supabase.from("products for Gorosei").insert(fallbackPayload);
         if (fallback.error) { setStatus(`Error: ${fallback.error.message}`); return; }
@@ -167,7 +165,7 @@ export default function AdminDashboard({ onLogout }) {
       }
       setNewProduct({
         name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [],
-        condition: "thrifted", fitNotes: "", measurements: "", story: "",
+        condition: "thrifted", fitNotes: "", story: "",
       });
       fetchProductsForCollection(selectedCollection);
     } finally {
@@ -192,7 +190,6 @@ export default function AdminDashboard({ onLogout }) {
       size: draft.size || "M",
       condition: draft.condition || draft.condition === "" ? draft.condition || null : undefined,
       fit_notes: draft.fitNotes ?? draft.fit_notes ?? null,
-      measurements: typeof draft.measurements === "string" ? parseMeasurementInput(draft.measurements) : draft.measurements,
       story: draft.story ?? null,
     };
     Object.keys(payload).forEach((key) => payload[key] === undefined && delete payload[key]);
@@ -201,7 +198,6 @@ export default function AdminDashboard({ onLogout }) {
       const fallbackPayload = { ...payload };
       delete fallbackPayload.condition;
       delete fallbackPayload.fit_notes;
-      delete fallbackPayload.measurements;
       delete fallbackPayload.story;
       const fallback = await supabase.from("products for Gorosei").update(fallbackPayload).eq("id", id);
       if (fallback.error) { setStatus(`Error: ${fallback.error.message}`); return; }
@@ -556,12 +552,6 @@ export default function AdminDashboard({ onLogout }) {
               style={{ ...inputStyle, flex: "1 1 180px", minWidth: 160 }}
             />
             <input
-              value={newProduct.measurements}
-              onChange={(e) => setNewProduct({ ...newProduct, measurements: e.target.value })}
-              placeholder="Measurements: chest: 22in, length: 28in"
-              style={{ ...inputStyle, flex: "1 1 260px", minWidth: 220 }}
-            />
-            <input
               value={newProduct.story}
               onChange={(e) => setNewProduct({ ...newProduct, story: e.target.value })}
               placeholder="Product story / caption"
@@ -747,12 +737,6 @@ export default function AdminDashboard({ onLogout }) {
                       value={editDrafts[p.id]?.fitNotes ?? editDrafts[p.id]?.fit_notes ?? p.fit_notes ?? ""}
                       onChange={(e) => setEditDrafts((prev) => ({ ...prev, [p.id]: { ...(prev[p.id] || p), fitNotes: e.target.value } }))}
                       placeholder="Fit notes"
-                      style={{ ...inputStyle, width: "100%", marginTop: 8, padding: 10, fontSize: 12, boxSizing: "border-box" }}
-                    />
-                    <input
-                      value={typeof editDrafts[p.id]?.measurements === "string" ? editDrafts[p.id].measurements : formatMeasurements(p.measurements)}
-                      onChange={(e) => setEditDrafts((prev) => ({ ...prev, [p.id]: { ...(prev[p.id] || p), measurements: e.target.value } }))}
-                      placeholder="Measurements"
                       style={{ ...inputStyle, width: "100%", marginTop: 8, padding: 10, fontSize: 12, boxSizing: "border-box" }}
                     />
                     <input

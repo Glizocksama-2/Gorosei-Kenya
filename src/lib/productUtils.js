@@ -19,45 +19,13 @@ function getProductImages(product) {
 
 function isMissingGalleryColumn(error) {
   const text = `${error?.message || ""} ${error?.details || ""}`;
-  return ["Image_urls", "condition", "fit_notes", "measurements", "story"].some((column) => text.includes(column));
+  return ["Image_urls", "condition", "fit_notes", "story"].some((column) => text.includes(column));
 }
 
 function normalizePhone(phone) {
   const digits = (phone || "").replace(/\D/g, "");
   if (digits.startsWith("0")) return `254${digits.slice(1)}`;
   return digits;
-}
-
-function parseMeasurements(value) {
-  if (!value) return {};
-  if (typeof value === "object" && !Array.isArray(value)) return value;
-  try {
-    return JSON.parse(value);
-  } catch {
-    return {};
-  }
-}
-
-function formatMeasurements(measurements) {
-  const data = parseMeasurements(measurements);
-  return Object.entries(data)
-    .filter(([, value]) => value !== null && value !== undefined && String(value).trim())
-    .map(([key, value]) => `${key}: ${value}`)
-    .join(", ");
-}
-
-function parseMeasurementInput(value) {
-  return value
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .reduce((acc, part) => {
-      const [rawKey, ...rest] = part.split(":");
-      const key = rawKey?.trim().toLowerCase().replace(/\s+/g, "_");
-      const val = rest.join(":").trim();
-      if (key && val) acc[key] = val;
-      return acc;
-    }, {});
 }
 
 async function trackProductEvent(productId, eventType, metadata = {}) {
@@ -87,14 +55,11 @@ function isNearbyHeroSlide(index, current) {
 }
 
 export {
-  formatMeasurements,
   getImageUrl,
   getProductImages,
   isMissingGalleryColumn,
   isNearbyHeroSlide,
   lerp,
   normalizePhone,
-  parseMeasurementInput,
-  parseMeasurements,
   trackProductEvent,
 };

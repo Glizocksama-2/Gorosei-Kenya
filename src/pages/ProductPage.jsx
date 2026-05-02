@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { FIXED_PRICE, WHATSAPP_NUMBER } from "../config/constants.js";
 import { useGlobalMouse, useWindowWidth } from "../hooks/index.js";
-import { formatMeasurements, getImageUrl, getProductImages, normalizePhone, trackProductEvent } from "../lib/productUtils.js";
+import { getImageUrl, getProductImages, normalizePhone, trackProductEvent } from "../lib/productUtils.js";
 import { supabase } from "../lib/supabase.js";
 export default function ProductPage({ id }) {
   const mouse = useGlobalMouse();
@@ -87,7 +87,6 @@ export default function ProductPage({ id }) {
   const productImages = getProductImages(product);
   const selectedImage = productImages[selectedImageIndex] || productImages[0];
   const isSold = Boolean(product.sold);
-  const measurements = formatMeasurements(product.measurements);
   const condition = product.condition ? product.condition.replace("-", " ").toUpperCase() : "";
 
   const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
@@ -268,11 +267,11 @@ export default function ProductPage({ id }) {
             {name}
           </h1>
 
-          {(condition || product.fit_notes || measurements) && (
+          {(condition || product.fit_notes) && (
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
                 gap: 10,
                 marginBottom: 32,
               }}
@@ -287,12 +286,6 @@ export default function ProductPage({ id }) {
                 <div style={{ border: "1px solid var(--surface-light)", padding: 14 }}>
                   <p className="font-mono" style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: "0.16em" }}>FIT</p>
                   <p className="font-mono" style={{ fontSize: 11, color: "var(--text)", marginTop: 8 }}>{product.fit_notes}</p>
-                </div>
-              )}
-              {measurements && (
-                <div style={{ border: "1px solid var(--surface-light)", padding: 14 }}>
-                  <p className="font-mono" style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: "0.16em" }}>MEASUREMENTS</p>
-                  <p className="font-mono" style={{ fontSize: 11, color: "var(--text)", marginTop: 8 }}>{measurements}</p>
                 </div>
               )}
             </div>

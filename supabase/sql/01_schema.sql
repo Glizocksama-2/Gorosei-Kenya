@@ -25,7 +25,6 @@ create table if not exists public."products for Gorosei" (
   "Image_urls" text[] not null default array[]::text[],
   condition text default 'thrifted',
   fit_notes text,
-  measurements jsonb not null default '{}'::jsonb,
   story text,
   collection_id uuid references public.collections(id) on delete set null,
   sold boolean not null default false,
