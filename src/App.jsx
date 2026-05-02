@@ -557,7 +557,7 @@ function CustomerPage() {
 
         {/* Desktop links */}
         {!isMobile && (
-          <div style={{ display: "flex", gap: 40 }}>
+          <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
             {[["#drop", "THE DROP"], ["#lookbook", "LOOKBOOK"], ["#thrift", "THRIFT"], ["#about", "ABOUT"]].map(
               ([href, label]) => (
                 <a
@@ -570,6 +570,22 @@ function CustomerPage() {
                 </a>
               )
             )}
+            <a
+              href="/admin"
+              className="font-mono"
+              aria-label="Open admin dashboard"
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.2em",
+                color: "var(--text)",
+                textDecoration: "none",
+                border: "1px solid var(--crimson)",
+                padding: "9px 12px",
+                lineHeight: 1,
+              }}
+            >
+              ADMIN
+            </a>
           </div>
         )}
 
@@ -620,6 +636,21 @@ function CustomerPage() {
               </a>
             )
           )}
+          <a
+            href="/admin"
+            onClick={() => setMenuOpen(false)}
+            className="font-mono"
+            style={{
+              fontSize: 12,
+              letterSpacing: "0.25em",
+              textDecoration: "none",
+              color: "var(--text)",
+              border: "1px solid var(--crimson)",
+              padding: "14px 18px",
+            }}
+          >
+            ADMIN
+          </a>
         </div>
       )}
 
