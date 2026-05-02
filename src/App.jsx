@@ -761,20 +761,32 @@ function CustomerPage() {
             className="font-mono"
             style={{ fontSize: 10, letterSpacing: "0.4em", color: "var(--crimson)", marginBottom: 16 }}
           >
-            NAIROBI STREETWEAR
+            LUCK SUMMER / 2026
           </div>
           <h1
             className="font-display"
             style={{
               fontSize: isMobile ? "clamp(56px, 16vw, 80px)" : "clamp(80px, 12vw, 160px)",
               lineHeight: 0.88,
+              marginBottom: 24,
+            }}
+          >
+            PUT THAT
+            <br />
+            SH!T ON.
+          </h1>
+          <p
+            className="font-mono"
+            style={{
+              fontSize: isMobile ? 11 : 13,
+              color: "rgba(255,255,255,0.78)",
+              lineHeight: 1.8,
+              maxWidth: 520,
               marginBottom: 32,
             }}
           >
-            BUILT
-            <br />
-            DIFFERENT.
-          </h1>
+            Sometimes all you have to do is put that sh!t on and go on about your day.
+          </p>
           <a
             href="#drop"
             className="font-mono"
@@ -839,7 +851,7 @@ function CustomerPage() {
             letterSpacing: "0.3em",
           }}
         >
-          {Array(6).fill("GOROSEI KENYA • NAIROBI STREETWEAR • THE DROP IS LIVE • MTUMBA CURATED •").join("  ")}
+          {Array(6).fill("GOROSEI KENYA • FROM THE STREETS OF NAIROBI • SIMPLY PUT THAT SHIT ON • LUCK SUMMER 2026 •").join("  ")}
         </div>
       </div>
 
@@ -1084,7 +1096,7 @@ function CustomerPage() {
               CURATED<br />MTUMBA ESSENTIALS
             </h2>
             <p className="font-mono" style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 24, lineHeight: 1.8 }}>
-              Browse thrift categories from tees to shoes. Updated weekly.
+              Gothic vintage, anime energy, skull pieces, and graphic tees with actual life in them.
             </p>
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi GOROSEI, I'm interested in thrift pieces. What do you have available?")}`}
@@ -1118,14 +1130,14 @@ function CustomerPage() {
               lineHeight: 0.9,
             }}
           >
-            GOROSEI<br />FROM NAIROBI.
+            A BREATH<br />OF LIFE.
           </h2>
           <div style={{ width: 120, height: 1, background: "var(--crimson)", margin: "48px auto" }} />
           <p
             className="font-mono"
-            style={{ fontSize: 12, color: "var(--text-muted)", maxWidth: 400, margin: "0 auto", lineHeight: 1.8 }}
+            style={{ fontSize: 12, color: "var(--text-muted)", maxWidth: 460, margin: "0 auto", lineHeight: 1.8 }}
           >
-            From the streets of Nairobi.<br />Dressed in your real self.
+            From the streets of Nairobi. For anyone tired of gloomy, average pieces.
           </p>
         </AnimatedSection>
       </section>
@@ -1144,7 +1156,7 @@ function CustomerPage() {
                 marginTop: 24,
               }}
             >
-              THE AESTHETIC
+              GOTHIC VINTAGE<br />ANIME / STREET
             </h2>
           </div>
         </AnimatedSection>
@@ -1155,7 +1167,7 @@ function CustomerPage() {
         <AnimatedSection>
           <div style={{ maxWidth: 800, margin: "0 auto" }}>
             <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
-              • THE BROTHERHOOD
+              • FOUNDER NOTE
             </span>
             <h2
               className="font-display"
@@ -1165,14 +1177,30 @@ function CustomerPage() {
                 lineHeight: 0.9,
               }}
             >
-              WHO WE ARE
+              BRIAN MUKWE
             </h2>
+            <p className="font-mono" style={{ fontSize: 11, color: "var(--crimson)", marginTop: 14, letterSpacing: "0.18em" }}>
+              GLIZOCK / GLOCK
+            </p>
             <p
               className="font-mono"
-              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 32, lineHeight: 2, maxWidth: 560 }}
+              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 32, lineHeight: 2, maxWidth: 620 }}
             >
-              Gorosei is Nairobi's premium streetwear collective. We curate the finest
-              pieces — original drops and hand-picked thrift — for those who dress with intention.
+              I make music and stream games, with a real passion for gothic vintage pieces and anime.
+              Gorosei is where I bring you my vision: more graphic content on the streets of Nairobi.
+            </p>
+            <p
+              className="font-mono"
+              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 20, lineHeight: 2, maxWidth: 620 }}
+            >
+              When I was a kid, I used to get hand-me-downs from my cool-ass cousin. He printed his own
+              T-shirts and gave them life, mostly skull pieces. He still does. That spirit is the root.
+            </p>
+            <p
+              className="font-mono"
+              style={{ fontSize: 12, color: "var(--text)", marginTop: 28, lineHeight: 1.9, maxWidth: 520 }}
+            >
+              Nairobi, Luck Summer. 2026. Mission: simply put that shit on.
             </p>
             <NewsletterForm />
           </div>
@@ -1200,7 +1228,7 @@ function CustomerPage() {
           <div>
             <span className="font-display" style={{ fontSize: 28 }}>GOROSEI</span>
             <p className="font-mono" style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 8 }}>
-              NAIROBI, KENYA
+              NAIROBI, LUCK SUMMER
             </p>
           </div>
           <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
