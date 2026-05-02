@@ -22,9 +22,13 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Split vendor chunk to improve cache hit rate
-        manualChunks: {
-          vendor: ["react", "react-dom"],
-          supabase: ["@supabase/supabase-js"],
+        manualChunks(id) {
+          if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
+            return "vendor";
+          }
+          if (id.includes("node_modules/@supabase")) {
+            return "supabase";
+          }
         },
       },
     },
