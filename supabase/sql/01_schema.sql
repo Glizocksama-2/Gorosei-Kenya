@@ -9,6 +9,9 @@ create table if not exists public.collections (
   created_at timestamptz not null default now()
 );
 
+create unique index if not exists collections_name_unique_idx
+  on public.collections (lower(name));
+
 create table if not exists public."products for Gorosei" (
   id uuid primary key default gen_random_uuid(),
   "Name" text not null,
@@ -45,9 +48,15 @@ create table if not exists public.waitlist (
 );
 
 create index if not exists waitlist_drop_id_idx on public.waitlist(drop_id);
+create index if not exists products_collection_id_idx on public."products for Gorosei"(collection_id);
 
 create table if not exists public.newsletter (
   id uuid primary key default gen_random_uuid(),
   email text unique not null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
   created_at timestamptz not null default now()
 );

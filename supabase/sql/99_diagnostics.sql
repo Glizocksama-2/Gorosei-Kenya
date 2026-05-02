@@ -10,6 +10,8 @@ select 'waitlist', count(*) from public.waitlist
 union all
 select 'newsletter', count(*) from public.newsletter;
 
+select 'admin_users' as table_name, count(*) from public.admin_users;
+
 select id, name, public
 from storage.buckets
 where id = 'products-images';
