@@ -100,6 +100,7 @@ export default function AdminPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
+              autoComplete="email"
               required
               style={{
                 width: "100%",
@@ -118,6 +119,7 @@ export default function AdminPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
+              autoComplete="current-password"
               required
               style={{
                 width: "100%",

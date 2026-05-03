@@ -57,7 +57,7 @@ export default function CustomerPage() {
     img.src = nextMedia.src;
   }, [currentSlide, loadedHeroMedia, markHeroLoaded]);
 
-  // ── Data fetching — memoized to avoid dep-array infinite loops ────────────
+  // ── Data fetching - memoized to avoid dep-array infinite loops ────────────
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
@@ -92,7 +92,7 @@ export default function CustomerPage() {
         setDropLocked(false);
       }
     } catch {
-      // No active drop — normal state
+      // No active drop - normal state
       setActiveDrop(null);
       setDropLocked(false);
     }
@@ -110,7 +110,7 @@ export default function CustomerPage() {
     }
   }, []);
 
-  // Countdown updater — memoized
+  // Countdown updater - memoized
   const updateCountdown = useCallback(() => {
     if (!activeDrop?.drop_date) return;
     const diff = new Date(activeDrop.drop_date).getTime() - Date.now();
@@ -127,7 +127,7 @@ export default function CustomerPage() {
     });
   }, [activeDrop]);
 
-  // Initial data load — deferred to avoid blocking first paint
+  // Initial data load - deferred to avoid blocking first paint
   useEffect(() => {
     const t = setTimeout(() => {
       fetchProducts();
@@ -206,7 +206,7 @@ export default function CustomerPage() {
 
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh", color: "var(--text)" }}>
-      {/* Custom cursor — desktop only */}
+      {/* Custom cursor - desktop only */}
       {!isMobile && <div style={cursorStyle} />}
 
       {/* ── NAV ───────────────────────────────────────────────────────── */}
@@ -301,7 +301,7 @@ export default function CustomerPage() {
             onClick={() => setMenuOpen(false)}
             style={{ position: "absolute", top: 24, right: 24, background: "none", border: "none", color: "var(--text)", fontSize: 24, cursor: "pointer" }}
           >
-            ✕
+            X
           </button>
           {[["#drop", "SHOP ALL"], ["#drop", "JACKETS"], ["#drop", "TEES"], ["#lookbook", "ORIGINALS"], ["#about", "ABOUT"]].map(
             ([href, label]) => (
@@ -623,7 +623,7 @@ export default function CustomerPage() {
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
               <div>
                 <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
-                  â€¢ LATEST DROP
+                  - LATEST DROP
                 </span>
                 <h2
                   className="font-display"
@@ -686,7 +686,7 @@ export default function CustomerPage() {
       <section id="drop" className="section" style={{ padding: isMobile ? "56px 0 40px" : "84px 0 60px" }}>
         <AnimatedSection>
           {dropLocked ? (
-            /* LOCKED VIEW — countdown + waitlist */
+            /* LOCKED VIEW - countdown + waitlist */
             <div style={{ padding: isMobile ? "0 24px" : "0 48px", maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
               <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
                 • COMING SOON
@@ -767,7 +767,7 @@ export default function CustomerPage() {
               )}
             </div>
           ) : (
-            /* UNLOCKED VIEW — collection + category filters + product grid */
+            /* UNLOCKED VIEW - collection + category filters + product grid */
             <>
               <div style={{ padding: isMobile ? "0 24px" : "0 48px", maxWidth: 1400, margin: "0 auto" }}>
                 {/* Collection tabs */}
@@ -913,7 +913,7 @@ export default function CustomerPage() {
                           onClick={() => setCategoryFilter("all")}
                           style={{ background: "none", border: "none", color: "var(--crimson)", cursor: "pointer", fontFamily: "var(--font-mono)", fontSize: 12 }}
                         >
-                          View all categories →
+                          View all categories
                         </button>
                       ) : (
                         "Check back soon."
@@ -965,7 +965,7 @@ export default function CustomerPage() {
                 letterSpacing: "0.2em",
               }}
             >
-              BROWSE VIA WHATSAPP →
+              BROWSE VIA WHATSAPP
             </a>
             <div
               style={{
@@ -1261,7 +1261,7 @@ export default function CustomerPage() {
           }}
         >
           <span className="font-mono" style={{ fontSize: 10, color: "#333" }}>
-            © 2026 GOROSEI — ALL RIGHTS RESERVED
+            (c) 2026 GOROSEI - ALL RIGHTS RESERVED
           </span>
         </div>
       </footer>
