@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AdminDashboard from "../admin/AdminDashboard.jsx";
 import { supabase } from "../lib/supabase.js";
 export default function AdminPage() {
@@ -7,20 +7,66 @@ export default function AdminPage() {
   const [signingIn, setSigningIn] = useState(false);
   const [error, setError] = useState("");
   const [authed, setAuthed] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  const verifyAdminUser = useCallback(async () => {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData?.user) return false;
+
+    const { data, error: adminError } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", userData.user.id)
+      .maybeSingle();
+
+    return !adminError && Boolean(data);
+  }, []);
+
+  const verifySession = useCallback(async () => {
+    setCheckingSession(true);
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      setAuthed(false);
+      setCheckingSession(false);
+      return;
+    }
+
+    const isAdmin = await verifyAdminUser();
+    if (isAdmin) {
+      setAuthed(true);
+    } else {
+      await supabase.auth.signOut();
+      setAuthed(false);
+      setError("This account is not authorized for admin access.");
+    }
+    setCheckingSession(false);
+  }, [verifyAdminUser]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setAuthed(true);
-    });
-  }, []);
+    const task = setTimeout(verifySession, 0);
+    return () => clearTimeout(task);
+  }, [verifySession]);
 
   async function handleLogin(e) {
     e.preventDefault();
     setSigningIn(true);
     setError("");
+
     const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-    if (err) { setError(err.message); }
-    else { setAuthed(true); }
+    if (err) {
+      setError(err.message);
+      setSigningIn(false);
+      return;
+    }
+
+    const isAdmin = await verifyAdminUser();
+    if (isAdmin) {
+      setAuthed(true);
+    } else {
+      await supabase.auth.signOut();
+      setAuthed(false);
+      setError("This account is not authorized for admin access.");
+    }
     setSigningIn(false);
   }
 
@@ -43,6 +89,11 @@ export default function AdminPage() {
       >
         <div style={{ width: "100%", maxWidth: 400 }}>
           <p className="font-display" style={{ fontSize: 32, marginBottom: 40 }}>ADMIN</p>
+          {checkingSession && (
+            <p className="font-mono" style={{ color: "var(--text-muted)", fontSize: 11, letterSpacing: "0.18em", marginBottom: 16 }}>
+              CHECKING SESSION...
+            </p>
+          )}
           <form onSubmit={handleLogin}>
             <input
               type="email"
