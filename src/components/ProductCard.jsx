@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FIXED_PRICE } from "../config/constants.js";
 import { getImageUrl, getProductImages } from "../lib/productUtils.js";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, priority = false }) {
   const ref = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [light, setLight] = useState({ x: 50, y: 50 });
@@ -12,6 +12,7 @@ export default function ProductCard({ product }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
     const onMove = (e) => {
       const rect = el.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -37,6 +38,7 @@ export default function ProductCard({ product }) {
   const hasDiscount = originalPrice > price;
   const images = getProductImages(product);
   const coverImage = images[selectedImageIndex] || images[0];
+  const imageWidth = priority ? 520 : 420;
   const isSold = Boolean(product?.sold);
   const size = product?.size || "ONE SIZE";
   const category = product?.category || "piece";
@@ -63,7 +65,7 @@ export default function ProductCard({ product }) {
       style={{
         display: "block",
         textDecoration: "none",
-        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transform: tilt.x || tilt.y ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` : "none",
         transition: "transform 0.5s ease",
         opacity: isSold ? 0.72 : 1,
         cursor: "pointer",
@@ -72,9 +74,17 @@ export default function ProductCard({ product }) {
       <div className="image-wrapper" style={{ "--lx": `${light.x}%`, "--ly": `${light.y}%` }}>
         {coverImage && coverImage !== failedImage ? (
           <img
-            src={getImageUrl(coverImage, 600, 75)}
+            src={getImageUrl(coverImage, imageWidth, 70)}
+            srcSet={[
+              `${getImageUrl(coverImage, 360, 68)} 360w`,
+              `${getImageUrl(coverImage, 520, 70)} 520w`,
+              `${getImageUrl(coverImage, 720, 72)} 720w`,
+            ].join(", ")}
+            sizes="(max-width: 768px) calc(100vw - 48px), (max-width: 1200px) 33vw, 430px"
             alt={name}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
+            decoding="async"
             onError={() => setFailedImage(coverImage)}
             style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block", filter: isSold ? "grayscale(1)" : "none" }}
           />
@@ -226,7 +236,7 @@ export default function ProductCard({ product }) {
             textAlign: "center",
           }}
         >
-          {isSold ? "VIEW ARCHIVE →" : "ORDER NOW →"}
+          {isSold ? "VIEW ARCHIVE" : "ORDER NOW"}
         </span>
       </div>
     </div>

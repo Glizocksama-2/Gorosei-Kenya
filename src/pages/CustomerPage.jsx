@@ -127,14 +127,14 @@ export default function CustomerPage() {
     });
   }, [activeDrop]);
 
-  // Initial data load - deferred to avoid blocking first paint
+  // Initial data load
   useEffect(() => {
-    const t = setTimeout(() => {
+    const task = setTimeout(() => {
       fetchProducts();
       fetchActiveDrop();
       fetchCollections();
     }, 0);
-    return () => clearTimeout(t);
+    return () => clearTimeout(task);
   }, [fetchProducts, fetchActiveDrop, fetchCollections]);
 
   // Countdown interval
@@ -663,7 +663,7 @@ export default function CustomerPage() {
                     <div key={i} style={{ aspectRatio: "3/4", background: "var(--surface)" }} />
                   ))
                 : latestProducts.length > 0
-                  ? latestProducts.slice(0, isMobile ? 3 : 6).map((p, i) => <ProductCard key={p.id || i} product={p} />)
+                  ? latestProducts.slice(0, isMobile ? 3 : 6).map((p, i) => <ProductCard key={p.id || i} product={p} priority={i < (isMobile ? 2 : 3)} />)
                   : (
                       <div style={{ gridColumn: "1/-1", border: "1px solid var(--surface-light)", padding: 24 }}>
                         <p className="font-mono" style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.8 }}>
@@ -921,7 +921,7 @@ export default function CustomerPage() {
                     </p>
                   </div>
                 ) : (
-                  filteredProducts.map((p, i) => <ProductCard key={p.id || i} product={p} />)
+                  filteredProducts.map((p, i) => <ProductCard key={p.id || i} product={p} priority={i < (isMobile ? 2 : 3)} />)
                 )}
               </div>
             </>
@@ -1116,7 +1116,7 @@ export default function CustomerPage() {
               }}
             >
               <img
-                src="/founder.png"
+                src="/founder.webp"
                 alt="Brian Mukwe, founder and creative director of Gorosei Kenya"
                 loading="lazy"
                 decoding="async"

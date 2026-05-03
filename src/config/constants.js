@@ -8,20 +8,20 @@ export const PRODUCT_CONDITIONS = ["new", "excellent", "good", "thrifted", "rare
 export const ORDER_STATUSES = ["new", "contacted", "paid", "delivered", "cancelled"];
 export const DISCORD_WEBHOOK = import.meta?.env?.VITE_DISCORD_WEBHOOK || "";
 export const HERO_MEDIA = [
-  { src: "/hero1.png", type: "image", durationMs: 5000 },
-  { src: "/hero2.png", type: "image", durationMs: 5000 },
-  { src: "/hero3.png", type: "image", durationMs: 5000 },
-  { src: "/hero4.png", type: "image", durationMs: 5000 },
-  { src: "/hero5.png", type: "image", durationMs: 5000 },
-  { src: "/hero6.png", type: "image", durationMs: 5000 },
-  { src: "/hero7.png", type: "image", durationMs: 5000 },
+  { src: "/hero1.webp", type: "image", durationMs: 5000 },
+  { src: "/hero2.webp", type: "image", durationMs: 5000 },
+  { src: "/hero3.webp", type: "image", durationMs: 5000 },
+  { src: "/hero4.webp", type: "image", durationMs: 5000 },
+  { src: "/hero5.webp", type: "image", durationMs: 5000 },
+  { src: "/hero6.webp", type: "image", durationMs: 5000 },
+  { src: "/hero7.webp", type: "image", durationMs: 5000 },
   { src: "/hero8.jpg", type: "image", durationMs: 5000 },
 ];
 export const LOOKBOOK_MEDIA = [
-  { src: "/lookbook-1.png", title: "Gorosei original graphic tee" },
-  { src: "/lookbook-2.png", title: "Loyalty over everything tee" },
-  { src: "/lookbook-3.png", title: "Angel of Misery tee" },
-  { src: "/lookbook-4.png", title: "Gorosei Worldwide tee" },
-  { src: "/lookbook-5.png", title: "Gorosei gothic collection" },
-  { src: "/lookbook-6.png", title: "Skulled Finger tee" },
+  { src: "/lookbook-1.webp", title: "Gorosei original graphic tee" },
+  { src: "/lookbook-2.webp", title: "Loyalty over everything tee" },
+  { src: "/lookbook-3.webp", title: "Angel of Misery tee" },
+  { src: "/lookbook-4.webp", title: "Gorosei Worldwide tee" },
+  { src: "/lookbook-5.webp", title: "Gorosei gothic collection" },
+  { src: "/lookbook-6.webp", title: "Skulled Finger tee" },
 ];

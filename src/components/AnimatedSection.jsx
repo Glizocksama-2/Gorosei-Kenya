@@ -2,9 +2,13 @@ import { useEffect, useRef, useState } from "react";
 
 export default function AnimatedSection({ children, delay = 0 }) {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(() =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(max-width: 768px), (prefers-reduced-motion: reduce)").matches
+  );
 
   useEffect(() => {
+    if (visible) return;
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
@@ -13,7 +17,7 @@ export default function AnimatedSection({ children, delay = 0 }) {
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [visible]);
 
   return (
     <div

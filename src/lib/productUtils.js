@@ -11,6 +11,7 @@ function getImageUrl(path, width = 800, quality = 80) {
     try {
       const url = new URL(value);
       if (url.hostname.includes("supabase.co") && url.pathname.includes("/storage/v1/")) {
+        url.pathname = url.pathname.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
         url.searchParams.set("width", String(width));
         url.searchParams.set("quality", String(quality));
         url.searchParams.set("resize", "cover");
@@ -28,7 +29,7 @@ function getImageUrl(path, width = 800, quality = 80) {
     .replace(/^\/+/, "")
     .replace(new RegExp(`^(?:storage/v1/object/public/)?${BUCKET_NAME}/`), "");
 
-  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/${cleanPath}?width=${width}&quality=${quality}&resize=cover`;
+  return `${SUPABASE_URL}/storage/v1/render/image/public/${BUCKET_NAME}/${cleanPath}?width=${width}&quality=${quality}&resize=cover`;
 }
 
 function getProductImages(product) {
