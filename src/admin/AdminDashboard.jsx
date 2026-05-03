@@ -92,6 +92,25 @@ export default function AdminDashboard({ onLogout }) {
   }
 
   // ── Collections ─────────────────────────────────────────────────────────
+  async function setProductCover(product, coverImage) {
+    if (!product?.id || !coverImage) return;
+    const images = getProductImages(product);
+    const imageUrls = [coverImage, ...images.filter((image) => image !== coverImage)];
+    const { error } = await supabase
+      .from("products for Gorosei")
+      .update({
+        Image_url: coverImage,
+        Image_urls: imageUrls,
+      })
+      .eq("id", product.id);
+    if (error) {
+      setStatus(`Cover update failed: ${error.message}`);
+      return;
+    }
+    setStatus(`Display image updated for ${product.Name || "product"}.`);
+    fetchProductsForCollection(selectedCollection);
+  }
+
   async function fetchCollections() {
     const { data } = await supabase.from("collections").select("*").order("created_at", { ascending: false });
     setCollections(data || []);
@@ -651,14 +670,47 @@ export default function AdminDashboard({ onLogout }) {
                           />
                           {images.length > 1 && (
                             <div style={{ display: "flex", gap: 6, marginTop: 8, overflowX: "auto", paddingBottom: 2 }}>
-                              {images.slice(0, 6).map((image) => (
-                                <img
+                              {images.slice(0, 6).map((image, index) => (
+                                <button
                                   key={image}
-                                  src={getImageUrl(image, 80, 65)}
-                                  alt=""
-                                  loading="lazy"
-                                  style={{ width: 32, height: 40, objectFit: "cover", border: "1px solid var(--surface-light)", flex: "0 0 auto" }}
-                                />
+                                  type="button"
+                                  onClick={() => setProductCover(p, image)}
+                                  title={index === 0 ? "Current display image" : "Set as display image"}
+                                  style={{
+                                    width: 38,
+                                    height: 48,
+                                    padding: 0,
+                                    border: image === images[0] ? "1px solid var(--crimson)" : "1px solid var(--surface-light)",
+                                    background: "none",
+                                    cursor: "pointer",
+                                    position: "relative",
+                                    flex: "0 0 auto",
+                                  }}
+                                >
+                                  <img
+                                    src={getImageUrl(image, 90, 65)}
+                                    alt=""
+                                    loading="lazy"
+                                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                                  />
+                                  {image === images[0] && (
+                                    <span
+                                      className="font-mono"
+                                      style={{
+                                        position: "absolute",
+                                        left: 2,
+                                        right: 2,
+                                        bottom: 2,
+                                        background: "var(--crimson)",
+                                        color: "#fff",
+                                        fontSize: 7,
+                                        letterSpacing: "0.08em",
+                                      }}
+                                    >
+                                      COVER
+                                    </span>
+                                  )}
+                                </button>
                               ))}
                               {images.length > 6 && (
                                 <span className="font-mono" style={{ fontSize: 9, color: "var(--text-muted)", alignSelf: "center" }}>

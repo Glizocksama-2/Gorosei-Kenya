@@ -7,6 +7,7 @@ export default function ProductCard({ product }) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [light, setLight] = useState({ x: 50, y: 50 });
   const [failedImage, setFailedImage] = useState("");
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     const el = ref.current;
@@ -35,23 +36,37 @@ export default function ProductCard({ product }) {
   const originalPrice = Number(product?.original_price) || 0;
   const hasDiscount = originalPrice > price;
   const images = getProductImages(product);
-  const coverImage = images[0];
+  const coverImage = images[selectedImageIndex] || images[0];
   const isSold = Boolean(product?.sold);
   const size = product?.size || "ONE SIZE";
   const category = product?.category || "piece";
   const condition = product?.condition ? product.condition.replace("-", " ") : "curated";
+  const productUrl = product?.id ? `/product/${product.id}` : "#drop";
+
+  function openProduct() {
+    window.location.href = productUrl;
+  }
 
   return (
-    <a
-      href={product?.id ? `/product/${product.id}` : "#drop"}
+    <div
       ref={ref}
+      role="link"
+      tabIndex={0}
       className="product-card"
+      onClick={openProduct}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openProduct();
+        }
+      }}
       style={{
         display: "block",
         textDecoration: "none",
         transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: "transform 0.5s ease",
         opacity: isSold ? 0.72 : 1,
+        cursor: "pointer",
       }}
     >
       <div className="image-wrapper" style={{ "--lx": `${light.x}%`, "--ly": `${light.y}%` }}>
@@ -96,21 +111,48 @@ export default function ProductCard({ product }) {
           {isSold ? "SOLD" : "ONE OF ONE"}
         </span>
         {images.length > 1 && (
-          <span
+          <div
             className="font-mono"
             style={{
               position: "absolute",
               right: 10,
               bottom: 10,
-              padding: "6px 8px",
-              background: "rgba(0,0,0,0.72)",
-              color: "var(--text)",
-              fontSize: 9,
-              letterSpacing: "0.12em",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "7px 8px",
+              background: "rgba(0,0,0,0.76)",
+              border: "1px solid rgba(255,255,255,0.14)",
+              zIndex: 3,
             }}
           >
-            {images.length} PHOTOS
-          </span>
+            {images.slice(0, 4).map((image, index) => (
+              <button
+                key={image}
+                type="button"
+                aria-label={`View ${name} photo ${index + 1}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setSelectedImageIndex(index);
+                  setFailedImage("");
+                }}
+                style={{
+                  width: selectedImageIndex === index ? 18 : 8,
+                  height: 8,
+                  borderRadius: 999,
+                  border: "1px solid rgba(255,255,255,0.7)",
+                  background: selectedImageIndex === index ? "var(--crimson)" : "rgba(255,255,255,0.2)",
+                  padding: 0,
+                  cursor: "pointer",
+                  transition: "width 0.2s, background 0.2s",
+                }}
+              />
+            ))}
+            <span style={{ color: "var(--text)", fontSize: 8, letterSpacing: "0.12em" }}>
+              {selectedImageIndex + 1}/{images.length}
+            </span>
+          </div>
         )}
       </div>
       <div style={{ padding: 20 }}>
@@ -187,7 +229,7 @@ export default function ProductCard({ product }) {
           {isSold ? "VIEW ARCHIVE →" : "ORDER NOW →"}
         </span>
       </div>
-    </a>
+    </div>
   );
 }
 
