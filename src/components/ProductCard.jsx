@@ -37,6 +37,9 @@ export default function ProductCard({ product }) {
   const images = getProductImages(product);
   const coverImage = images[0];
   const isSold = Boolean(product?.sold);
+  const size = product?.size || "ONE SIZE";
+  const category = product?.category || "piece";
+  const condition = product?.condition ? product.condition.replace("-", " ") : "curated";
 
   return (
     <a
@@ -110,7 +113,7 @@ export default function ProductCard({ product }) {
           </span>
         )}
       </div>
-      <div style={{ padding: 24 }}>
+      <div style={{ padding: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
           <span className="font-display" style={{ fontSize: 18, lineHeight: 1.2 }}>{name}</span>
           <span
@@ -131,6 +134,34 @@ export default function ProductCard({ product }) {
         >
           {isSold ? "THIS PIECE HAS LEFT THE RACK" : "ONLY ONE AVAILABLE"}
         </div>
+        <div
+          className="font-mono"
+          style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 6, marginTop: 14 }}
+        >
+          {[
+            ["SIZE", size],
+            ["TYPE", category],
+            ["COND", condition],
+          ].map(([label, value]) => (
+            <span
+              key={label}
+              title={`${label}: ${value}`}
+              style={{
+                border: "1px solid var(--surface-light)",
+                padding: "7px 6px",
+                fontSize: 8,
+                color: "var(--text-muted)",
+                letterSpacing: "0.1em",
+                textAlign: "center",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {label}: {value}
+            </span>
+          ))}
+        </div>
         {hasDiscount && (
           <div className="font-mono" style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 6 }}>
             <span style={{ textDecoration: "line-through", marginRight: 8 }}>
@@ -139,17 +170,19 @@ export default function ProductCard({ product }) {
             <span style={{ color: "var(--crimson)" }}>SALE</span>
           </div>
         )}
-        {product?.category && (
-          <div
-            className="font-mono"
-            style={{ fontSize: 9, color: "var(--text-muted)", marginTop: 4, textTransform: "uppercase", letterSpacing: "0.15em" }}
-          >
-            {product.category}
-          </div>
-        )}
         <span
           className="font-mono"
-          style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 10, display: "block", letterSpacing: "0.2em" }}
+          style={{
+            fontSize: 10,
+            color: isSold ? "var(--text-muted)" : "#fff",
+            background: isSold ? "transparent" : "var(--crimson)",
+            border: isSold ? "1px solid var(--surface-light)" : "1px solid var(--crimson)",
+            marginTop: 14,
+            display: "block",
+            letterSpacing: "0.18em",
+            padding: "11px 12px",
+            textAlign: "center",
+          }}
         >
           {isSold ? "VIEW ARCHIVE →" : "ORDER NOW →"}
         </span>

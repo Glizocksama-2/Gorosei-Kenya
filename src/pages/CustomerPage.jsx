@@ -187,6 +187,7 @@ export default function CustomerPage() {
     categoryFilter === "all"
       ? products
       : products.filter((p) => (p.category || "tshirts") === categoryFilter);
+  const latestProducts = products.filter((p) => !p.sold).slice(0, 6);
 
   // ── Cursor ─────────────────────────────────────────────────────────────────
   const cursorStyle = {
@@ -237,7 +238,7 @@ export default function CustomerPage() {
         {/* Desktop links */}
         {!isMobile && (
           <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-            {[["#drop", "THE DROP"], ["#lookbook", "LOOKBOOK"], ["#thrift", "THRIFT"], ["#about", "ABOUT"]].map(
+            {[["#drop", "SHOP ALL"], ["#lookbook", "ORIGINALS"], ["#thrift", "THRIFT"], ["#about", "ABOUT"]].map(
               ([href, label]) => (
                 <a
                   key={href}
@@ -302,19 +303,40 @@ export default function CustomerPage() {
           >
             ✕
           </button>
-          {[["#drop", "THE DROP"], ["#lookbook", "LOOKBOOK"], ["#thrift", "THRIFT"], ["#about", "ABOUT"]].map(
+          {[["#drop", "SHOP ALL"], ["#drop", "JACKETS"], ["#drop", "TEES"], ["#lookbook", "ORIGINALS"], ["#about", "ABOUT"]].map(
             ([href, label]) => (
               <a
-                key={href}
+                key={`${href}-${label}`}
                 href={href}
-                onClick={() => setMenuOpen(false)}
+                onClick={() => {
+                  if (label === "JACKETS") setCategoryFilter("jackets");
+                  if (label === "TEES") setCategoryFilter("tshirts");
+                  setMenuOpen(false);
+                }}
                 className="font-display"
-                style={{ fontSize: 40, textDecoration: "none", letterSpacing: "0.05em" }}
+                style={{ fontSize: 36, textDecoration: "none", letterSpacing: "0.05em" }}
               >
                 {label}
               </a>
             )
           )}
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi GOROSEI, I want to order from the current drop.")}`}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => setMenuOpen(false)}
+            className="font-mono"
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.18em",
+              textDecoration: "none",
+              color: "#fff",
+              background: "var(--crimson)",
+              padding: "14px 18px",
+            }}
+          >
+            ORDER ON WHATSAPP
+          </a>
           <a
             href="/admin"
             onClick={() => setMenuOpen(false)}
@@ -334,6 +356,30 @@ export default function CustomerPage() {
       )}
 
       {/* ── HERO ──────────────────────────────────────────────────────── */}
+      {isMobile && !menuOpen && (
+        <a
+          href="#drop"
+          className="font-mono"
+          style={{
+            position: "fixed",
+            left: 16,
+            right: 16,
+            bottom: 14,
+            zIndex: 950,
+            display: scrolled ? "block" : "none",
+            padding: "13px 18px",
+            background: "var(--crimson)",
+            color: "#fff",
+            textAlign: "center",
+            fontSize: 11,
+            letterSpacing: "0.2em",
+            boxShadow: "0 12px 28px rgba(0,0,0,0.45)",
+          }}
+        >
+          SHOP CURRENT DROP
+        </a>
+      )}
+
       <section
         style={{ position: "relative", height: "100svh", overflow: "hidden", display: "flex", alignItems: "flex-end" }}
       >
@@ -446,22 +492,43 @@ export default function CustomerPage() {
             }}
           >
             Sometimes all you have to do is put that sh!t on and go on about your day.
+            One-off thrift jackets, graphic tees, and original Gorosei pieces from Nairobi.
           </p>
-          <a
-            href="#drop"
-            className="font-mono"
-            style={{
-              display: "inline-block",
-              padding: "14px 32px",
-              border: "1px solid var(--crimson)",
-              color: "var(--crimson)",
-              textDecoration: "none",
-              fontSize: 11,
-              letterSpacing: "0.3em",
-            }}
-          >
-            SHOP THE DROP
-          </a>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <a
+              href="#drop"
+              className="font-mono"
+              style={{
+                display: "inline-block",
+                padding: "15px 28px",
+                border: "1px solid var(--crimson)",
+                background: "var(--crimson)",
+                color: "#fff",
+                textDecoration: "none",
+                fontSize: 11,
+                letterSpacing: "0.24em",
+              }}
+            >
+              SHOP THE DROP
+            </a>
+            <a
+              href="#drop"
+              onClick={() => setCategoryFilter("jackets")}
+              className="font-mono"
+              style={{
+                display: "inline-block",
+                padding: "15px 22px",
+                border: "1px solid rgba(255,255,255,0.35)",
+                color: "#fff",
+                textDecoration: "none",
+                fontSize: 11,
+                letterSpacing: "0.2em",
+                background: "rgba(0,0,0,0.42)",
+              }}
+            >
+              VIEW JACKETS
+            </a>
+          </div>
         </div>
 
         {/* Slide indicators */}
@@ -516,7 +583,107 @@ export default function CustomerPage() {
       </div>
 
       {/* ── DROP / PRODUCTS ───────────────────────────────────────────── */}
-      <section id="drop" className="section" style={{ padding: isMobile ? "80px 0 40px" : "120px 0 60px" }}>
+      <section
+        aria-label="Store trust points"
+        style={{
+          borderBottom: "1px solid var(--surface-light)",
+          background: "#090909",
+          padding: isMobile ? "18px 24px" : "20px 48px",
+        }}
+      >
+        <div
+          className="font-mono"
+          style={{
+            maxWidth: 1400,
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, minmax(0, 1fr))",
+            gap: isMobile ? 10 : 16,
+            fontSize: isMobile ? 9 : 10,
+            letterSpacing: "0.14em",
+            color: "var(--text-muted)",
+          }}
+        >
+          {["Nairobi based", "WhatsApp ordering", "One-of-one pieces", "Delivery available"].map((item) => (
+            <span key={item} style={{ borderLeft: "1px solid var(--crimson)", paddingLeft: 10 }}>
+              {item}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section
+        style={{
+          padding: isMobile ? "52px 24px 24px" : "72px 48px 32px",
+          borderBottom: "1px solid var(--surface-light)",
+        }}
+      >
+        <AnimatedSection>
+          <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+              <div>
+                <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+                  â€¢ LATEST DROP
+                </span>
+                <h2
+                  className="font-display"
+                  style={{
+                    fontSize: isMobile ? "clamp(36px, 12vw, 58px)" : "clamp(48px, 7vw, 82px)",
+                    marginTop: 14,
+                    lineHeight: 0.9,
+                  }}
+                >
+                  NEW ON THE RACK
+                </h2>
+              </div>
+              <a
+                href="#drop"
+                className="font-mono"
+                style={{
+                  color: "var(--crimson)",
+                  border: "1px solid var(--crimson)",
+                  padding: "12px 16px",
+                  fontSize: 10,
+                  letterSpacing: "0.18em",
+                }}
+              >
+                VIEW ALL
+              </a>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, minmax(0, 1fr))",
+                gap: isMobile ? 16 : 22,
+                marginTop: 32,
+              }}
+            >
+              {loading
+                ? Array.from({ length: isMobile ? 2 : 3 }).map((_, i) => (
+                    <div key={i} style={{ aspectRatio: "3/4", background: "var(--surface)" }} />
+                  ))
+                : latestProducts.length > 0
+                  ? latestProducts.slice(0, isMobile ? 3 : 6).map((p, i) => <ProductCard key={p.id || i} product={p} />)
+                  : (
+                      <div style={{ gridColumn: "1/-1", border: "1px solid var(--surface-light)", padding: 24 }}>
+                        <p className="font-mono" style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.8 }}>
+                          {storeError || "No available pieces in the latest drop yet."}
+                        </p>
+                        <button
+                          onClick={showAllDrops}
+                          className="font-mono"
+                          style={{ marginTop: 14, color: "var(--crimson)", fontSize: 10, letterSpacing: "0.18em" }}
+                        >
+                          REFRESH DROP
+                        </button>
+                      </div>
+                    )}
+            </div>
+          </div>
+        </AnimatedSection>
+      </section>
+
+      <section id="drop" className="section" style={{ padding: isMobile ? "56px 0 40px" : "84px 0 60px" }}>
         <AnimatedSection>
           {dropLocked ? (
             /* LOCKED VIEW — countdown + waitlist */
@@ -763,7 +930,7 @@ export default function CustomerPage() {
       </section>
 
       {/* ── THRIFT ────────────────────────────────────────────────────── */}
-      <section id="thrift" className="section" style={{ padding: isMobile ? "80px 24px" : "120px 48px" }}>
+      <section id="thrift" className="section" style={{ padding: isMobile ? "64px 24px" : "104px 48px" }}>
         <AnimatedSection>
           <div style={{ maxWidth: 1200, margin: "0 auto" }}>
             <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
@@ -831,7 +998,7 @@ export default function CustomerPage() {
       </section>
 
       {/* ── NAIROBI STATEMENT ─────────────────────────────────────────── */}
-      <section className="section" style={{ padding: isMobile ? "80px 24px" : "80px 48px", textAlign: "center" }}>
+      <section className="section" style={{ padding: isMobile ? "64px 24px" : "80px 48px", textAlign: "center" }}>
         <AnimatedSection>
           <h2
             className="font-display"
@@ -881,11 +1048,11 @@ export default function CustomerPage() {
       </section>
 
       {/* ── LOOKBOOK ──────────────────────────────────────────────────── */}
-      <section id="lookbook" className="section" style={{ padding: isMobile ? "80px 24px" : "120px 48px" }}>
+      <section id="lookbook" className="section" style={{ padding: isMobile ? "64px 24px" : "104px 48px" }}>
         <AnimatedSection>
           <div style={{ maxWidth: 1400, margin: "0 auto" }}>
             <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
-              • LOOKBOOK
+              • GOROSEI ORIGINALS
             </span>
             <h2
               className="font-display"
@@ -894,7 +1061,7 @@ export default function CustomerPage() {
                 marginTop: 24,
               }}
             >
-              GOTHIC VINTAGE<br />ANIME / STREET
+              ORIGINAL GRAPHICS<br />FOR THE STREETS
             </h2>
             <div
               style={{
@@ -927,7 +1094,7 @@ export default function CustomerPage() {
       </section>
 
       {/* ── ABOUT ─────────────────────────────────────────────────────── */}
-      <section id="about" className="section" style={{ padding: isMobile ? "80px 24px" : "120px 48px" }}>
+      <section id="about" className="section" style={{ padding: isMobile ? "64px 24px 88px" : "104px 48px" }}>
         <AnimatedSection>
           <div
             style={{
@@ -997,14 +1164,14 @@ export default function CustomerPage() {
             </p>
             <p
               className="font-mono"
-              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 32, lineHeight: 2, maxWidth: 620 }}
+              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 32, lineHeight: 2, maxWidth: 620, textTransform: "none" }}
             >
               I make music and stream games, with a real passion for gothic vintage pieces and anime.
               Gorosei is where I bring you my vision: more graphic content on the streets of Nairobi.
             </p>
             <p
               className="font-mono"
-              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 20, lineHeight: 2, maxWidth: 620 }}
+              style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 20, lineHeight: 2, maxWidth: 620, textTransform: "none" }}
             >
               When I was a kid, I used to get hand-me-downs from my cool-ass cousin. He printed his own
               T-shirts and gave them life, mostly skull pieces. He still does. That spirit is the root.
