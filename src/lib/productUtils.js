@@ -1,7 +1,7 @@
 import { BUCKET_NAME, HERO_MEDIA, SUPABASE_URL } from "../config/constants.js";
 import { supabase } from "./supabase.js";
 
-function getImageUrl(path, width = 800, quality = 80) {
+function getImageUrl(path, width = 800, quality = 80, resize = "cover") {
   const value = String(path || "").trim();
   if (!value) return "";
 
@@ -14,7 +14,7 @@ function getImageUrl(path, width = 800, quality = 80) {
         url.pathname = url.pathname.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
         url.searchParams.set("width", String(width));
         url.searchParams.set("quality", String(quality));
-        url.searchParams.set("resize", "cover");
+        url.searchParams.set("resize", resize);
         return url.toString();
       }
       return value;
@@ -29,7 +29,7 @@ function getImageUrl(path, width = 800, quality = 80) {
     .replace(/^\/+/, "")
     .replace(new RegExp(`^(?:storage/v1/object/public/)?${BUCKET_NAME}/`), "");
 
-  return `${SUPABASE_URL}/storage/v1/render/image/public/${BUCKET_NAME}/${cleanPath}?width=${width}&quality=${quality}&resize=cover`;
+  return `${SUPABASE_URL}/storage/v1/render/image/public/${BUCKET_NAME}/${cleanPath}?width=${width}&quality=${quality}&resize=${resize}`;
 }
 
 function getProductImages(product) {

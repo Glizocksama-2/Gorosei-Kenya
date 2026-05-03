@@ -74,11 +74,11 @@ export default function ProductCard({ product, priority = false }) {
       <div className="image-wrapper" style={{ "--lx": `${light.x}%`, "--ly": `${light.y}%` }}>
         {coverImage && coverImage !== failedImage ? (
           <img
-            src={getImageUrl(coverImage, imageWidth, 70)}
+            src={getImageUrl(coverImage, imageWidth, 70, "contain")}
             srcSet={[
-              `${getImageUrl(coverImage, 360, 68)} 360w`,
-              `${getImageUrl(coverImage, 520, 70)} 520w`,
-              `${getImageUrl(coverImage, 720, 72)} 720w`,
+              `${getImageUrl(coverImage, 360, 68, "contain")} 360w`,
+              `${getImageUrl(coverImage, 520, 70, "contain")} 520w`,
+              `${getImageUrl(coverImage, 720, 72, "contain")} 720w`,
             ].join(", ")}
             sizes="(max-width: 768px) calc(100vw - 48px), (max-width: 1200px) 33vw, 430px"
             alt={name}
@@ -86,7 +86,7 @@ export default function ProductCard({ product, priority = false }) {
             fetchPriority={priority ? "high" : "auto"}
             decoding="async"
             onError={() => setFailedImage(coverImage)}
-            style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block", filter: isSold ? "grayscale(1)" : "none" }}
+            style={{ width: "100%", aspectRatio: "3/4", objectFit: "contain", objectPosition: "center", display: "block", filter: isSold ? "grayscale(1)" : "none" }}
           />
         ) : (
           <div
