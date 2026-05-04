@@ -17,6 +17,15 @@ export default function ProductPage({ id }) {
   const [orderStatus, setOrderStatus] = useState("");
   const [ordering, setOrdering] = useState(false);
   const sizes = ["S", "M", "L", "XL"];
+  const name = product?.Name || id?.toUpperCase() || "PRODUCT";
+  const price = Number(product?.Price) || FIXED_PRICE;
+  const originalPrice = Number(product?.original_price) || 0;
+  const hasDiscount = originalPrice > price;
+  const productImages = getProductImages(product);
+  const usableProductImages = productImages.filter((image) => !failedImages.has(image));
+  const selectedImage = usableProductImages[selectedImageIndex] || usableProductImages[0];
+  const isSold = Boolean(product?.sold);
+  const condition = product?.condition ? product.condition.replace("-", " ").toUpperCase() : "";
 
   const fetchProduct = useCallback(async () => {
     try {
@@ -135,16 +144,6 @@ export default function ProductPage({ id }) {
       </div>
     );
   }
-
-  const name = product.Name || id?.toUpperCase() || "PRODUCT";
-  const price = Number(product.Price) || FIXED_PRICE;
-  const originalPrice = Number(product.original_price) || 0;
-  const hasDiscount = originalPrice > price;
-  const productImages = getProductImages(product);
-  const usableProductImages = productImages.filter((image) => !failedImages.has(image));
-  const selectedImage = usableProductImages[selectedImageIndex] || usableProductImages[0];
-  const isSold = Boolean(product.sold);
-  const condition = product.condition ? product.condition.replace("-", " ").toUpperCase() : "";
 
   const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${price.toLocaleString()}${orderDraft.name ? `\n- Name: ${orderDraft.name.trim()}` : ""}${orderDraft.phone ? `\n- Phone: ${normalizePhone(orderDraft.phone)}` : ""}\n\nIs it available?`
