@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FIXED_PRICE, WHATSAPP_NUMBER } from "../config/constants.js";
-import { useGlobalMouse, useWindowWidth } from "../hooks/index.js";
+import { useWindowWidth } from "../hooks/index.js";
 import { getImageUrl, getProductImages, normalizePhone, trackProductEvent } from "../lib/productUtils.js";
 import { supabase } from "../lib/supabase.js";
 export default function ProductPage({ id }) {
-  const mouse = useGlobalMouse();
   const winWidth = useWindowWidth();
   const isMobile = winWidth < 768;
+  const imageFrameRef = useRef(null);
+  const imageRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("M");
@@ -42,6 +43,59 @@ export default function ProductPage({ id }) {
   useEffect(() => {
     trackProductEvent(id, "view");
   }, [id]);
+
+  useEffect(() => {
+    const frame = imageFrameRef.current;
+    const image = imageRef.current;
+
+    if (!frame || !image || isMobile || !window.matchMedia("(pointer: fine)").matches) {
+      if (image) image.style.transform = "none";
+      return;
+    }
+
+    let current = 0;
+    let target = 0;
+    let rafId = null;
+
+    const render = () => {
+      current += (target - current) * 0.14;
+      image.style.transform = `translate3d(0, ${current}px, 0)`;
+
+      if (Math.abs(target - current) > 0.1) {
+        rafId = requestAnimationFrame(render);
+      } else {
+        rafId = null;
+      }
+    };
+
+    const schedule = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(render);
+      }
+    };
+
+    const onMove = (event) => {
+      const rect = frame.getBoundingClientRect();
+      const normalizedY = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+      target = Math.max(-1, Math.min(1, normalizedY)) * -10;
+      schedule();
+    };
+
+    const onLeave = () => {
+      target = 0;
+      schedule();
+    };
+
+    frame.addEventListener("mousemove", onMove, { passive: true });
+    frame.addEventListener("mouseleave", onLeave, { passive: true });
+
+    return () => {
+      frame.removeEventListener("mousemove", onMove);
+      frame.removeEventListener("mouseleave", onLeave);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      image.style.transform = "none";
+    };
+  }, [isMobile, selectedImage]);
 
   if (loading) {
     return (
@@ -130,14 +184,12 @@ export default function ProductPage({ id }) {
     }
   }
 
-  // Subtle parallax on desktop
   const imgStyle = {
     width: "100%",
     aspectRatio: "3/4",
     objectFit: "cover",
     display: "block",
-    transform: !isMobile ? `translateY(${mouse.ny * -10}px)` : "none",
-    transition: "transform 0.1s linear",
+    willChange: isMobile ? "auto" : "transform",
   };
 
   return (
@@ -168,10 +220,11 @@ export default function ProductPage({ id }) {
         }}
       >
         {/* Image */}
-        <div style={{ overflow: "hidden", background: "var(--surface)", position: "relative" }}>
+        <div ref={imageFrameRef} style={{ overflow: "hidden", background: "var(--surface)", position: "relative" }}>
           {selectedImage ? (
             <>
               <img
+                ref={imageRef}
                 src={getImageUrl(selectedImage, 1200, 90)}
                 alt={name}
                 onError={() => {

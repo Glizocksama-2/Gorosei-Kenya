@@ -1,13 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import { FIT_CHECK_MEDIA, HERO_MEDIA, LOOKBOOK_MEDIA, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "../config/constants.js";
 import AnimatedSection from "../components/AnimatedSection.jsx";
+import DesktopCursor from "../components/DesktopCursor.jsx";
 import NewsletterForm from "../components/NewsletterForm.jsx";
 import ProductCard from "../components/ProductCard.jsx";
-import { useGlobalMouse, useNavScroll, useWindowWidth } from "../hooks/index.js";
+import { useNavScroll, useWindowWidth } from "../hooks/index.js";
 import { isNearbyHeroSlide } from "../lib/productUtils.js";
 import { supabase } from "../lib/supabase.js";
+
+const PRODUCT_CARD_COLUMNS = "id, Name, Price, original_price, category, size, sold, condition, Image_url, Image_urls";
+const ACTIVE_DROP_COLUMNS = "id, active, locked, drop_date, collection_name";
+const COLLECTION_COLUMNS = "id, name";
+
 export default function CustomerPage() {
-  const mouse = useGlobalMouse();
   const scrolled = useNavScroll();
   const winWidth = useWindowWidth();
   const isMobile = winWidth < 768;
@@ -30,6 +35,17 @@ export default function CustomerPage() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loadedHeroMedia, setLoadedHeroMedia] = useState(() => ({ [HERO_MEDIA[0].src]: true }));
+
+  const applyDropState = useCallback((data) => {
+    if (data) {
+      setActiveDrop(data);
+      setDropLocked(data.locked ?? false);
+      return;
+    }
+
+    setActiveDrop(null);
+    setDropLocked(false);
+  }, []);
 
   const markHeroLoaded = useCallback((src) => {
     setLoadedHeroMedia((loaded) => loaded[src] ? loaded : { ...loaded, [src]: true });
@@ -63,7 +79,7 @@ export default function CustomerPage() {
     try {
       const { data } = await supabase
         .from("products for Gorosei")
-        .select("*")
+        .select(PRODUCT_CARD_COLUMNS)
         .order("sold", { ascending: true })
         .order("created_at", { ascending: false });
       setProducts(data || []);
@@ -77,34 +93,15 @@ export default function CustomerPage() {
     }
   }, []);
 
-  const fetchActiveDrop = useCallback(async () => {
-    try {
-      const { data } = await supabase
-        .from("drops")
-        .select("*")
-        .eq("active", true)
-        .maybeSingle();
-      if (data) {
-        setActiveDrop(data);
-        setDropLocked(data.locked ?? false);
-      } else {
-        setActiveDrop(null);
-        setDropLocked(false);
-      }
-    } catch {
-      // No active drop - normal state
-      setActiveDrop(null);
-      setDropLocked(false);
-    }
-  }, []);
-
   const fetchCollections = useCallback(async () => {
     try {
       const { data: colData } = await supabase
         .from("collections")
-        .select("*")
+        .select(COLLECTION_COLUMNS)
         .order("created_at", { ascending: false });
-      if (colData?.length) setCollections(colData);
+      startTransition(() => {
+        setCollections(colData || []);
+      });
     } catch {
       /* silent */
     }
@@ -129,13 +126,68 @@ export default function CustomerPage() {
 
   // Initial data load
   useEffect(() => {
-    const task = setTimeout(() => {
-      fetchProducts();
-      fetchActiveDrop();
-      fetchCollections();
-    }, 0);
-    return () => clearTimeout(task);
-  }, [fetchProducts, fetchActiveDrop, fetchCollections]);
+    let cancelled = false;
+    let deferredCollectionsId = null;
+
+    const loadInitialStorefront = async () => {
+      setLoading(true);
+
+      const [productsResult, dropResult] = await Promise.allSettled([
+        supabase
+          .from("products for Gorosei")
+          .select(PRODUCT_CARD_COLUMNS)
+          .order("sold", { ascending: true })
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("drops")
+          .select(ACTIVE_DROP_COLUMNS)
+          .eq("active", true)
+          .maybeSingle(),
+      ]);
+
+      if (cancelled) return;
+
+      if (productsResult.status === "fulfilled") {
+        setProducts(productsResult.value.data || []);
+        setStoreError("");
+      } else {
+        console.error("fetchProducts error:", productsResult.reason);
+        setProducts([]);
+        setStoreError("We could not load the drop. Refresh the page or check your connection.");
+      }
+
+      if (dropResult.status === "fulfilled") {
+        applyDropState(dropResult.value.data);
+      } else {
+        applyDropState(null);
+      }
+
+      setLoading(false);
+
+      const loadCollections = () => {
+        if (!cancelled) {
+          fetchCollections();
+        }
+      };
+
+      if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+        deferredCollectionsId = window.requestIdleCallback(loadCollections, { timeout: 1200 });
+      } else {
+        deferredCollectionsId = window.setTimeout(loadCollections, 250);
+      }
+    };
+
+    loadInitialStorefront();
+
+    return () => {
+      cancelled = true;
+      if (typeof window !== "undefined" && "cancelIdleCallback" in window && typeof deferredCollectionsId === "number") {
+        window.cancelIdleCallback(deferredCollectionsId);
+      } else if (deferredCollectionsId !== null) {
+        clearTimeout(deferredCollectionsId);
+      }
+    };
+  }, [applyDropState, fetchCollections]);
 
   // Countdown interval
   useEffect(() => {
@@ -148,10 +200,11 @@ export default function CustomerPage() {
   async function switchCollection(id) {
     setActiveCollection(id);
     setCategoryFilter("all");
+    setLoading(true);
     try {
       const { data } = await supabase
         .from("products for Gorosei")
-        .select("*")
+        .select(PRODUCT_CARD_COLUMNS)
         .eq("collection_id", id)
         .order("sold", { ascending: true })
         .order("created_at", { ascending: false });
@@ -160,6 +213,8 @@ export default function CustomerPage() {
     } catch {
       setProducts([]);
       setStoreError("We could not load this collection. Refresh the page or check your connection.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -183,31 +238,20 @@ export default function CustomerPage() {
   }
 
   // Filtered products
-  const filteredProducts =
-    categoryFilter === "all"
-      ? products
-      : products.filter((p) => (p.category || "tshirts") === categoryFilter);
-  const latestProducts = products.filter((p) => !p.sold).slice(0, 6);
+  const filteredProducts = useMemo(
+    () => (
+      categoryFilter === "all"
+        ? products
+        : products.filter((p) => (p.category || "tshirts") === categoryFilter)
+    ),
+    [categoryFilter, products]
+  );
+  const latestProducts = useMemo(() => products.filter((p) => !p.sold).slice(0, 6), [products]);
 
   // ── Cursor ─────────────────────────────────────────────────────────────────
-  const cursorStyle = {
-    position: "fixed",
-    width: 8,
-    height: 8,
-    borderRadius: "50%",
-    background: "var(--crimson)",
-    left: mouse.x - 4,
-    top: mouse.y - 4,
-    pointerEvents: "none",
-    zIndex: 9999,
-    transition: "opacity 0.3s",
-    opacity: mouse.x === 0 && mouse.y === 0 ? 0 : 1,
-  };
-
   return (
     <div style={{ background: "var(--bg)", minHeight: "100vh", color: "var(--text)" }}>
-      {/* Custom cursor - desktop only */}
-      {!isMobile && <div style={cursorStyle} />}
+      {!isMobile && <DesktopCursor />}
 
       {/* ── NAV ───────────────────────────────────────────────────────── */}
       <nav

@@ -4,8 +4,6 @@ import { getImageUrl, getProductImages } from "../lib/productUtils.js";
 
 export default function ProductCard({ product, priority = false }) {
   const ref = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [light, setLight] = useState({ x: 50, y: 50 });
   const [failedImage, setFailedImage] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -13,22 +11,50 @@ export default function ProductCard({ product, priority = false }) {
     const el = ref.current;
     if (!el) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
+
+    let frame = null;
+    let nextTiltX = 0;
+    let nextTiltY = 0;
+    let nextLightX = 50;
+    let nextLightY = 50;
+
+    const render = () => {
+      el.style.setProperty("--tilt-x", `${nextTiltX}deg`);
+      el.style.setProperty("--tilt-y", `${nextTiltY}deg`);
+      el.style.setProperty("--lx", `${nextLightX}%`);
+      el.style.setProperty("--ly", `${nextLightY}%`);
+      frame = null;
+    };
+
+    const schedule = () => {
+      if (frame === null) {
+        frame = requestAnimationFrame(render);
+      }
+    };
+
     const onMove = (e) => {
       const rect = el.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      setTilt({
-        x: ((rect.height / 2 - y) / (rect.height / 2)) * 8,
-        y: ((x - rect.width / 2) / (rect.width / 2)) * 8,
-      });
-      setLight({ x: (x / rect.width) * 100, y: (y / rect.height) * 100 });
+      nextTiltX = ((rect.height / 2 - y) / (rect.height / 2)) * 8;
+      nextTiltY = ((x - rect.width / 2) / (rect.width / 2)) * 8;
+      nextLightX = (x / rect.width) * 100;
+      nextLightY = (y / rect.height) * 100;
+      schedule();
     };
-    const onLeave = () => setTilt({ x: 0, y: 0 });
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", onLeave);
+    const onLeave = () => {
+      nextTiltX = 0;
+      nextTiltY = 0;
+      nextLightX = 50;
+      nextLightY = 50;
+      schedule();
+    };
+    el.addEventListener("mousemove", onMove, { passive: true });
+    el.addEventListener("mouseleave", onLeave, { passive: true });
     return () => {
       el.removeEventListener("mousemove", onMove);
       el.removeEventListener("mouseleave", onLeave);
+      if (frame !== null) cancelAnimationFrame(frame);
     };
   }, []);
 
@@ -65,13 +91,11 @@ export default function ProductCard({ product, priority = false }) {
       style={{
         display: "block",
         textDecoration: "none",
-        transform: tilt.x || tilt.y ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` : "none",
-        transition: "transform 0.5s ease",
         opacity: isSold ? 0.72 : 1,
         cursor: "pointer",
       }}
     >
-      <div className="image-wrapper" style={{ "--lx": `${light.x}%`, "--ly": `${light.y}%` }}>
+      <div className="image-wrapper">
         {coverImage && coverImage !== failedImage ? (
           <img
             src={getImageUrl(coverImage, imageWidth, 70, "contain")}

@@ -183,6 +183,8 @@ input, select, textarea {
   transition: transform 0.5s ease, box-shadow 0.3s ease;
   transform-style: preserve-3d;
   perspective: 1000px;
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  will-change: transform;
 }
 
 .product-card::before,
