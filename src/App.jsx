@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import RouteErrorBoundary from "./components/RouteErrorBoundary.jsx";
 import CustomerPage from "./pages/CustomerPage.jsx";
 
 const AdminPage = lazy(() => import("./pages/AdminPage.jsx"));
@@ -30,17 +31,25 @@ export default function App() {
 
   if (route === "/product" && productId) {
     return (
-      <Suspense fallback={<RouteFallback />}>
-        <ProductPage id={productId} />
-      </Suspense>
+      <RouteErrorBoundary routeKey={path}>
+        <Suspense fallback={<RouteFallback />}>
+          <ProductPage id={productId} />
+        </Suspense>
+      </RouteErrorBoundary>
     );
   }
   if (route === "/admin") {
     return (
-      <Suspense fallback={<RouteFallback />}>
-        <AdminPage />
-      </Suspense>
+      <RouteErrorBoundary routeKey={path}>
+        <Suspense fallback={<RouteFallback />}>
+          <AdminPage />
+        </Suspense>
+      </RouteErrorBoundary>
     );
   }
-  return <CustomerPage />;
+  return (
+    <RouteErrorBoundary routeKey={path}>
+      <CustomerPage />
+    </RouteErrorBoundary>
+  );
 }
