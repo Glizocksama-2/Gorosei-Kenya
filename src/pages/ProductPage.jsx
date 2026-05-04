@@ -150,6 +150,10 @@ export default function ProductPage({ id }) {
     `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${price.toLocaleString()}${orderDraft.name ? `\n- Name: ${orderDraft.name.trim()}` : ""}${orderDraft.phone ? `\n- Phone: ${normalizePhone(orderDraft.phone)}` : ""}\n\nIs it available?`
   )}`;
 
+  function openWhatsAppOrder() {
+    window.location.assign(buyLink);
+  }
+
   async function placeOrder() {
     if (isSold || ordering) return;
     const phone = normalizePhone(orderDraft.phone);
@@ -172,13 +176,13 @@ export default function ProductPage({ id }) {
         source: "product_page",
       });
       if (error) throw error;
-      await trackProductEvent(product.id, "whatsapp_order", { selected_size: selectedSize, phone });
       setOrderStatus("Order saved. Opening WhatsApp...");
-      window.open(buyLink, "_blank", "noopener,noreferrer");
+      trackProductEvent(product.id, "whatsapp_order", { selected_size: selectedSize, phone });
+      openWhatsAppOrder();
     } catch {
-      await trackProductEvent(product.id, "whatsapp_order_fallback", { selected_size: selectedSize });
       setOrderStatus("Opening WhatsApp. Run the orders SQL to save leads in admin.");
-      window.open(buyLink, "_blank", "noopener,noreferrer");
+      trackProductEvent(product.id, "whatsapp_order_fallback", { selected_size: selectedSize });
+      openWhatsAppOrder();
     } finally {
       setOrdering(false);
     }
@@ -464,7 +468,10 @@ export default function ProductPage({ id }) {
           </button>
           {orderStatus && (
             <p className="font-mono" style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 12 }}>
-              {orderStatus}
+              {orderStatus}{" "}
+              <a href={buyLink} style={{ color: "var(--crimson)" }}>
+                Open WhatsApp manually
+              </a>
             </p>
           )}
 
