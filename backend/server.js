@@ -2,10 +2,27 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const allowedOrigin = process.env.CORS_ORIGIN || "*";
+const allowedOrigins = (
+  process.env.CORS_ORIGIN ||
+  "https://gorosei-kenya.vercel.app,http://localhost:5173,http://127.0.0.1:5173"
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-app.use(cors({ origin: allowedOrigin }));
-app.use(express.json({ limit: "2mb" }));
+app.disable("x-powered-by");
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+  })
+);
+app.use(express.json({ limit: "256kb" }));
 
 const PORT = process.env.PORT || 5000;
 
@@ -34,9 +51,26 @@ app.post("/generate-mockup", async (req, res) => {
     });
   }
 
+  let parsedImageUrl;
+  try {
+    parsedImageUrl = new URL(imageUrl.trim());
+  } catch {
+    return res.status(400).json({
+      success: false,
+      error: "imageUrl must be a valid URL",
+    });
+  }
+
+  if (!["http:", "https:"].includes(parsedImageUrl.protocol)) {
+    return res.status(400).json({
+      success: false,
+      error: "imageUrl must use http or https",
+    });
+  }
+
   res.json({ 
     success: true, 
-    image: imageUrl.trim(),
+    image: parsedImageUrl.toString(),
     productName: productName.trim(),
     message: "Using original image as mockup (AI mockup unavailable)"
   });

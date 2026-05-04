@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { DISCORD_WEBHOOK } from "../config/constants.js";
 import { supabase } from "../lib/supabase.js";
 
 export default function NewsletterForm() {
@@ -17,24 +16,6 @@ export default function NewsletterForm() {
         .insert({ email: email.trim(), created_at: new Date().toISOString() });
 
       if (error) { setStatus("Error. Try again."); return; }
-
-      if (DISCORD_WEBHOOK) {
-        try {
-          await fetch(DISCORD_WEBHOOK, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              content:
-                "🆕 **NEW BROTHERHOOD MEMBER**\n\n📧: " +
-                email.trim() +
-                "\n⏰: " +
-                new Date().toLocaleString("en-KE", { timeZone: "Africa/Nairobi" }),
-            }),
-          });
-        } catch {
-          // Webhook failure is non-fatal — signup still succeeds
-        }
-      }
 
       setSubmitted(true);
       setStatus("You're in!");

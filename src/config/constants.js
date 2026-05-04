@@ -6,7 +6,6 @@ export const BUCKET_NAME = "products-images";
 export const PRODUCT_CATEGORIES = ["tshirts", "jackets", "pants", "accessories", "shoes", "socks"];
 export const PRODUCT_CONDITIONS = ["new", "excellent", "good", "thrifted", "rare-find"];
 export const ORDER_STATUSES = ["new", "contacted", "paid", "delivered", "cancelled"];
-export const DISCORD_WEBHOOK = import.meta?.env?.VITE_DISCORD_WEBHOOK || "";
 export const HERO_MEDIA = [
   { src: "/hero1.webp", type: "image", durationMs: 5000 },
   { src: "/hero2.webp", type: "image", durationMs: 5000 },
