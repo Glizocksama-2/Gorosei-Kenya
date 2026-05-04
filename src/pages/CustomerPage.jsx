@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { HERO_MEDIA, LOOKBOOK_MEDIA, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "../config/constants.js";
+import { FIT_CHECK_MEDIA, HERO_MEDIA, LOOKBOOK_MEDIA, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "../config/constants.js";
 import AnimatedSection from "../components/AnimatedSection.jsx";
 import NewsletterForm from "../components/NewsletterForm.jsx";
 import ProductCard from "../components/ProductCard.jsx";
@@ -238,7 +238,7 @@ export default function CustomerPage() {
         {/* Desktop links */}
         {!isMobile && (
           <div style={{ display: "flex", gap: 32, alignItems: "center" }}>
-            {[["#drop", "SHOP ALL"], ["#lookbook", "ORIGINALS"], ["#thrift", "THRIFT"], ["#about", "ABOUT"]].map(
+            {[["#drop", "SHOP ALL"], ["#fit-check", "FIT CHECK"], ["#lookbook", "ORIGINALS"], ["#thrift", "THRIFT"], ["#about", "ABOUT"]].map(
               ([href, label]) => (
                 <a
                   key={href}
@@ -303,7 +303,7 @@ export default function CustomerPage() {
           >
             X
           </button>
-          {[["#drop", "SHOP ALL"], ["#drop", "JACKETS"], ["#drop", "TEES"], ["#lookbook", "ORIGINALS"], ["#about", "ABOUT"]].map(
+          {[["#drop", "SHOP ALL"], ["#fit-check", "FIT CHECK"], ["#drop", "JACKETS"], ["#drop", "TEES"], ["#lookbook", "ORIGINALS"], ["#about", "ABOUT"]].map(
             ([href, label]) => (
               <a
                 key={`${href}-${label}`}
@@ -678,6 +678,94 @@ export default function CustomerPage() {
                         </button>
                       </div>
                     )}
+            </div>
+          </div>
+        </AnimatedSection>
+      </section>
+
+      <section id="fit-check" className="section" style={{ padding: isMobile ? "64px 24px" : "84px 48px", borderBottom: "1px solid var(--surface-light)" }}>
+        <AnimatedSection>
+          <div style={{ maxWidth: 1300, margin: "0 auto" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.82fr 1.18fr", gap: isMobile ? 32 : 56, alignItems: "end" }}>
+              <div>
+                <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
+                  - FIT CHECK
+                </span>
+                <h2
+                  className="font-display"
+                  style={{
+                    fontSize: isMobile ? "clamp(44px, 13vw, 72px)" : "clamp(64px, 9vw, 116px)",
+                    marginTop: 18,
+                    lineHeight: 0.86,
+                  }}
+                >
+                  SEEN ON BODY
+                </h2>
+                <p
+                  className="font-mono"
+                  style={{
+                    color: "var(--text-muted)",
+                    fontSize: 12,
+                    lineHeight: 1.9,
+                    marginTop: 24,
+                    maxWidth: 440,
+                    textTransform: "none",
+                  }}
+                >
+                  Real pieces, real proportions. A quick look at how Gorosei sits when it leaves the hanger.
+                </p>
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr 1fr" : "minmax(0, 1fr) minmax(0, 0.78fr)",
+                  gap: isMobile ? 10 : 16,
+                  alignItems: "end",
+                }}
+              >
+                {FIT_CHECK_MEDIA.map((item, index) => (
+                  <figure
+                    key={item.src}
+                    style={{
+                      margin: 0,
+                      border: "1px solid var(--surface-light)",
+                      background: "var(--surface)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <img
+                      src={item.src}
+                      alt={item.title}
+                      loading={index === 0 ? "eager" : "lazy"}
+                      fetchPriority={index === 0 ? "high" : "auto"}
+                      decoding="async"
+                      style={{
+                        width: "100%",
+                        aspectRatio: isMobile ? "3 / 4" : index === 0 ? "4 / 5" : "3 / 4",
+                        objectFit: "cover",
+                        objectPosition: "center",
+                        display: "block",
+                      }}
+                    />
+                    <figcaption
+                      className="font-mono"
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        gap: 12,
+                        padding: isMobile ? "10px 11px" : "12px 14px",
+                        color: "var(--text-muted)",
+                        fontSize: 8,
+                        letterSpacing: "0.14em",
+                        borderTop: "1px solid var(--surface-light)",
+                      }}
+                    >
+                      <span>{index === 0 ? "ON BODY" : "DETAIL"}</span>
+                      <span>NAIROBI</span>
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
             </div>
           </div>
         </AnimatedSection>

@@ -25,3 +25,7 @@ export const LOOKBOOK_MEDIA = [
   { src: "/lookbook-5.webp", title: "Gorosei gothic collection" },
   { src: "/lookbook-6.webp", title: "Skulled Finger tee" },
 ];
+export const FIT_CHECK_MEDIA = [
+  { src: "/fit-check-1.webp", title: "Gorosei fit check front" },
+  { src: "/fit-check-2.webp", title: "Gorosei fit check detail" },
+];
