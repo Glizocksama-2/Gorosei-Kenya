@@ -727,11 +727,20 @@ export default function CustomerPage() {
         </AnimatedSection>
       </section>
 
-      <section id="fit-check" className="section" style={{ padding: isMobile ? "64px 24px" : "84px 48px", borderBottom: "1px solid var(--surface-light)" }}>
+      <section
+        id="fit-check"
+        className="section"
+        style={{
+          padding: isMobile ? "64px 0" : "84px 48px",
+          borderBottom: "1px solid var(--surface-light)",
+          contentVisibility: "auto",
+          containIntrinsicSize: "900px",
+        }}
+      >
         <AnimatedSection>
-          <div style={{ maxWidth: 1300, margin: "0 auto" }}>
+          <div style={{ maxWidth: 1300, margin: "0 auto", padding: isMobile ? "0 0 0 24px" : 0 }}>
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.82fr 1.18fr", gap: isMobile ? 32 : 56, alignItems: "end" }}>
-              <div>
+              <div style={{ paddingRight: isMobile ? 24 : 0 }}>
                 <span className="font-mono" style={{ fontSize: 10, letterSpacing: "0.3em", color: "var(--crimson)" }}>
                   - FIT CHECK
                 </span>
@@ -762,9 +771,16 @@ export default function CustomerPage() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: isMobile ? "1fr 1fr" : "minmax(0, 1fr) minmax(0, 0.78fr)",
-                  gap: isMobile ? 10 : 16,
+                  gridAutoFlow: isMobile ? "column" : "row",
+                  gridAutoColumns: isMobile ? "72%" : "auto",
+                  gridTemplateColumns: isMobile ? "none" : "repeat(4, minmax(0, 1fr))",
+                  gap: isMobile ? 10 : 12,
                   alignItems: "end",
+                  overflowX: isMobile ? "auto" : "visible",
+                  paddingRight: isMobile ? 24 : 0,
+                  scrollSnapType: isMobile ? "x mandatory" : "none",
+                  WebkitOverflowScrolling: "touch",
+                  scrollbarWidth: "none",
                 }}
               >
                 {FIT_CHECK_MEDIA.map((item, index) => (
@@ -775,17 +791,18 @@ export default function CustomerPage() {
                       border: "1px solid var(--surface-light)",
                       background: "var(--surface)",
                       overflow: "hidden",
+                      scrollSnapAlign: isMobile ? "start" : "none",
                     }}
                   >
                     <img
                       src={item.src}
                       alt={item.title}
-                      loading={index === 0 ? "eager" : "lazy"}
-                      fetchPriority={index === 0 ? "high" : "auto"}
+                      loading="lazy"
+                      fetchPriority="auto"
                       decoding="async"
                       style={{
                         width: "100%",
-                        aspectRatio: isMobile ? "3 / 4" : index === 0 ? "4 / 5" : "3 / 4",
+                        aspectRatio: "3 / 4",
                         objectFit: "cover",
                         objectPosition: "center",
                         display: "block",
@@ -804,7 +821,7 @@ export default function CustomerPage() {
                         borderTop: "1px solid var(--surface-light)",
                       }}
                     >
-                      <span>{index === 0 ? "ON BODY" : "DETAIL"}</span>
+                      <span>FIT {String(index + 1).padStart(2, "0")}</span>
                       <span>NAIROBI</span>
                     </figcaption>
                   </figure>
