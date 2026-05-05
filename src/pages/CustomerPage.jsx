@@ -1,5 +1,5 @@
 import { startTransition, useCallback, useEffect, useMemo, useState } from "react";
-import { FIT_CHECK_MEDIA, HERO_MEDIA, LOOKBOOK_MEDIA, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "../config/constants.js";
+import { BREATH_OF_LIFE_MEDIA, FIT_CHECK_MEDIA, HERO_MEDIA, LOOKBOOK_MEDIA, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "../config/constants.js";
 import AnimatedSection from "../components/AnimatedSection.jsx";
 import DesktopCursor from "../components/DesktopCursor.jsx";
 import NewsletterForm from "../components/NewsletterForm.jsx";
@@ -1168,29 +1168,37 @@ export default function CustomerPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "1.2fr 0.8fr",
-              gap: isMobile ? 10 : 16,
+              gridTemplateColumns: isMobile ? "repeat(2, minmax(0, 1fr))" : "1.15fr 0.85fr 0.85fr",
+              gap: isMobile ? 8 : 12,
               maxWidth: 1120,
               margin: isMobile ? "44px auto 0" : "56px auto 0",
               textAlign: "left",
             }}
           >
-            {[LOOKBOOK_MEDIA[4], LOOKBOOK_MEDIA[5]].map((item, index) => (
-              <img
+            {BREATH_OF_LIFE_MEDIA.map((item, index) => (
+              <figure
                 key={item.src}
-                src={item.src}
-                alt={item.title}
-                loading="lazy"
-                decoding="async"
                 style={{
-                  width: "100%",
-                  aspectRatio: isMobile ? "4 / 3" : index === 0 ? "16 / 10" : "4 / 5",
-                  objectFit: "cover",
-                  display: "block",
+                  margin: 0,
+                  gridRow: !isMobile && index === 0 ? "span 2" : "auto",
                   border: "1px solid var(--surface-light)",
                   background: "var(--surface)",
+                  overflow: "hidden",
                 }}
-              />
+              >
+                <img
+                  src={item.src}
+                  alt={item.title}
+                  loading="lazy"
+                  decoding="async"
+                  style={{
+                    width: "100%",
+                    aspectRatio: isMobile ? "3 / 4" : index === 0 ? "4 / 5" : "1 / 1",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              </figure>
             ))}
           </div>
         </AnimatedSection>

@@ -33,6 +33,8 @@ export const FIT_CHECK_MEDIA = [
   { src: "/fit-check-6.webp", title: "Demon Slayer T fit check" },
   { src: "/fit-check-7.webp", title: "Deuces mirage fit check" },
   { src: "/fit-check-8.webp", title: "Deuces fit check" },
+];
+export const BREATH_OF_LIFE_MEDIA = [
   { src: "/fit-check-9.webp", title: "Duo Demon Slayer fit check" },
   { src: "/fit-check-10.webp", title: "Mamacho fit check" },
   { src: "/fit-check-11.webp", title: "Street fit check" },
