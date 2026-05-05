@@ -16,6 +16,7 @@ export default function ProductPage({ id }) {
   const [orderDraft, setOrderDraft] = useState({ name: "", phone: "" });
   const [orderStatus, setOrderStatus] = useState("");
   const [ordering, setOrdering] = useState(false);
+  const [orderReviewOpen, setOrderReviewOpen] = useState(false);
   const sizes = ["S", "M", "L", "XL"];
   const name = product?.Name || id?.toUpperCase() || "PRODUCT";
   const price = Number(product?.Price) || FIXED_PRICE;
@@ -26,6 +27,7 @@ export default function ProductPage({ id }) {
   const selectedImage = usableProductImages[selectedImageIndex] || usableProductImages[0];
   const isSold = Boolean(product?.sold);
   const condition = product?.condition ? product.condition.replace("-", " ").toUpperCase() : "";
+  const normalizedOrderPhone = normalizePhone(orderDraft.phone);
 
   const fetchProduct = useCallback(async () => {
     try {
@@ -153,10 +155,21 @@ export default function ProductPage({ id }) {
     window.location.assign(buyLink);
   }
 
-  async function placeOrder() {
+  function reviewOrder() {
     if (isSold || ordering) return;
-    const phone = normalizePhone(orderDraft.phone);
-    if (!orderDraft.name.trim() || phone.length < 9) {
+    if (!orderDraft.name.trim() || normalizedOrderPhone.length < 9) {
+      setOrderStatus("Add your name and phone first.");
+      return;
+    }
+
+    setOrderStatus("");
+    setOrderReviewOpen(true);
+  }
+
+  async function confirmOrder() {
+    if (isSold || ordering) return;
+    if (!orderDraft.name.trim() || normalizedOrderPhone.length < 9) {
+      setOrderReviewOpen(false);
       setOrderStatus("Add your name and phone first.");
       return;
     }
@@ -168,7 +181,7 @@ export default function ProductPage({ id }) {
         product_id: product.id,
         product_name: name,
         customer_name: orderDraft.name.trim(),
-        phone,
+        phone: normalizedOrderPhone,
         selected_size: selectedSize,
         price,
         status: "new",
@@ -176,13 +189,14 @@ export default function ProductPage({ id }) {
       });
       if (error) throw error;
       setOrderStatus("Order saved. Opening WhatsApp...");
-      trackProductEvent(product.id, "whatsapp_order", { selected_size: selectedSize, phone });
+      trackProductEvent(product.id, "whatsapp_order", { selected_size: selectedSize, phone: normalizedOrderPhone });
       openWhatsAppOrder();
     } catch {
       setOrderStatus("Opening WhatsApp. Run the orders SQL to save leads in admin.");
       trackProductEvent(product.id, "whatsapp_order_fallback", { selected_size: selectedSize });
       openWhatsAppOrder();
     } finally {
+      setOrderReviewOpen(false);
       setOrdering(false);
     }
   }
@@ -444,7 +458,7 @@ export default function ProductPage({ id }) {
           )}
           <button
             type="button"
-            onClick={isSold ? () => { window.location.href = "/#drop"; } : placeOrder}
+            onClick={isSold ? () => { window.location.href = "/#drop"; } : reviewOrder}
             disabled={ordering}
             style={{
               display: "block",
@@ -484,6 +498,114 @@ export default function ProductPage({ id }) {
           )}
         </div>
       </div>
+      {orderReviewOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="order-review-title"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 2000,
+            display: "flex",
+            alignItems: isMobile ? "flex-end" : "center",
+            justifyContent: "center",
+            padding: isMobile ? 0 : 24,
+            background: "rgba(0,0,0,0.78)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: 520,
+              background: "var(--bg)",
+              border: "1px solid var(--surface-light)",
+              padding: isMobile ? 22 : 28,
+              boxShadow: "0 30px 90px rgba(0,0,0,0.55)",
+            }}
+          >
+            <p className="font-mono" style={{ fontSize: 10, color: "var(--crimson)", letterSpacing: "0.22em", marginBottom: 14 }}>
+              ORDER REVIEW
+            </p>
+            <h2 id="order-review-title" className="font-display" style={{ fontSize: isMobile ? 34 : 44, lineHeight: 0.95 }}>
+              LOCK THE PIECE
+            </h2>
+            <div
+              className="font-mono"
+              style={{
+                display: "grid",
+                gap: 10,
+                marginTop: 22,
+                fontSize: 11,
+                color: "var(--text-muted)",
+                letterSpacing: "0.08em",
+              }}
+            >
+              {[
+                ["PRODUCT", name],
+                ["SIZE", selectedSize],
+                ["PRICE", `KSh ${price.toLocaleString()}`],
+                ["NAME", orderDraft.name.trim()],
+                ["PHONE", normalizedOrderPhone],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "90px minmax(0, 1fr)",
+                    gap: 12,
+                    borderBottom: "1px solid var(--surface-light)",
+                    paddingBottom: 10,
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>{label}</span>
+                  <span style={{ color: "var(--text)", overflowWrap: "anywhere" }}>{value}</span>
+                </div>
+              ))}
+            </div>
+            <p className="font-mono" style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.7, marginTop: 18 }}>
+              We will save this lead for admin tracking, then open WhatsApp with the order message ready.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10, marginTop: 24 }}>
+              <button
+                type="button"
+                onClick={() => setOrderReviewOpen(false)}
+                className="font-mono"
+                disabled={ordering}
+                style={{
+                  padding: "15px 16px",
+                  border: "1px solid var(--surface-light)",
+                  color: "var(--text-muted)",
+                  fontSize: 11,
+                  letterSpacing: "0.18em",
+                  cursor: ordering ? "not-allowed" : "pointer",
+                  opacity: ordering ? 0.55 : 1,
+                }}
+              >
+                EDIT DETAILS
+              </button>
+              <button
+                type="button"
+                onClick={confirmOrder}
+                className="font-mono"
+                disabled={ordering}
+                style={{
+                  padding: "15px 16px",
+                  background: "var(--crimson)",
+                  color: "#fff",
+                  fontSize: 11,
+                  letterSpacing: "0.18em",
+                  cursor: ordering ? "not-allowed" : "pointer",
+                  opacity: ordering ? 0.55 : 1,
+                }}
+              >
+                {ordering ? "SAVING..." : "CONTINUE TO WHATSAPP"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
