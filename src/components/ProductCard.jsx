@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FIXED_PRICE } from "../config/constants.js";
-import { getImageUrl, getProductImages } from "../lib/productUtils.js";
+import { getImageUrl, getProductImages, getProductPrice } from "../lib/productUtils.js";
 
 export default function ProductCard({ product, priority = false }) {
   const ref = useRef(null);
@@ -59,7 +58,7 @@ export default function ProductCard({ product, priority = false }) {
   }, []);
 
   const name = product?.Name || "UNNAMED";
-  const price = Number(product?.Price) || FIXED_PRICE;
+  const price = getProductPrice(product);
   const originalPrice = Number(product?.original_price) || 0;
   const hasDiscount = originalPrice > price;
   const images = getProductImages(product);

@@ -15,7 +15,7 @@ create unique index if not exists collections_name_unique_idx
 create table if not exists public."products for Gorosei" (
   id uuid primary key default gen_random_uuid(),
   "Name" text not null,
-  "Price" integer not null default 2000 check ("Price" >= 0),
+  "Price" integer not null default 650 check ("Price" >= 0),
   original_price integer check (original_price is null or original_price >= 0),
   category text not null default 'tshirts'
     check (category in ('tshirts', 'jackets', 'pants', 'accessories', 'shoes', 'socks')),
@@ -60,6 +60,8 @@ create table if not exists public.orders (
   product_name text not null,
   customer_name text,
   phone text not null,
+  flight_number text,
+  terminals text,
   selected_size text,
   price integer,
   status text not null default 'new'

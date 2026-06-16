@@ -1,17 +1,54 @@
 import { useEffect, useState } from "react";
-import { BUCKET_NAME, FIXED_PRICE, ORDER_STATUSES, PRODUCT_CATEGORIES, PRODUCT_CONDITIONS } from "../config/constants.js";
-import { getImageUrl, getProductImages, isMissingGalleryColumn } from "../lib/productUtils.js";
+import { BUCKET_NAME, ORDER_STATUSES, PRODUCT_CATEGORIES, PRODUCT_CONDITIONS } from "../config/constants.js";
+import { getImageUrl, getProductImages, getProductPrice, isMissingGalleryColumn } from "../lib/productUtils.js";
 import { supabase } from "../lib/supabase.js";
+
+function createDefaultProductDraft() {
+  return {
+    name: "",
+    size: "M",
+    price: String(getProductPrice({ category: "tshirts" })),
+    originalPrice: "",
+    category: "tshirts",
+    url: "",
+    imageUrls: [],
+    condition: "thrifted",
+    fitNotes: "",
+    story: "",
+  };
+}
+
+function parsePositivePrice(value) {
+  const price = Number.parseInt(value, 10);
+  return Number.isFinite(price) && price > 0 ? price : null;
+}
+
+function mergeProductDraft(product, draft = {}) {
+  return {
+    ...product,
+    ...draft,
+    Name: draft.name ?? product?.Name,
+    name: draft.name ?? product?.Name,
+    category: draft.category ?? product?.category,
+    fitNotes: draft.fitNotes ?? product?.fit_notes,
+    story: draft.story ?? product?.story,
+  };
+}
+
+function withAutoPrice(prev, changes) {
+  const previousAutoPrice = String(getProductPrice(prev));
+  const next = { ...prev, ...changes };
+  const shouldAutoPrice = !prev.price || String(prev.price) === previousAutoPrice;
+  return shouldAutoPrice ? { ...next, price: String(getProductPrice(next)) } : next;
+}
+
 export default function AdminDashboard({ onLogout }) {
   const [activeTab, setActiveTab] = useState("collections");
   const [collections, setCollections] = useState([]);
   const [collectionName, setCollectionName] = useState("");
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({
-    name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [],
-    condition: "thrifted", fitNotes: "", story: "",
-  });
+  const [newProduct, setNewProduct] = useState(createDefaultProductDraft);
   const [editDrafts, setEditDrafts] = useState({});
   const [uploading, setUploading] = useState(false);
   const [uploadingProductId, setUploadingProductId] = useState(null);
@@ -154,7 +191,7 @@ export default function AdminDashboard({ onLogout }) {
     try {
       const payload = {
         Name: newProduct.name.trim(),
-        Price: parseInt(newProduct.price) || FIXED_PRICE,
+        Price: parsePositivePrice(newProduct.price) ?? getProductPrice(newProduct),
         original_price: newProduct.originalPrice ? parseInt(newProduct.originalPrice) : null,
         category: newProduct.category || "tshirts",
         size: newProduct.size,
@@ -182,10 +219,7 @@ export default function AdminDashboard({ onLogout }) {
       } else {
         setStatus("Product added!");
       }
-      setNewProduct({
-        name: "", size: "M", price: "2000", originalPrice: "", category: "tshirts", url: "", imageUrls: [],
-        condition: "thrifted", fitNotes: "", story: "",
-      });
+      setNewProduct(createDefaultProductDraft());
       fetchProductsForCollection(selectedCollection);
     } finally {
       setSaving(false);
@@ -201,12 +235,14 @@ export default function AdminDashboard({ onLogout }) {
   async function updateProduct(id) {
     const draft = editDrafts[id];
     if (!draft) return;
+    const currentProduct = products.find((product) => product.id === id);
+    const mergedDraft = mergeProductDraft(currentProduct, draft);
     const payload = {
-      Name: draft.name?.trim() || "UNTITLED",
-      Price: parseInt(draft.price) || FIXED_PRICE,
+      Name: mergedDraft.name?.trim() || "UNTITLED",
+      Price: parsePositivePrice(draft.price) ?? getProductPrice(mergedDraft),
       original_price: draft.originalPrice ? parseInt(draft.originalPrice) : null,
-      category: draft.category || "tshirts",
-      size: draft.size || "M",
+      category: mergedDraft.category || "tshirts",
+      size: mergedDraft.size || "M",
       condition: draft.condition || draft.condition === "" ? draft.condition || null : undefined,
       fit_notes: draft.fitNotes ?? draft.fit_notes ?? null,
       story: draft.story ?? null,
@@ -527,7 +563,7 @@ export default function AdminDashboard({ onLogout }) {
           <div style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
             <input
               value={newProduct.name}
-              onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+              onChange={(e) => setNewProduct((prev) => withAutoPrice(prev, { name: e.target.value }))}
               placeholder="Product name"
               style={{ ...inputStyle, flex: "1 1 200px", minWidth: 180 }}
             />
@@ -540,7 +576,7 @@ export default function AdminDashboard({ onLogout }) {
             </select>
             <select
               value={newProduct.category}
-              onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+              onChange={(e) => setNewProduct((prev) => withAutoPrice(prev, { category: e.target.value }))}
               style={inputStyle}
             >
               {PRODUCT_CATEGORIES.map((s) => <option key={s}>{s}</option>)}
@@ -758,7 +794,7 @@ export default function AdminDashboard({ onLogout }) {
                     {/* Price + original price */}
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 8 }}>
                       <input
-                        value={editDrafts[p.id]?.price ?? p.Price ?? ""}
+                        value={editDrafts[p.id]?.price ?? getProductPrice(mergeProductDraft(p, editDrafts[p.id]))}
                         onChange={(e) => setEditDrafts((prev) => ({ ...prev, [p.id]: { ...(prev[p.id] || p), price: e.target.value } }))}
                         placeholder="Price"
                         style={{ ...inputStyle, width: "100%", padding: 10, fontSize: 12, boxSizing: "border-box" }}
@@ -889,6 +925,12 @@ export default function AdminDashboard({ onLogout }) {
                 <p className="font-mono" style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 12, lineHeight: 1.7 }}>
                   {order.customer_name || "No name"} / {order.phone || "No phone"}<br />
                   Size {order.selected_size || "-"} / KSh {Number(order.price || 0).toLocaleString()}
+                  {(order.flight_number || order.terminals) && (
+                    <>
+                      <br />
+                      {order.flight_number ? `Flight ${order.flight_number}` : "Flight -"} / {order.terminals || "Terminal -"}
+                    </>
+                  )}
                 </p>
                 <select
                   value={order.status || "new"}

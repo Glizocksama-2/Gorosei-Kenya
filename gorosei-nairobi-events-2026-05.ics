@@ -1,0 +1,121 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Gorosei Kenya//Nairobi Event Radar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Gorosei Nairobi Events (May 2026)
+X-WR-TIMEZONE:Africa/Nairobi
+
+BEGIN:VTIMEZONE
+TZID:Africa/Nairobi
+X-LIC-LOCATION:Africa/Nairobi
+BEGIN:STANDARD
+TZOFFSETFROM:+0300
+TZOFFSETTO:+0300
+TZNAME:EAT
+DTSTART:19700101T000000
+END:STANDARD
+END:VTIMEZONE
+
+BEGIN:VEVENT
+UID:gorosei-20260510-nairobi-market-brunch@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;TZID=Africa/Nairobi:20260510T100000
+DTEND;TZID=Africa/Nairobi:20260510T180000
+SUMMARY:Nairobi Market Brunch (Nairobi Street Kitchen)
+LOCATION:Nairobi Street Kitchen\, Westlands\, Nairobi\, Kenya
+DESCRIPTION:Source: https://nairobieventsguide.com/event/nairobi-market-brunch-3/\\nNotes: Ask NSK for vendor slots/fees (vendor email listed on April edition: vendors@nairobi-street-kitchen.com).\\nFit: selling + networking + content + scouting.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-20260510-mothers-day-pop-up@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;TZID=Africa/Nairobi:20260510T110000
+DTEND;TZID=Africa/Nairobi:20260510T190000
+SUMMARY:Mother’s Day Pop Up Market (Karen Flea Market) @ Bao Box
+LOCATION:Bao Box Cafe\, General Mathenge Dr\, Westlands\, Nairobi\, Kenya
+DESCRIPTION:Source: https://nairobieventsguide.com/event/mothers-day-pop-up-market/\\nNotes: Check with Karen Flea Market for last-minute vendor space.\\nFit: selling + networking + content + scouting.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-20260509-may-souk-day1@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;TZID=Africa/Nairobi:20260509T090000
+DTEND;TZID=Africa/Nairobi:20260509T180000
+SUMMARY:Artisan Makers Market — May Souk (Day 1)
+LOCATION:Shamba Events\, Loresho\, Nairobi\, Kenya
+DESCRIPTION:Source: https://artisanmakersmarket.co.ke/portfolio/may-souk-2026/\\nAlt: https://www.shambacafe.co.ke/happening-at-shamba-events/artisanal-makers-market-may-souk\\nNotes: Apply ASAP if you want a vendor table.\\nFit: selling + creator networking + content.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-20260510-may-souk-day2@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;TZID=Africa/Nairobi:20260510T090000
+DTEND;TZID=Africa/Nairobi:20260510T180000
+SUMMARY:Artisan Makers Market — May Souk (Day 2)
+LOCATION:Shamba Events\, Loresho\, Nairobi\, Kenya
+DESCRIPTION:Source: https://artisanmakersmarket.co.ke/portfolio/may-souk-2026/\\nAlt: https://www.shambacafe.co.ke/happening-at-shamba-events/artisanal-makers-market-may-souk\\nNotes: Apply ASAP if you want a vendor table.\\nFit: selling + creator networking + content.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-20260507-20260509-africa-forward-fest@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;VALUE=DATE:20260507
+DTEND;VALUE=DATE:20260510
+SUMMARY:Africa Forward Fest 2026 (Alliance Française Nairobi)
+LOCATION:Alliance Française de Nairobi\, Nairobi\, Kenya
+DESCRIPTION:Source: https://afkenya.org/africa-forward-fest-2026/\\nSchedule details vary by session; confirm which talks/panels to attend.\\nFit: networking + scouting + content.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-20260515-20260517-beauty-kenya-expo@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;VALUE=DATE:20260515
+DTEND;VALUE=DATE:20260518
+SUMMARY:Beauty Kenya 2026 (Expo) — Sarit Expo Centre
+LOCATION:Sarit Expo Centre\, Westlands\, Nairobi\, Kenya
+DESCRIPTION:Source: https://www.kenyabeautycentre.com/beauty-kenya-2026-exhibition-nairobi-sarit-centre-15-17-may-2026/\\nNotes: More B2B/brands than streetwear; useful for networking and scouting partners.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-20260523-bargainbox-day1@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;TZID=Africa/Nairobi:20260523T090000
+DTEND;TZID=Africa/Nairobi:20260523T180000
+SUMMARY:BargainBox 2026 (Day 1) — TheBoX
+LOCATION:Ngong Racecourse\, Nairobi\, Kenya
+DESCRIPTION:Source: https://www.thebox.co.ke/\\nNotes: Inquire about late exhibitor availability (info@thebox.co.ke).\\nFit: strong selling + content + scouting.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-20260524-bargainbox-day2@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;TZID=Africa/Nairobi:20260524T090000
+DTEND;TZID=Africa/Nairobi:20260524T173000
+SUMMARY:BargainBox 2026 (Day 2) — TheBoX
+LOCATION:Ngong Racecourse\, Nairobi\, Kenya
+DESCRIPTION:Source: https://www.thebox.co.ke/\\nNotes: Inquire about late exhibitor availability (info@thebox.co.ke).\\nFit: strong selling + content + scouting.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-20260530-amka-literature-forum-placeholder@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;VALUE=DATE:20260530
+DTEND;VALUE=DATE:20260531
+SUMMARY:AMKA Literature Forum (Goethe-Institut Nairobi) — verify time
+LOCATION:Goethe-Institut Nairobi\, Nairobi\, Kenya
+DESCRIPTION:Source: https://www.goethe.de/ins/ke/en/ver.cfm\\nNotes: Listed as last Saturday monthly (Jan–Nov 2026). Confirm exact time + topic before attending.\\nFit: networking + scouting.
+END:VEVENT
+
+BEGIN:VEVENT
+UID:gorosei-weekly-maasai-market-placeholder@event-radar
+DTSTAMP:20260504T070000Z
+DTSTART;VALUE=DATE:20260506
+DTEND;VALUE=DATE:20260507
+RRULE:FREQ=WEEKLY;COUNT=12
+SUMMARY:Maasai Market scouting (weekly) — pick a location
+DESCRIPTION:Reference schedule: https://whats-on-nairobi.com/market.php\\nNotes: Village Market (Fri)\, Westgate (Tue/Wed)\, Yaya Centre (Sun). Use as a weekly scouting slot.
+END:VEVENT
+
+END:VCALENDAR
+

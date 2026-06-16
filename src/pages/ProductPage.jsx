@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FIXED_PRICE, WHATSAPP_NUMBER } from "../config/constants.js";
+import { WHATSAPP_NUMBER } from "../config/constants.js";
 import { useWindowWidth } from "../hooks/index.js";
-import { getImageUrl, getProductImages, normalizePhone, trackProductEvent } from "../lib/productUtils.js";
+import { getImageUrl, getProductImages, getProductPrice, normalizePhone, trackProductEvent } from "../lib/productUtils.js";
 import { supabase } from "../lib/supabase.js";
 export default function ProductPage({ id }) {
   const winWidth = useWindowWidth();
@@ -13,13 +13,13 @@ export default function ProductPage({ id }) {
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [failedImages, setFailedImages] = useState(() => new Set());
-  const [orderDraft, setOrderDraft] = useState({ name: "", phone: "" });
+  const [orderDraft, setOrderDraft] = useState({ name: "", phone: "", flightNumber: "", terminals: "" });
   const [orderStatus, setOrderStatus] = useState("");
   const [ordering, setOrdering] = useState(false);
   const [orderReviewOpen, setOrderReviewOpen] = useState(false);
   const sizes = ["S", "M", "L", "XL"];
   const name = product?.Name || id?.toUpperCase() || "PRODUCT";
-  const price = Number(product?.Price) || FIXED_PRICE;
+  const price = getProductPrice(product);
   const originalPrice = Number(product?.original_price) || 0;
   const hasDiscount = originalPrice > price;
   const productImages = getProductImages(product);
@@ -147,9 +147,8 @@ export default function ProductPage({ id }) {
     );
   }
 
-  const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${price.toLocaleString()}${orderDraft.name ? `\n- Name: ${orderDraft.name.trim()}` : ""}${orderDraft.phone ? `\n- Phone: ${normalizePhone(orderDraft.phone)}` : ""}\n\nIs it available?`
-  )}`;
+  const bookingMessage = `Hi GOROSEI,\n\nI'd like to order:\n- Product: ${name}\n- Size: ${selectedSize}\n- Price: KSh ${price.toLocaleString()}${orderDraft.name ? `\n- Name: ${orderDraft.name.trim()}` : ""}${orderDraft.phone ? `\n- Phone: ${normalizedOrderPhone}` : ""}${orderDraft.flightNumber.trim() ? `\n- Flight number: ${orderDraft.flightNumber.trim()}` : ""}${orderDraft.terminals.trim() ? `\n- Terminal(s): ${orderDraft.terminals.trim()}` : ""}\n\nIs it available?`;
+  const buyLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(bookingMessage)}`;
 
   function openWhatsAppOrder() {
     window.location.assign(buyLink);
@@ -182,6 +181,8 @@ export default function ProductPage({ id }) {
         product_name: name,
         customer_name: orderDraft.name.trim(),
         phone: normalizedOrderPhone,
+        flight_number: orderDraft.flightNumber.trim() || null,
+        terminals: orderDraft.terminals.trim() || null,
         selected_size: selectedSize,
         price,
         status: "new",
@@ -454,6 +455,32 @@ export default function ProductPage({ id }) {
                   boxSizing: "border-box",
                 }}
               />
+              <input
+                value={orderDraft.flightNumber}
+                onChange={(e) => setOrderDraft((prev) => ({ ...prev, flightNumber: e.target.value }))}
+                placeholder="Flight number"
+                style={{
+                  padding: 14,
+                  background: "var(--surface)",
+                  border: "1px solid var(--surface-light)",
+                  color: "var(--text)",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+              <input
+                value={orderDraft.terminals}
+                onChange={(e) => setOrderDraft((prev) => ({ ...prev, terminals: e.target.value }))}
+                placeholder="Terminal(s)"
+                style={{
+                  padding: 14,
+                  background: "var(--surface)",
+                  border: "1px solid var(--surface-light)",
+                  color: "var(--text)",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
             </div>
           )}
           <button
@@ -548,6 +575,8 @@ export default function ProductPage({ id }) {
                 ["PRICE", `KSh ${price.toLocaleString()}`],
                 ["NAME", orderDraft.name.trim()],
                 ["PHONE", normalizedOrderPhone],
+                ["FLIGHT", orderDraft.flightNumber.trim() || "-"],
+                ["TERMINAL(S)", orderDraft.terminals.trim() || "-"],
               ].map(([label, value]) => (
                 <div
                   key={label}

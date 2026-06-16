@@ -1,5 +1,41 @@
-import { BUCKET_NAME, HERO_MEDIA, SUPABASE_URL } from "../config/constants.js";
+import { BUCKET_NAME, FIXED_PRICE, HERO_MEDIA, PRODUCT_PRICES, SUPABASE_URL } from "../config/constants.js";
 import { supabase } from "./supabase.js";
+
+function getProductSearchText(product = {}) {
+  const item = product ?? {};
+  return [
+    item.Name,
+    item.name,
+    item.category,
+    item.type,
+    item.fit_notes,
+    item.fitNotes,
+    item.story,
+    item.description,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function getProductPrice(product = {}) {
+  const item = product ?? {};
+  const searchText = getProductSearchText(item);
+  const category = String(item.category || "").toLowerCase();
+  const storedPrice = Number(item.Price ?? item.price);
+  const hasStoredPrice = Number.isFinite(storedPrice) && storedPrice > 0;
+  const isHockeyJersey = /\bhockey\b/.test(searchText) && /\bjerseys?\b/.test(searchText);
+  const isJacket = category === "jackets" || /\b(jackets?|varsity)\b/.test(searchText);
+  const isTshirt = category === "tshirts" || /\b(t-?shirts?|tees?)\b/.test(searchText);
+
+  if (isHockeyJersey) return PRODUCT_PRICES.hockeyJersey;
+  if (isJacket && /\b(heavy|varsity)\b/.test(searchText)) return PRODUCT_PRICES.heavyJacket;
+  if (isJacket && /\blight(?:weight)?\b/.test(searchText)) return PRODUCT_PRICES.lightJacket;
+  if (isJacket) return PRODUCT_PRICES.heavyJacket;
+  if (isTshirt) return PRODUCT_PRICES.tshirt;
+
+  return hasStoredPrice ? storedPrice : FIXED_PRICE;
+}
 
 function getImageUrl(path, width = 800, quality = 80, resize = "cover") {
   const value = String(path || "").trim();
@@ -75,6 +111,7 @@ function isNearbyHeroSlide(index, current) {
 }
 
 export {
+  getProductPrice,
   getImageUrl,
   getProductImages,
   isMissingGalleryColumn,

@@ -11,6 +11,8 @@ create table if not exists public.orders (
   product_name text not null,
   customer_name text,
   phone text not null,
+  flight_number text,
+  terminals text,
   selected_size text,
   price integer,
   status text not null default 'new'
